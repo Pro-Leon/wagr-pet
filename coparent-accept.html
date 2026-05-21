@@ -67,20 +67,20 @@
           <button class="btn btn-primary w-full" id="invite-accept-btn" onclick="handleAccept()" style="display:none">
             Accept Invite
           </button>
-          <a href="auth.html" class="btn btn-primary w-full" id="invite-login-btn" style="display:none">
+          <a href="/auth" class="btn btn-primary w-full" id="invite-login-btn" style="display:none">
             Sign In to Accept
           </a>
           <div id="invite-success" style="display:none">
             <div style="margin-bottom:12px"><i data-lucide="party-popper" style="width:40px;height:40px;color:var(--orange-600)"></i></div>
             <h3>You're now a co-parent!</h3>
             <p style="color:var(--text-secondary);margin-bottom:16px" id="invite-success-text"></p>
-            <a href="dashboard.html" class="btn btn-primary w-full">Go to Dashboard</a>
+            <a href="/dashboard" class="btn btn-primary w-full">Go to Dashboard</a>
           </div>
           <div id="invite-error" style="display:none">
             <div style="margin-bottom:12px"><i data-lucide="frown" style="width:40px;height:40px;color:var(--text-muted)"></i></div>
             <h3>Invite not valid</h3>
             <p style="color:var(--text-secondary);margin-bottom:16px" id="invite-error-text"></p>
-            <a href="dashboard.html" class="btn btn-secondary w-full">Go to Dashboard</a>
+            <a href="/dashboard" class="btn btn-secondary w-full">Go to Dashboard</a>
           </div>
         </div>
         <div id="invite-loading" style="padding:20px 0">

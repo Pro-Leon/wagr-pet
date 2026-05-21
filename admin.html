@@ -517,7 +517,7 @@
       <div style="display:flex;align-items:center;gap:12px">
         <span style="font-size:0.78rem;color:var(--text-muted)" id="admin-email"></span>
         <button class="theme-toggle" onclick="ThemeManager.toggle()" style="width:30px;height:30px"></button>
-        <a href="dashboard.html" class="btn btn-ghost btn-sm">← Dashboard</a>
+        <a href="/dashboard" class="btn btn-ghost btn-sm">← Dashboard</a>
       </div>
     </div>
 
@@ -846,7 +846,7 @@
       try { initSupabase(); } catch(e) { console.error('Init failed:', e); }
 
       const user = await getCurrentUser();
-      if (!user) { window.location.href = 'auth.html'; return; }
+      if (!user) { window.location.href = '/auth'; return; }
 
       AppState.setUser(user);
       document.getElementById('admin-email').textContent = user.email;
@@ -864,7 +864,7 @@
               <h3 style="margin-bottom:8px">Not an Admin</h3>
               <p style="color:var(--text-secondary);font-size:0.85rem;max-width:400px;margin:0 auto">Your account (${escapeHtml(user.email)}) does not have admin access.</p>
               <p style="color:var(--text-muted);font-size:0.78rem;margin-top:12px">Run this SQL in Supabase SQL Editor to gain access:<br><code style="background:var(--bg-tertiary);padding:4px 8px;border-radius:4px;font-size:0.72rem">UPDATE profiles SET is_admin = true WHERE email = '${escapeHtml(user.email)}';</code></p>
-              <a href="dashboard.html" class="btn btn-primary btn-sm" style="margin-top:16px">Back to Dashboard</a>
+              <a href="/dashboard" class="btn btn-primary btn-sm" style="margin-top:16px">Back to Dashboard</a>
             </div>`;
           lucide.createIcons();
           return;

@@ -1151,7 +1151,7 @@ async function getAccessToken() {
 
 async function sendPasswordResetEmail(email) {
   const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + '/auth.html',
+    redirectTo: window.location.origin + '/auth',
   });
   if (error) throw error;
 }
