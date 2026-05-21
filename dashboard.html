@@ -477,7 +477,7 @@
     <!-- Desktop Sidebar -->
     <aside class="dash-sidebar hide-mobile">
       <div class="dash-sidebar-header">
-        <a href="index.html" class="dash-sidebar-logo">
+        <a href="/" class="dash-sidebar-logo">
           <div class="logo-mark">H</div>
           Wagr
         </a>
@@ -542,7 +542,7 @@
           <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           Settings
         </a>
-        <a href="admin.html" id="admin-sidebar-link" style="display:none;color:#dc2626">
+        <a href="/admin" id="admin-sidebar-link" style="display:none;color:#dc2626">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Admin
         </a>
@@ -571,7 +571,7 @@
 
       <!-- Mobile Header -->
       <div class="mobile-header hide-desktop" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)">
-        <a href="index.html" class="navbar-logo" style="font-size:0.9rem">
+        <a href="/" class="navbar-logo" style="font-size:0.9rem">
           <div class="logo-mark" style="width:24px;height:24px;font-size:0.65rem">H</div>
           Wagr
         </a>
@@ -609,9 +609,9 @@
           <a href="#" onclick="switchTab('coparent');closeMobileMenu()">Co-parents</a>
           <a href="#" onclick="switchTab('pets');closeMobileMenu()">My Pets</a>
           <a href="#" onclick="switchTab('settings');closeMobileMenu()">Settings</a>
-          <a href="admin.html" id="admin-mobile-link" style="display:none;color:#dc2626">Admin Panel</a>
+          <a href="/admin" id="admin-mobile-link" style="display:none;color:#dc2626">Admin Panel</a>
           <div class="divider" style="margin:12px 0"></div>
-          <a href="index.html">← Back to Home</a>
+          <a href="/">← Back to Home</a>
           <button onclick="handleLogout()" style="color:#dc2626">Sign Out</button>
         </nav>
       </div>
@@ -2911,7 +2911,7 @@
     async function handleSitterMode(token) {
       try {
         const pet = await verifySitterToken(token);
-        if (!pet) { showToast('Invalid or expired sitter link.', 'error'); window.location.href = 'index.html'; return; }
+        if (!pet) { showToast('Invalid or expired sitter link.', 'error'); window.location.href = '/'; return; }
         
         // Check if sitter name is already saved
         const savedName = localStorage.getItem('houndos_sitter_name');
@@ -3185,7 +3185,7 @@
 
     /* --- Subscribe --- */
     function handleSubscribe(tier) {
-      if (!AppState.user) { window.location.href = 'auth.html'; return; }
+      if (!AppState.user) { window.location.href = '/auth'; return; }
       try {
         if (typeof PaystackPop !== 'undefined') {
           openPaystackCheckout(AppState.user.email, isYearlyPricing ? `${tier}_yearly` : `${tier}_monthly`, async () => {

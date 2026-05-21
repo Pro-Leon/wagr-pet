@@ -959,7 +959,7 @@ async function shareCarePlan(planId) {
   const pet = await db().from('pets').select('name, breed, medical_flags').eq('id', plan.pet_id).single();
   
   // Generate shareable link
-  const shareUrl = `${window.location.origin}/sitter.html?plan=${planId}`;
+  const shareUrl = `${window.location.origin}/sitter?plan=${planId}`;
   
   // Format email content
   const emailSubject = `Pet Care Instructions for ${pet.data.name} - ${plan.start_date} to ${plan.end_date}`;

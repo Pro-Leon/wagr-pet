@@ -8,6 +8,12 @@ const CACHE = 'wagr-v1';
 
 const PRECACHE = [
   '/',
+  '/dashboard',
+  '/auth',
+  '/admin',
+  '/privacy',
+  '/terms',
+  '/cookies',
   '/index.html',
   '/dashboard.html',
   '/auth.html',
@@ -79,18 +85,22 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.match(event.request).then((cached) => {
         if (cached) return cached;
-        return fetch(event.request).then((res) => {
-          if (res.ok && res.type === 'basic') {
-            const clone = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(event.request, clone));
-          }
-          return res;
-        }).catch(() => {
-          // Offline fallback for HTML navigations
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-          return new Response('Offline', { status: 503 });
+        // Try matching the .html version for clean URLs
+        const htmlPath = url.pathname + '.html';
+        return caches.match(htmlPath).then((htmlCached) => {
+          if (htmlCached && event.request.mode === 'navigate') return htmlCached;
+          return fetch(event.request).then((res) => {
+            if (res.ok && res.type === 'basic') {
+              const clone = res.clone();
+              caches.open(CACHE).then((cache) => cache.put(event.request, clone));
+            }
+            return res;
+          }).catch(() => {
+            if (event.request.mode === 'navigate') {
+              return caches.match('/index.html');
+            }
+            return new Response('Offline', { status: 503 });
+          });
         });
       })
     );
