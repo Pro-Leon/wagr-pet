@@ -2846,7 +2846,7 @@
         const body = { type, to, ...extra };
         if (AppState.user) body.toName = AppState.user.email?.split('@')[0] || '';
         if (AppState.activePet && !body.petName) body.petName = AppState.activePet.name;
-        await fetch((window.location.origin || 'https://houndos.app') + '/api/send-email', {
+        await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body),
@@ -3139,7 +3139,7 @@
       if (!AppState.user) return;
       showToast('Opening payment portal...', 'info');
       try {
-        const res = await fetch((window.location.origin || 'https://houndos.app') + '/api/manage-subscription', {
+        const res = await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/manage-subscription', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: AppState.user.id, action: 'manage' }),

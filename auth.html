@@ -484,7 +484,7 @@
           showToast('Account created!', 'success');
           // Send welcome email (fire-and-forget)
           try {
-            await fetch((window.location.origin || 'https://houndos.app') + '/api/send-email', {
+            await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/send-email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ type: 'welcome', to: email, toName: email.split('@')[0] }),

@@ -1396,7 +1396,7 @@
         // Send email notification to ticket creator
         if (data?.user_email) {
           try {
-            await fetch((window.location.origin || 'https://houndos.app') + '/api/send-email', {
+            await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/send-email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ type: 'support_reply', to: data.user_email, toName: data.user_name, message: text }),

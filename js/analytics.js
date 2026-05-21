@@ -49,7 +49,7 @@ async function trackEvent(eventType, eventName, extra = {}) {
       metadata: extra.metadata || {},
     };
     // Fire-and-forget — no need to await
-    fetch((window.location.origin || 'https://houndos.app') + '/api/analytics', {
+    fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/analytics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -88,7 +88,7 @@ function trackError(error, context = '') {
         url: window.location.href,
       },
     };
-    fetch((window.location.origin || 'https://houndos.app') + '/api/analytics', {
+    fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/analytics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

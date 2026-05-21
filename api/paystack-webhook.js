@@ -1,7 +1,7 @@
 // Vercel API route for Paystack Webhook
 // Automatically upgrades profiles.tier on successful subscription payments
 // Receives POST from Paystack Dashboard -> Settings -> Webhooks -> Add URL
-// Webhook URL: https://houndos.app/api/paystack-webhook
+// Webhook URL: https://wagr-ai.vercel.app/api/paystack-webhook
 // Events to subscribe to: charge.success, subscription.create, invoice.create,
 //                         subscription.disable, subscription.expiring
 

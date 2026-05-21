@@ -6,7 +6,7 @@ export const config = { api: { bodyParser: false } };
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
-const SENDER = { name: 'Wagr', email: 'noreply@houndos.app' };
+const SENDER = { name: 'Wagr', email: 'noreply@wagr-ai.vercel.app' };
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -90,7 +90,7 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
             <li>Share sitter magic links</li>
             <li>Use free toxicity and calorie calculators</li>
           </ul>
-          <a href="${link || 'https://houndos.app/dashboard.html'}" style="display:inline-block;padding:12px 24px;background:#ea580c;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">Go to Dashboard</a>
+          <a href="${link || 'https://wagr-ai.vercel.app/dashboard.html'}" style="display:inline-block;padding:12px 24px;background:#ea580c;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">Go to Dashboard</a>
           <p style="color:#666;font-size:0.85rem">Start with the Starter plan — free forever, no credit card needed.</p>
         </div>`;
       break;
@@ -103,7 +103,7 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
           <p>Hi ${toName || 'there'},</p>
           <p>Your subscription to <strong>${tier || 'a paid'}</strong> plan is now active on Wagr.</p>
           ${plan === 'yearly' ? '<p>You chose the yearly plan — great savings!</p>' : ''}
-          <p>You now have access to all features in your tier. <a href="https://houndos.app/dashboard.html" style="color:#ea580c">Go to your dashboard</a> to start using them.</p>
+          <p>You now have access to all features in your tier. <a href="https://wagr-ai.vercel.app/dashboard.html" style="color:#ea580c">Go to your dashboard</a> to start using them.</p>
           <p style="color:#666;font-size:0.85rem">Need help? Reply to this email or contact support from your dashboard.</p>
         </div>`;
       break;

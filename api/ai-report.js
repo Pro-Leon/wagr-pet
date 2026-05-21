@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       headers: {
         'Authorization': `Bearer ${OPENROUTER_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://houndos.app',
+        'HTTP-Referer': 'https://wagr-ai.vercel.app',
         'X-Title': 'Wagr'
       },
       body: JSON.stringify({

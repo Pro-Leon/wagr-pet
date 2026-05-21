@@ -4,7 +4,7 @@
 
 Wagr is a web-based dog care tracking platform that helps dog owners log, monitor, and share their pet's daily activities — meals, medications, bathroom breaks, symptoms, grooming, and more. It features tier-gated subscription plans, AI-generated vet reports, QR emergency tags, sitter magic links, and free veterinary calculators.
 
-**URL:** https://houndos.app  
+**URL:** https://wagr-ai.vercel.app  
 **Status:** Production (live Paystack payments, live Supabase data, live OpenRouter AI)
 
 ---
@@ -184,7 +184,7 @@ Tier is stored in `profiles.tier` column in Supabase. Updated after successful P
 
 **Flow:**
 1. User generates QR code for their pet (Basic+). Uses QRCode.js library.
-2. QR encodes a URL: `https://houndos.app/p/{petId}`
+2. QR encodes a URL: `https://wagr-ai.vercel.app/p/{petId}`
 3. Vercel rewrites `/p/:petId` → `public-profile.html` (clean URLs)
 4. `public-profile.html` extracts petId from URL path (or query param / hash fallback) and calls `getPublicPetProfile()` which uses:
    - **Primary:** `supabase.rpc('get_public_pet_profile', { pet_id })` — SECURITY DEFINER function that bypasses auth schema restrictions for anonymous scanners
@@ -212,7 +212,7 @@ Tier is stored in `profiles.tier` column in Supabase. Updated after successful P
 
 **Sitter Links:**
 - `createSitterToken()` generates a 32-char random token and stores it on the pet record
-- Token is embedded in URL: `https://houndos.app/dashboard?sitter_token={token}`
+- Token is embedded in URL: `https://wagr-ai.vercel.app/dashboard?sitter_token={token}`
 - Sitter opens URL → `handleSitterMode()` verifies token via `verifySitterToken()`
 - Sitter sees read-only pet info + can add logs (with `sitter_name` tag) without authentication
 - Links expire automatically when regenerated
@@ -338,7 +338,7 @@ Both calculators have **no server dependency** — they work offline via localSt
 - Maps Paystack plan codes → tiers (`basic_monthly` → `basic`, `family_yearly` → `family`, `pro_monthly` → `pro`, etc.)
 - Uses Supabase service_role key (bypasses RLS) to update profiles
 - Finds user by email via GoTrue Admin API, with fallback to `profiles` table query
-- **Setup required:** Add URL `https://houndos.app/api/paystack-webhook` in Paystack Dashboard → Settings → Webhooks → Add URL. Enable events: `charge.success`, `subscription.create`, `invoice.create`, `subscription.disable`, `subscription.expiring`, `invoice.failed`
+- **Setup required:** Add URL `https://wagr-ai.vercel.app/api/paystack-webhook` in Paystack Dashboard → Settings → Webhooks → Add URL. Enable events: `charge.success`, `subscription.create`, `invoice.create`, `subscription.disable`, `subscription.expiring`, `invoice.failed`
 
 ---
 

@@ -96,7 +96,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to create invite' });
     }
 
-    const origin = req.headers.origin || 'https://houndos.app';
+    const origin = req.headers.origin || 'https://wagr-ai.vercel.app';
     const inviteUrl = `${origin}/coparent?token=${token}`;
 
     return res.status(200).json({
