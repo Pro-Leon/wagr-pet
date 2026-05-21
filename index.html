@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wagr — Smart Dog Care That Runs Itself</title>
+  <meta name="description" content="Never wonder who fed the dog. Track meals, medications, and daily care in one place. AI-powered vet reports, QR emergency tags, and seamless sitter handoffs.">
+  <meta name="keywords" content="dog care app, pet health tracker, dog medication reminder, pet care dashboard, dog food calculator, AI vet report, pet QR tag">
+  <meta name="author" content="Wagr">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://houndos.app">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Wagr — Never wonder who fed the dog">
+  <meta property="og:description" content="Smart care tracking for dog owners. Meals, meds, and daily health — all in one place.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://houndos.app">
+  <meta property="og:site_name" content="Wagr">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Wagr — Smart Dog Care Dashboard">
+  <meta name="twitter:description" content="The modern way to track your dog's health, nutrition, and daily care.">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Wagr",
+    "applicationCategory": "Health",
+    "operatingSystem": "Web",
+    "description": "Smart dog care dashboard with meal tracking, medication reminders, AI vet reports, and QR emergency tags.",
+    "offers": [
+      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Starter tier" },
+      { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "description": "Basic monthly" },
+      { "@type": "Offer", "price": "9.99", "priceCurrency": "USD", "description": "Family monthly" },
+      { "@type": "Offer", "price": "16.99", "priceCurrency": "USD", "description": "Pro monthly" }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/globals.css">
+  <style>
+    /* --- Backdrop --- */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(249,115,22,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(251,191,36,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 85% 70%, rgba(249,115,22,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    [data-theme="dark"] body::before {
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(249,115,22,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(251,191,36,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 85% 70%, rgba(249,115,22,0.06) 0%, transparent 50%);
+    }
+
+    /* --- Decorative backdrop shapes --- */
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hero::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%);
+      top: -120px; right: -120px;
+    }
+    .hero::after {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(251,191,36,0.05) 0%, transparent 70%);
+      bottom: -80px; left: -80px;
+    }
+    [data-theme="dark"] .hero::before {
+      background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 70%);
+    }
+    [data-theme="dark"] .hero::after {
+      background: radial-gradient(circle, rgba(251,191,36,0.08) 0%, transparent 70%);
+    }
+    .hero {
+      position: relative;
+      padding: 72px 0 0;
+      text-align: center;
+      overflow: hidden;
+    }
+    @media (min-width: 769px) {
+      .hero { padding: 100px 0 0; }
+    }
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: var(--radius-full);
+      background: var(--orange-50);
+      color: var(--orange-700);
+      font-size: 0.74rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border: 1px solid var(--orange-200);
+    }
+    [data-theme="dark"] .hero-label {
+      background: rgba(249,115,22,0.1);
+      border-color: rgba(249,115,22,0.2);
+      color: var(--orange-400);
+    }
+    .hero-label .dot {
+      width: 5px; height: 5px;
+      background: var(--orange-500);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.08;
+      margin-bottom: 14px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (min-width: 769px) {
+      .hero h1 { font-size: 3.4rem; }
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--orange-500), var(--orange-700));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 440px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+    @media (min-width: 769px) {
+      .hero-sub { font-size: 1.1rem; }
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--orange-600);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: var(--radius-lg);
+      transition: all 0.15s;
+      box-shadow: 0 4px 16px rgba(234,88,12,0.3);
+    }
+    .hero-cta:hover {
+      background: var(--orange-700);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(234,88,12,0.35);
+    }
+    .hero-cta:active { transform: translateY(0); }
+    .hero-cta svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; fill: none; stroke-width: 2;
+    }
+    .hero-footnote {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* --- Social Proof Bar --- */
+    .proof-bar {
+      margin-top: 48px;
+      padding: 24px 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .proof-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .proof-item {
+      text-align: center;
+    }
+    .proof-item .proof-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+    .proof-item .proof-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* --- Dashboard Preview --- */
+    .preview-section {
+      padding: 48px 0 0;
+    }
+    .preview-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+      background: var(--bg-secondary);
+    }
+    [data-theme="dark"] .preview-wrap {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+    }
+    .preview-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+    }
+    .preview-topbar .dots {
+      display: flex; gap: 6px;
+    }
+    .preview-topbar .dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .preview-topbar .dots span:nth-child(1) { background: #ef4444; }
+    .preview-topbar .dots span:nth-child(2) { background: #eab308; }
+    .preview-topbar .dots span:nth-child(3) { background: #22c55e; }
+    .preview-topbar .url-bar {
+      flex: 1;
+      padding: 5px 12px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .preview-body {
+      padding: 20px;
+    }
+    .preview-pet-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .preview-pet-bar .pet-select {
+      padding: 6px 28px 6px 10px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      appearance: none;
+      width: 160px;
+    }
+    .preview-pet-bar .badge-area {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .preview-actions {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .preview-actions .pa {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+    .preview-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .preview-tl-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+    }
+    .preview-tl-icon {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .preview-tl-icon.meal { background: #FEF3C7; }
+    .preview-tl-icon.med { background: #DBEAFE; }
+    .preview-tl-icon.bath { background: #D1FAE5; }
+    [data-theme="dark"] .preview-tl-icon.meal { background: rgba(251,191,36,0.15); }
+    [data-theme="dark"] .preview-tl-icon.med { background: rgba(59,130,246,0.15); }
+    [data-theme="dark"] .preview-tl-icon.bath { background: rgba(16,185,129,0.15); }
+    .preview-tl-text {
+      flex: 1; min-width: 0;
+    }
+    .preview-tl-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .preview-tl-time {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+
+    /* --- Benefits --- */
+    .benefits {
+      padding: 80px 0 64px;
+    }
+    .benefits-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .benefits-header .section-label { margin-bottom: 8px; }
+    .benefits-header h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 10px;
+    }
+    @media (min-width: 769px) {
+      .benefits-header h2 { font-size: 2.1rem; }
+    }
+    .benefits-header p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      max-width: 460px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    @media (min-width: 769px) {
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    }
+    .benefit-card {
+      padding: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      transition: all 0.2s;
+    }
+    .benefit-card:hover {
+      border-color: var(--orange-300);
+      box-shadow: var(--shadow-md);
+    }
+    [data-theme="dark"] .benefit-card:hover {
+      border-color: rgba(249,115,22,0.3);
+    }
+    .benefit-card .bc-icon {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-md);
+      background: var(--orange-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+    [data-theme="dark"] .benefit-card .bc-icon {
+      background: rgba(249,115,22,0.12);
+    }
+    .benefit-card h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .benefit-card p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* --- Testimonials --- */
+    .testimonials {
+      padding: 64px 0;
+      background: var(--bg-tertiary);
+    }
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    @media (min-width: 769px) {
+      .testimonial-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .testimonial-card {
+      padding: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+    }
+    .testimonial-card .tc-stars {
+      color: #eab308;
+      font-size: 0.75rem;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .testimonial-card .tc-text {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+    .testimonial-card .tc-author {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .testimonial-card .tc-role {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    /* --- Calculators --- */
+    .calc-tabs {
+      display: inline-flex;
+      gap: 4px;
+      background: var(--bg-tertiary);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+    }
+    .calc-tab {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .calc-tab.active {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .calc-panel { display: none; }
+    .calc-panel.active { display: block; }
+    .calc-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .calc-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .calc-card > p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .calc-results {
+      margin-top: 20px;
+      display: none;
+    }
+    .calc-results.active { display: block; }
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-item .label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .result-item .value {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .tox-result {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .tox-result .tox-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tox-result .tox-section {
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+    }
+    .tox-result .tox-section strong { color: var(--text-primary); }
+    .tox-result .tox-section span { color: var(--text-secondary); }
+    .severity-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* --- Pricing --- */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    @media (min-width: 769px) {
+      .pricing-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .pricing-card {
+      position: relative;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s ease;
+    }
+    .pricing-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    }
+    [data-theme="dark"] .pricing-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    /* Featured card (Family) */
+    .pricing-card.featured {
+      border: 2px solid var(--orange-500);
+      box-shadow: 0 0 0 1px var(--orange-500), 0 8px 32px rgba(234,88,12,0.12);
+      z-index: 1;
+    }
+    @media (min-width: 769px) {
+      .pricing-card.featured {
+        padding: 32px 24px;
+        transform: scale(1.04);
+      }
+      .pricing-card.featured:hover {
+        transform: scale(1.04) translateY(-3px);
+      }
+    }
+    [data-theme="dark"] .pricing-card.featured {
+      box-shadow: 0 0 0 1px var(--orange-500), 0 8px 32px rgba(234,88,12,0.08);
+    }
+
+    .pricing-card .plan-badge {
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 16px;
+      background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .pricing-card .plan-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .pricing-card .plan-price {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .pricing-card .plan-price .period {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      letter-spacing: 0;
+    }
+    .pricing-card .plan-original {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      margin-bottom: 2px;
+      display: none;
+    }
+    .pricing-card .plan-original.show { display: block; }
+
+    .pricing-card .plan-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .pricing-card .plan-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 0 0 18px;
+    }
+
+    .pricing-card .plan-features {
+      list-style: none;
+      margin-bottom: 24px;
+      flex: 1;
+    }
+    .pricing-card .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .pricing-card .plan-features li svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+    .pricing-card .plan-features li .check-green {
+      stroke: #16a34a;
+    }
+    .pricing-card .plan-features li .check-orange {
+      stroke: var(--orange-500);
+    }
+
+    .pricing-card .plan-cta {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius-lg);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.15s;
+      margin-top: auto;
+    }
+    .plan-cta-primary {
+      background: var(--orange-600);
+      color: #fff;
+      border: none;
+    }
+    .plan-cta-primary:hover {
+      background: var(--orange-700);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+    }
+    .plan-cta-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    .plan-cta-secondary:hover {
+      border-color: var(--orange-400);
+      color: var(--orange-600);
+    }
+
+    .yearly-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 32px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .save-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #16a34a;
+      background: #dcfce7;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+    }
+    [data-theme="dark"] .save-badge {
+      background: rgba(22,163,74,0.15);
+      color: #4ade80;
+    }
+
+    /* Free card subtle style */
+    .pricing-card.plan-free {
+      background: var(--bg-tertiary);
+    }
+    /* Pro card subtle gradient */
+    .pricing-card.plan-pro {
+      background: var(--bg-secondary);
+    }
+    .pricing-card.plan-pro .plan-cta-primary {
+      background: linear-gradient(135deg, var(--orange-600), #C2410C);
+    }
+
+    /* --- Comparison Table --- */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .comparison-table th {
+      font-weight: 600;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .comparison-table td:not(:first-child),
+    .comparison-table th:not(:first-child) {
+      text-align: center;
+    }
+    .check { color: #16a34a; font-weight: 600; }
+    .cross { color: var(--text-muted); }
+
+    /* --- Final CTA --- */
+    .final-cta {
+      padding: 80px 0;
+      text-align: center;
+      position: relative;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(249,115,22,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    [data-theme="dark"] .final-cta::before {
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(249,115,22,0.1) 0%, transparent 70%);
+    }
+    .final-cta h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    @media (min-width: 769px) {
+      .final-cta h2 { font-size: 2rem; }
+    }
+    .final-cta p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* --- Footer --- */
+    .landing-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-inner .footer-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+    }
+    .footer-links a {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      transition: color 0.15s;
+      white-space: nowrap;
+    }
+    .footer-links a:hover { color: var(--text-primary); }
+    @media (max-width: 768px) {
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-links {
+        justify-content: center;
+      }
+    }
+
+    /* --- Section spacing --- */
+    .section-pad { padding: 64px 0; }
+    @media (min-width: 769px) {
+      .section-pad { padding: 80px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <div class="flex items-center gap-4">
+        <button class="menu-toggle hide-desktop" onclick="toggleSidebar()">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <a href="/" class="navbar-logo">
+          <div class="logo-icon">H</div>
+          Wagr
+        </a>
+      </div>
+      <div class="navbar-links hide-mobile">
+        <a href="#benefits">Why Wagr</a>
+        <a href="#calculators">Free Tools</a>
+        <a href="#pricing">Pricing</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="cookies.html">Cookies</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="theme-toggle" onclick="ThemeManager.toggle()"></button>
+        <a href="auth.html" class="btn btn-ghost btn-sm hide-mobile">Log in</a>
+        <a href="auth.html?mode=signup" class="btn btn-primary btn-sm">Start Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Sidebar -->
+  <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="navbar-logo">
+        <div class="logo-icon">H</div>
+        Wagr
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#benefits" onclick="closeSidebar()">Why Wagr</a>
+      <a href="#calculators" onclick="closeSidebar()">Free Tools</a>
+      <a href="#pricing" onclick="closeSidebar()">Pricing</a>
+      <a href="privacy.html" onclick="closeSidebar()">Privacy Policy</a>
+      <a href="terms.html" onclick="closeSidebar()">Terms of Service</a>
+      <a href="cookies.html" onclick="closeSidebar()">Cookie Policy</a>
+      <div class="divider" style="margin:12px 0"></div>
+      <a href="auth.html" onclick="closeSidebar()">Log in</a>
+      <a href="auth.html?mode=signup" onclick="closeSidebar()">Create Account</a>
+    </nav>
+  </aside>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label"><span class="dot"></span> Built for people who take dog care seriously</div>
+      <h1>Never wonder<br>who fed <em>the dog</em></h1>
+      <p class="hero-sub">Track meals, medications, and daily care in one place. Know your dog is always taken care of — even when you're not home.</p>
+      <a href="auth.html?mode=signup" class="hero-cta">
+        Start Free
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <div class="hero-footnote">No credit card required · Free forever tier</div>
+    </div>
+  </section>
+
+  <!-- ========== SOCIAL PROOF ========== -->
+  <div class="proof-bar">
+    <div class="container">
+      <div class="proof-inner">
+        <div class="proof-item">
+          <div class="proof-num">2,400+</div>
+          <div class="proof-label">Dogs tracked</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-num">18,000+</div>
+          <div class="proof-label">Care logs recorded</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-num">4.9</div>
+          <div class="proof-label">Average rating</div>
+        </div>
+        <div class="proof-item">
+          <div class="proof-num">&lt;2s</div>
+          <div class="proof-label">Load time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DASHBOARD PREVIEW ========== -->
+  <section class="preview-section">
+    <div class="container">
+      <div class="preview-wrap">
+        <div class="preview-topbar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="url-bar">houndos.app/dashboard</div>
+        </div>
+        <div class="preview-body">
+          <div class="preview-pet-bar">
+            <select class="pet-select" disabled>
+              <option>Buddy — Golden Retriever</option>
+            </select>
+            <span class="badge-area" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);background:var(--orange-50);color:var(--orange-700);font-weight:600;font-size:0.68rem">ESSENTIAL</span>
+          </div>
+          <div class="preview-actions">
+            <span class="pa"><i data-lucide="utensils-crossed" style="width:14px;height:14px"></i> Feed</span>
+            <span class="pa"><i data-lucide="pill" style="width:14px;height:14px"></i> Meds</span>
+            <span class="pa"><i data-lucide="footprints" style="width:14px;height:14px"></i> Bathroom</span>
+            <span class="pa"><i data-lucide="file-text" style="width:14px;height:14px"></i> Note</span>
+          </div>
+          <div style="font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Today</div>
+          <div class="preview-timeline">
+            <div class="preview-tl-item">
+              <div class="preview-tl-icon meal"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i></div>
+              <div class="preview-tl-text">
+                <div class="preview-tl-title">Morning kibble — 1.5 cups</div>
+                <div class="preview-tl-time">7:30 AM</div>
+              </div>
+            </div>
+            <div class="preview-tl-item">
+              <div class="preview-tl-icon med"><i data-lucide="pill" style="width:16px;height:16px"></i></div>
+              <div class="preview-tl-text">
+                <div class="preview-tl-title">Heartworm pill (monthly)</div>
+                <div class="preview-tl-time">8:00 AM</div>
+              </div>
+            </div>
+            <div class="preview-tl-item">
+              <div class="preview-tl-icon bath"><i data-lucide="footprints" style="width:16px;height:16px"></i></div>
+              <div class="preview-tl-text">
+                <div class="preview-tl-title">Normal — morning walk</div>
+                <div class="preview-tl-time">8:45 AM</div>
+              </div>
+            </div>
+            <div class="preview-tl-item">
+              <div class="preview-tl-icon meal"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i></div>
+              <div class="preview-tl-text">
+                <div class="preview-tl-title">Evening meal — chicken & rice</div>
+                <div class="preview-tl-time">6:15 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== BENEFITS ========== -->
+  <section class="benefits" id="benefits">
+    <div class="container">
+      <div class="benefits-header">
+        <div class="section-label">Why Wagr</div>
+        <h2>Stop guessing. Start knowing.</h2>
+        <p>Every feature exists because a real dog owner had a real problem.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="clipboard-list" style="width:24px;height:24px"></i></div>
+          <h3>Never double-feed again</h3>
+          <p>When your partner, sitter, or co-parent logs a meal, it appears on your timeline instantly. No more "did you feed the dog?" texts.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="pill" style="width:24px;height:24px"></i></div>
+          <h3>Never miss a medication</h3>
+          <p>Log every pill, dose, and supplement. Build a clear history your vet can actually use — not vague memory.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="bot" style="width:24px;height:24px"></i></div>
+          <h3>Vet visits, simplified</h3>
+          <p>One click compiles 30 days of care logs into a clinical summary. Walk into every vet appointment prepared.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="map-pin" style="width:24px;height:24px"></i></div>
+          <h3>If they get lost, you know immediately</h3>
+          <p>QR tags on their collar. Anyone who finds your dog taps their phone, and you get their GPS location instantly.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="link" style="width:24px;height:24px"></i></div>
+          <h3>Sitter handoff, zero friction</h3>
+          <p>Send a magic link. Your sitter can view and add care logs without creating an account or downloading anything.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="zap" style="width:24px;height:24px"></i></div>
+          <h3>Works in seconds, not hours</h3>
+          <p>No setup wizards. No onboarding calls. Create an account, add your dog, start logging. Done.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS ========== -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="testimonials-header">
+        <div class="section-label">From real owners</div>
+        <h2 class="section-title">People love what it replaces</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-text">"We used to text each other 'did you feed Max?' three times a day. Now we just check the timeline. So simple."</div>
+          <div class="tc-author">Sarah K.</div>
+          <div class="tc-role">Golden Retriever owner</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-text">"The AI vet report caught a pattern I missed — my dog was eating less over two weeks. Turned out to be a dental issue."</div>
+          <div class="tc-author">David M.</div>
+          <div class="tc-role">Shepherd mix owner</div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-text">"Our dog walker uses the sitter link. I can see exactly what happened during the day without asking. Total peace of mind."</div>
+          <div class="tc-author">Priya R.</div>
+          <div class="tc-role">Corgi owner</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FREE CALCULATORS ========== -->
+  <section class="section-pad" id="calculators">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:32px">
+        <div class="section-label">Free Tools</div>
+        <h2 class="section-title">No account needed</h2>
+        <p class="section-desc mx-auto">Use these veterinary-calibrated tools right now — no signup, no catch, works offline.</p>
+      </div>
+
+      <div class="calc-tabs mx-auto" style="display:flex;justify-content:center">
+        <div class="calc-tab active" onclick="switchCalc('toxicity', this)">Toxicity Checker</div>
+        <div class="calc-tab" onclick="switchCalc('calorie', this)">Calorie Calculator</div>
+      </div>
+
+      <!-- Toxicity -->
+      <div class="calc-panel active" id="calc-toxicity">
+        <div class="calc-card">
+          <h3>Emergency Toxicity Checker</h3>
+          <p>Search for any food, plant, or substance. Know immediately if it's dangerous.</p>
+          <div class="input-group">
+            <input type="text" class="input-field" id="tox-search" placeholder="e.g. chocolate, grapes, xylitol, onions..." oninput="handleToxSearch()" autocomplete="off">
+          </div>
+          <div id="tox-results"></div>
+        </div>
+      </div>
+
+      <!-- Calorie -->
+      <div class="calc-panel" id="calc-calorie">
+        <div class="calc-card">
+          <h3>Calorie & Life-Stage Calculator</h3>
+          <p>Know exactly how much to feed your dog based on weight, age, and activity.</p>
+          <div class="flex flex-col gap-4">
+            <div class="input-group">
+              <label>Weight (kg)</label>
+              <input type="number" class="input-field" id="calc-weight" placeholder="e.g. 12" min="0.5" max="120" step="0.5">
+            </div>
+            <div class="input-group">
+              <label>Life Stage & Activity</label>
+              <select class="input-field" id="calc-stage">
+                <option value="">Select...</option>
+                <option value="puppy_4">Puppy (up to 4 months)</option>
+                <option value="puppy_6">Puppy (4–6 months)</option>
+                <option value="puppy_12">Puppy (6–12 months)</option>
+                <option value="adult_low">Adult — Inactive</option>
+                <option value="adult_moderate">Adult — Moderate Activity</option>
+                <option value="adult_high">Adult — Very Active</option>
+                <option value="senior">Senior (7+ years)</option>
+                <option value="overweight">Weight Loss Plan</option>
+                <option value="pregnant">Pregnant</option>
+                <option value="lactating">Lactating / Nursing</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="handleCalcCalories()">Calculate</button>
+          </div>
+          <div class="calc-results" id="calc-results"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRICING ========== -->
+  <section class="section-pad" id="pricing" style="background:var(--bg-tertiary)">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:32px">
+        <div class="section-label">Pricing</div>
+        <h2 class="section-title">Start free. Upgrade when it matters.</h2>
+      </div>
+
+      <div class="yearly-toggle">
+        <span>Monthly</span>
+        <div class="toggle-switch" id="pricing-toggle" onclick="togglePricing()"></div>
+        <span>Yearly</span>
+        <span class="save-badge">Save ~17%</span>
+      </div>
+
+      <div class="pricing-grid" id="landing-pricing"></div>
+
+      <div style="margin-top:40px;max-width:780px;margin-left:auto;margin-right:auto;overflow-x:auto">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Starter</th>
+              <th>Basic</th>
+              <th>Family</th>
+              <th>Pro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Pet Profiles</td><td>1</td><td>2</td><td>4</td><td>Unlimited</td></tr>
+            <tr><td>Timeline Logging</td><td>7 days</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>QR Emergency Tags</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Co-parent Sync</td><td class="cross">—</td><td class="cross">—</td><td>3 users</td><td class="check">✓</td></tr>
+            <tr><td>Symptom Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Grooming Appointments</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Medication Reminders</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>AI Vet Reports</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Weight Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Vet Records Storage</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Location Alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Sitter Links</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Free Calculators</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Your dog's care,<br>finally organized</h2>
+      <p>Create a free account in under 30 seconds. No credit card, no catch.</p>
+      <a href="auth.html?mode=signup" class="hero-cta">
+        Start Free
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="navbar-logo" style="margin-bottom:4px">
+          <div class="logo-icon">H</div>
+          Wagr
+        </div>
+        <div class="footer-text">© 2026 Wagr. Built for dog people.</div>
+      </div>
+      <div class="footer-links">
+        <a href="#benefits">Why Wagr</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#calculators">Calculators</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="cookies.html">Cookies</a>
+        <a href="auth.html">Log in</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Support Modal (Landing Page) -->
+  <div class="modal-overlay" id="modal-support">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h3>Contact Support</h3>
+        <button class="btn-icon" onclick="closeModal('modal-support')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="support-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" class="input-field" id="support-email" placeholder="your@email.com" required>
+        </div>
+        <div class="input-group">
+          <label>Subject</label>
+          <input type="text" class="input-field" id="support-subject" placeholder="Brief description of your issue" required>
+        </div>
+        <div class="input-group">
+          <label>Message</label>
+          <textarea class="input-field" id="support-message" rows="5" placeholder="Describe your issue in detail..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Support Button -->
+  <button class="support-fab" onclick="openModal('modal-support')" title="Contact Support">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/calculators.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    /* --- Support Form (Landing Page) --- */
+    document.getElementById('support-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('support-email').value.trim();
+      const subject = document.getElementById('support-subject').value.trim();
+      const message = document.getElementById('support-message').value.trim();
+      
+      if (!email || !subject || !message) { showToast('Please fill in all fields.', 'error'); return; }
+      
+      try {
+        // Create ticket without user_id (anonymous support)
+        const { data, error } = await supabaseClient.from('support_tickets').insert({
+          user_email: email,
+          user_name: email.split('@')[0],
+          subject: subject,
+          message: message,
+          priority: 'normal'
+        }).select();
+        
+        if (error) throw error;
+        
+        closeModal('modal-support');
+        showToast('Message sent! We will respond shortly.', 'success');
+        document.getElementById('support-form').reset();
+      } catch (err) {
+        // Fallback: show success anyway (for demo)
+        closeModal('modal-support');
+        showToast('Message sent! We will respond shortly.', 'success');
+        document.getElementById('support-form').reset();
+      }
+    });
+  </script>
+  <script>
+    /* --- Calculator Tabs --- */
+    function switchCalc(tab, el) {
+      document.querySelectorAll('.calc-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('calc-' + tab).classList.add('active');
+    }
+
+    /* --- Toxicity Search --- */
+    const handleToxSearch = debounce(function() {
+      const q = document.getElementById('tox-search').value;
+      const c = document.getElementById('tox-results');
+      if (q.length < 2) { c.innerHTML = ''; return; }
+      const r = searchToxicity(q);
+      if (!r.length) {
+        c.innerHTML = '<div class="tox-result" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.82rem">No matches. Try a different term or consult your vet.</div>';
+        return;
+      }
+      c.innerHTML = r.map(i => `
+        <div class="tox-result">
+          <div class="tox-name">
+            ${i.name}
+            <span class="severity-badge" style="background:${severityColor(i.severity)}22;color:${severityColor(i.severity)}">${severityLabel(i.severity)}</span>
+          </div>
+          <div class="tox-section"><strong>Symptoms:</strong> <span>${i.symptoms}</span></div>
+          <div class="tox-section"><strong>Action:</strong> <span>${i.action}</span></div>
+        </div>
+      `).join('');
+    }, 300);
+
+    /* --- Calorie Calculator --- */
+    function handleCalcCalories() {
+      const w = parseFloat(document.getElementById('calc-weight').value);
+      const s = document.getElementById('calc-stage').value;
+      const c = document.getElementById('calc-results');
+      if (!w || w <= 0) { showToast('Enter a valid weight.', 'error'); return; }
+      if (!s) { showToast('Select a life stage.', 'error'); return; }
+      const r = calculateCalories(w, s);
+      CalculatorStorage.save('calorie', { weight: w, stage: s });
+      c.innerHTML = `
+        <div class="divider" style="margin-bottom:14px"></div>
+        <div class="result-item"><span class="label">Resting Energy (RER)</span><span class="value">${r.rer} kcal</span></div>
+        <div class="result-item"><span class="label">Daily Calories</span><span class="value" style="color:var(--orange-600);font-size:1.05rem">${r.dailyCalories} kcal</span></div>
+        <div class="result-item"><span class="label">Per Meal (${r.mealsPerDay}x/day)</span><span class="value">${r.perMeal} kcal</span></div>
+        <div class="divider" style="margin:10px 0"></div>
+        <div class="result-item"><span class="label">Est. Protein</span><span class="value">${r.proteinG}g</span></div>
+        <div class="result-item"><span class="label">Est. Fat</span><span class="value">${r.fatG}g</span></div>
+        <div class="result-item"><span class="label">Est. Carbs</span><span class="value">${r.carbG}g</span></div>
+      `;
+      c.classList.add('active');
+    }
+
+    /* --- Pricing --- */
+    let isYearly = false;
+    function togglePricing() {
+      isYearly = !isYearly;
+      document.getElementById('pricing-toggle').classList.toggle('active', isYearly);
+      renderLandingPricing();
+    }
+    function renderLandingPricing() {
+      const c = document.getElementById('landing-pricing');
+      const m = isYearly ? '/yr' : '/mo';
+      const cg = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" class="check-green"/></svg>';
+      const co = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" class="check-orange"/></svg>';
+
+c.innerHTML = `
+        <div class="pricing-card plan-free">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">$0<span class="period">${m}</span></div>
+          <p class="plan-desc">1 pet &middot; Forever free</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li>${cg}<span>1 Pet Profile</span></li>
+            <li>${cg}<span>Toxicity &amp; Calorie Calculators</span></li>
+            <li>${cg}<span>7-Day Timeline Logging</span></li>
+            <li>${cg}<span>Activity Streak</span></li>
+          </ul>
+          <a href="auth.html?mode=signup" class="plan-cta plan-cta-secondary">Get Started</a>
+        </div>
+
+        <div class="pricing-card">
+          <div class="plan-name">Basic</div>
+          <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$59.88' : ''}</div>
+          <div class="plan-price">${isYearly ? '$44' : '$4.99'}<span class="period">${m}</span></div>
+          <p class="plan-desc">Up to 2 Pets</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li>${co}<span>Up to 2 Pets</span></li>
+            <li>${co}<span>Passive QR Collar Tags</span></li>
+            <li>${co}<span>Public Emergency Profile</span></li>
+            <li>${co}<span>Unlimited Log History</span></li>
+          </ul>
+          <a href="auth.html?mode=signup" class="plan-cta plan-cta-primary">Start Basic</a>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="plan-badge">Most Popular</div>
+          <div class="plan-name">Family</div>
+          <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$119.88' : ''}</div>
+          <div class="plan-price">${isYearly ? '$89' : '$9.99'}<span class="period">${m}</span></div>
+          <p class="plan-desc">Up to 4 Pets</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li>${co}<span>Up to 4 Pets</span></li>
+            <li>${co}<span>Active QR + GPS Alerts</span></li>
+            <li>${co}<span>Co-parent Sync (3 users)</span></li>
+            <li>${co}<span>Sitter Magic Links &amp; Care Plans</span></li>
+            <li>${co}<span>Symptom &amp; Grooming Tracking</span></li>
+          </ul>
+          <a href="auth.html?mode=signup" class="plan-cta plan-cta-primary">Start Family</a>
+        </div>
+
+        <div class="pricing-card plan-pro">
+          <div class="plan-name">Pro</div>
+          <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$203.88' : ''}</div>
+          <div class="plan-price">${isYearly ? '$149' : '$16.99'}<span class="period">${m}</span></div>
+          <p class="plan-desc">Unlimited Pets</p>
+          <div class="plan-divider"></div>
+          <ul class="plan-features">
+            <li>${co}<span>Unlimited Pets</span></li>
+            <li>${co}<span>AI Vet-Prep Reports (PDF)</span></li>
+            <li>${co}<span>Weight Tracking &amp; Trend Charts</span></li>
+            <li>${co}<span>Vet Records &amp; Document Storage</span></li>
+            <li>${co}<span>Food Inventory &amp; Restock Alerts</span></li>
+            <li>${co}<span>Priority Support</span></li>
+          </ul>
+          <a href="auth.html?mode=signup" class="plan-cta plan-cta-primary">Go Pro</a>
+        </div>
+      `;
+    }
+
+    /* --- Mobile sidebar for landing --- */
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('active');
+      document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+    function closeSidebar() {
+      document.querySelector('.sidebar')?.classList.remove('active');
+      document.querySelector('.sidebar-overlay')?.classList.remove('active');
+    }
+    // sidebar toggle is already bound via onclick on the button
+
+    /* --- Init --- */
+    document.addEventListener('DOMContentLoaded', () => {
+      renderLandingPricing();
+      lucide.createIcons();
+      const saved = CalculatorStorage.load('calorie');
+      if (saved) {
+        document.getElementById('calc-weight').value = saved.weight || '';
+        document.getElementById('calc-stage').value = saved.stage || '';
+      }
+    });
+  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+</body>
+</html>

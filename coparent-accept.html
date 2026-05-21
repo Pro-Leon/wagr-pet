@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accept Co-parent Invite — Wagr</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/globals.css">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
+  <style>
+    .invite-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .invite-card {
+      width: 100%;
+      max-width: 420px;
+    }
+    .invite-card .card {
+      padding: 32px 28px;
+      text-align: center;
+    }
+    .invite-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .invite-card h2 {
+      margin-bottom: 6px;
+    }
+    .invite-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .invite-detail {
+      background: var(--bg-secondary);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    .invite-detail strong {
+      color: var(--orange-600);
+    }
+  </style>
+</head>
+<body>
+  <div class="invite-page">
+    <div class="invite-card">
+      <div class="card">
+        <div class="invite-icon" id="invite-icon"><i data-lucide="dog" style="width:48px;height:48px"></i></div>
+        <h2 id="invite-title">Co-parent Invite</h2>
+        <p id="invite-text">Verifying your invite...</p>
+        <div id="invite-detail" class="invite-detail" style="display:none"></div>
+        <div id="invite-actions">
+          <button class="btn btn-primary w-full" id="invite-accept-btn" onclick="handleAccept()" style="display:none">
+            Accept Invite
+          </button>
+          <a href="auth.html" class="btn btn-primary w-full" id="invite-login-btn" style="display:none">
+            Sign In to Accept
+          </a>
+          <div id="invite-success" style="display:none">
+            <div style="margin-bottom:12px"><i data-lucide="party-popper" style="width:40px;height:40px;color:var(--orange-600)"></i></div>
+            <h3>You're now a co-parent!</h3>
+            <p style="color:var(--text-secondary);margin-bottom:16px" id="invite-success-text"></p>
+            <a href="dashboard.html" class="btn btn-primary w-full">Go to Dashboard</a>
+          </div>
+          <div id="invite-error" style="display:none">
+            <div style="margin-bottom:12px"><i data-lucide="frown" style="width:40px;height:40px;color:var(--text-muted)"></i></div>
+            <h3>Invite not valid</h3>
+            <p style="color:var(--text-secondary);margin-bottom:16px" id="invite-error-text"></p>
+            <a href="dashboard.html" class="btn btn-secondary w-full">Go to Dashboard</a>
+          </div>
+        </div>
+        <div id="invite-loading" style="padding:20px 0">
+          <div style="margin-bottom:8px"><i data-lucide="hourglass" style="width:24px;height:24px"></i></div>
+          <p style="color:var(--text-muted);font-size:0.85rem">Checking invite...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    let inviteToken = null;
+    let invitePetName = null;
+    let inviteOwnerEmail = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try { initSupabase(); lucide.createIcons(); } catch(e) { console.error('Init failed:', e); }
+
+      // Extract token from URL
+      const params = new URLSearchParams(window.location.search);
+      inviteToken = params.get('token');
+
+      if (!inviteToken) {
+        showError('No invite token found in the URL. Check the link you received.');
+        return;
+      }
+
+      // Check if user is logged in
+      const user = await getCurrentUser();
+      if (user) {
+        // User is logged in — show accept button
+        document.getElementById('invite-loading').style.display = 'none';
+        document.getElementById('invite-title').textContent = 'Co-parent Invite';
+        document.getElementById('invite-text').textContent = 'You\'ve been invited to co-parent a pet!';
+        document.getElementById('invite-detail').style.display = 'block';
+        document.getElementById('invite-detail').innerHTML = `
+          Logged in as <strong>${escapeHtml(user.email)}</strong>
+        `;
+        document.getElementById('invite-accept-btn').style.display = 'block';
+      } else {
+        // Not logged in — redirect to auth
+        document.getElementById('invite-loading').style.display = 'none';
+        document.getElementById('invite-title').textContent = 'Sign in to accept';
+        document.getElementById('invite-text').textContent = 'You need a Wagr account to accept this co-parent invite.';
+        document.getElementById('invite-login-btn').style.display = 'block';
+      }
+    });
+
+    async function handleAccept() {
+      const btn = document.getElementById('invite-accept-btn');
+      btn.textContent = 'Accepting...';
+      btn.disabled = true;
+
+      try {
+        const result = await acceptCoparentInvite(inviteToken);
+        document.getElementById('invite-icon').innerHTML = '<i data-lucide="party-popper" style="width:48px;height:48px;color:var(--orange-600)"></i>';
+        document.getElementById('invite-title').textContent = 'Co-parent added!';
+        document.getElementById('invite-text').style.display = 'none';
+        document.getElementById('invite-detail').style.display = 'none';
+        document.getElementById('invite-accept-btn').style.display = 'none';
+        document.getElementById('invite-success').style.display = 'block';
+        lucide.createIcons();
+        document.getElementById('invite-success-text').textContent =
+          `You can now co-parent ${escapeHtml(result.petName)} alongside ${escapeHtml(result.ownerEmail)}.`;
+      } catch (err) {
+        btn.textContent = 'Accept Invite';
+        btn.disabled = false;
+        showError(err.message || 'Could not accept invite. It may have expired or already been used.');
+      }
+    }
+
+    function showError(message) {
+      document.getElementById('invite-loading').style.display = 'none';
+      document.getElementById('invite-title').textContent = 'Invite Error';
+      document.getElementById('invite-text').style.display = 'none';
+      document.getElementById('invite-detail').style.display = 'none';
+      document.getElementById('invite-accept-btn').style.display = 'none';
+      document.getElementById('invite-login-btn').style.display = 'none';
+      document.getElementById('invite-error').style.display = 'block';
+      document.getElementById('invite-error-text').textContent = message;
+    }
+  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+</body>
+</html>

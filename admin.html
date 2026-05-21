@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Wagr</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/globals.css">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
+  <style>
+    .admin-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Admin Nav --- */
+    .admin-topbar {
+      height: 52px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-topbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+    .admin-topbar .logo .mark {
+      width: 24px; height: 24px;
+      background: #dc2626; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.6rem; font-weight: 700;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 16px;
+    }
+    .admin-tab {
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .admin-tab:hover { color: var(--text-primary); }
+    .admin-tab.active {
+      color: var(--text-primary);
+      border-bottom-color: var(--orange-600);
+      font-weight: 600;
+    }
+
+    /* --- Ticket Filters --- */
+    .ticket-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .ticket-filters .btn.active {
+      background: var(--orange-600);
+      color: white;
+      border-color: var(--orange-600);
+    }
+
+    /* --- Ticket Cards --- */
+    .ticket-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .ticket-subject {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .ticket-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .ticket-body {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .ticket-status {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+    .ticket-status.open { background: #fef2f2; color: #dc2626; }
+    .ticket-status.in_progress { background: #fef3c7; color: #d97706; }
+    .ticket-status.resolved { background: #f0fdf4; color: #16a34a; }
+    .ticket-status.closed { background: var(--bg-tertiary); color: var(--text-muted); }
+    .ticket-priority {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+    .ticket-priority.low { background: var(--bg-tertiary); color: var(--text-muted); }
+    .ticket-priority.normal { background: #dbeafe; color: #1d4ed8; }
+    .ticket-priority.high { background: #fef3c7; color: #d97706; }
+    .ticket-priority.urgent { background: #fef2f2; color: #dc2626; }
+    .ticket-response {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 12px;
+    }
+    .ticket-response-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .ticket-response-text {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .ticket-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .ticket-reply-form {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+    }
+    .ticket-reply-form textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      min-height: 80px;
+      margin-bottom: 8px;
+    }
+
+    /* --- Content --- */
+    .admin-body {
+      flex: 1;
+      padding: 24px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .admin-section {
+      display: none;
+    }
+    .admin-section.active {
+      display: block;
+    }
+
+    /* --- Stats Grid --- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .stat-card .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+    .stat-card .stat-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+    .stat-card.accent {
+      border-color: var(--orange-300);
+    }
+    .stat-card.accent .stat-value {
+      color: var(--orange-600);
+    }
+    [data-theme="dark"] .stat-card.accent { border-color: rgba(249,115,22,0.3); }
+    [data-theme="dark"] .stat-card.accent .stat-value { color: var(--orange-400); }
+
+    /* --- Data Table --- */
+    .data-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      background: var(--bg-secondary);
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .data-table th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+    .data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td {
+      background: var(--bg-tertiary);
+    }
+    .data-table .mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* --- Toolbar --- */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .search-input {
+      flex: 1;
+      max-width: 320px;
+      padding: 8px 14px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      color: var(--text-primary);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--orange-500);
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+
+    .filter-select {
+      padding: 8px 32px 8px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      color: var(--text-primary);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23A1A1AA' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+    }
+
+    /* --- Action Buttons in table --- */
+    .action-btns {
+      display: flex;
+      gap: 4px;
+    }
+    .action-btn {
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .action-btn.edit {
+      color: var(--text-secondary);
+      border-color: var(--border-color);
+    }
+    .action-btn.edit:hover {
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+    }
+    .action-btn.upgrade {
+      color: #16a34a;
+      border-color: #bbf7d0;
+    }
+    .action-btn.upgrade:hover {
+      background: #f0fdf4;
+    }
+    .action-btn.downgrade {
+      color: #d97706;
+      border-color: #fde68a;
+    }
+    .action-btn.downgrade:hover {
+      background: #fffbeb;
+    }
+    .action-btn.danger {
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+    .action-btn.danger:hover {
+      background: #fef2f2;
+    }
+    [data-theme="dark"] .action-btn.upgrade:hover { background: rgba(22,163,74,0.1); }
+    [data-theme="dark"] .action-btn.downgrade:hover { background: rgba(217,119,6,0.1); }
+    [data-theme="dark"] .action-btn.danger:hover { background: rgba(220,38,38,0.1); }
+
+    /* --- Tier badge --- */
+    .tier-free { color: var(--text-muted); }
+    .tier-essential { color: #d97706; }
+    .tier-pro { color: #16a34a; }
+
+    /* --- Section header --- */
+    .section-head {
+      margin-bottom: 20px;
+    }
+    .section-head h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .section-head p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    /* --- User Detail Panel --- */
+    .detail-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .detail-item label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+    .detail-item .val {
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    /* --- SQL Console --- */
+    .sql-area {
+      width: 100%;
+      min-height: 120px;
+      padding: 14px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: var(--text-primary);
+      resize: vertical;
+    }
+    .sql-area:focus {
+      outline: none;
+      border-color: var(--orange-500);
+    }
+    .sql-result {
+      margin-top: 16px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      color: var(--text-secondary);
+    }
+
+    /* --- Pagination --- */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .pagination button {
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.78rem;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+    .pagination button:hover {
+      border-color: var(--text-secondary);
+      color: var(--text-primary);
+    }
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .pagination .page-info {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* --- Empty/Loading --- */
+    .table-loading td {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* --- Confirm Banner --- */
+    .confirm-banner {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    [data-theme="dark"] .confirm-banner {
+      background: rgba(220,38,38,0.1);
+      border-color: rgba(220,38,38,0.2);
+    }
+    .confirm-banner span {
+      font-size: 0.82rem;
+      color: #dc2626;
+      font-weight: 500;
+    }
+    [data-theme="dark"] .confirm-banner span { color: #fca5a5; }
+
+    /* --- Mobile --- */
+    @media (max-width: 768px) {
+      .admin-body { padding: 16px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .data-table { font-size: 0.75rem; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar-left { flex-direction: column; }
+      .search-input { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div class="logo">
+        <div class="mark">A</div>
+        Wagr Admin
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:0.78rem;color:var(--text-muted)" id="admin-email"></span>
+        <button class="theme-toggle" onclick="ThemeManager.toggle()" style="width:30px;height:30px"></button>
+        <a href="dashboard.html" class="btn btn-ghost btn-sm">← Dashboard</a>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <div class="admin-tab active" onclick="switchAdminTab('overview')">Overview</div>
+      <div class="admin-tab" onclick="switchAdminTab('users')">Users</div>
+      <div class="admin-tab" onclick="switchAdminTab('pets')">Pets</div>
+      <div class="admin-tab" onclick="switchAdminTab('logs')">Logs</div>
+      <div class="admin-tab" onclick="switchAdminTab('support')">Support</div>
+      <div class="admin-tab" onclick="switchAdminTab('sql')">SQL Console</div>
+    </div>
+
+    <!-- Body -->
+    <div class="admin-body">
+
+      <!-- Overview -->
+      <div class="admin-section active" id="sec-overview">
+        <div class="section-head">
+          <h2>System Overview</h2>
+          <p>Real-time platform metrics.</p>
+        </div>
+        <div class="stats-grid" id="stats-grid"></div>
+
+        <div class="section-head" style="margin-top:32px">
+          <h2>Recent Users</h2>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Tier</th>
+                <th>Pets</th>
+                <th>Logs</th>
+                <th>Joined</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="recent-users-body">
+              <tr class="table-loading"><td colspan="6">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div class="admin-section" id="sec-users">
+        <div class="section-head">
+          <h2>User Management</h2>
+          <p>Search, upgrade, downgrade, or remove user accounts.</p>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input type="text" class="search-input" id="user-search" placeholder="Search by email..." oninput="debounceSearchUsers()">
+            <select class="filter-select" id="user-tier-filter" onchange="loadUsers()">
+              <option value="">All tiers</option>
+              <option value="starter">Starter</option>
+              <option value="basic">Basic</option>
+              <option value="family">Family</option>
+              <option value="pro">Pro</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Tier</th>
+                <th>Admin</th>
+                <th>Pets</th>
+                <th>Logs</th>
+                <th>Joined</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-body">
+              <tr class="table-loading"><td colspan="7">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="users-pagination"></div>
+
+        <!-- User Detail (shown on click) -->
+        <div class="detail-panel" id="user-detail" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <h3 style="font-size:0.95rem;font-weight:600" id="detail-user-title">User Detail</h3>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('user-detail').style.display='none'">Close</button>
+          </div>
+          <div class="detail-grid" id="detail-user-info"></div>
+          <div style="margin-top:20px">
+            <h4 style="font-size:0.82rem;font-weight:600;margin-bottom:10px">Pets</h4>
+            <div id="detail-user-pets"></div>
+          </div>
+          <div style="margin-top:20px">
+            <h4 style="font-size:0.82rem;font-weight:600;margin-bottom:10px">Recent Logs</h4>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead><tr><th>Type</th><th>Title</th><th>Notes</th><th>Date</th></tr></thead>
+                <tbody id="detail-user-logs"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pets -->
+      <div class="admin-section" id="sec-pets">
+        <div class="section-head">
+          <h2>All Pets</h2>
+          <p>Browse and manage all pet profiles on the platform.</p>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input type="text" class="search-input" id="pet-search" placeholder="Search by name or owner..." oninput="debounceSearchPets()">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadPets()">Refresh</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Breed</th>
+                <th>Weight</th>
+                <th>Owner</th>
+                <th>Logs</th>
+                <th>Medical Flags</th>
+                <th>Created</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pets-body">
+              <tr class="table-loading"><td colspan="8">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pets-pagination"></div>
+      </div>
+
+      <!-- Logs -->
+      <div class="admin-section" id="sec-logs">
+        <div class="section-head">
+          <h2>All Logs</h2>
+          <p>Platform-wide activity feed across all users.</p>
+        </div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <select class="filter-select" id="log-type-filter" onchange="loadLogs()">
+              <option value="">All types</option>
+              <option value="meal">Meal</option>
+              <option value="medication">Medication</option>
+              <option value="bathroom">Bathroom</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="loadLogs()">Refresh</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Notes</th>
+                <th>Pet</th>
+                <th>Owner</th>
+                <th>Date</th>
+                <th style="text-align:right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="logs-body">
+              <tr class="table-loading"><td colspan="7">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="logs-pagination"></div>
+      </div>
+
+      <!-- Support Tickets -->
+      <div class="admin-section" id="sec-support">
+        <div class="section-head">
+          <h2>Support Tickets</h2>
+          <p>Respond to user inquiries and issues.</p>
+        </div>
+        <div class="ticket-filters">
+          <button class="btn btn-sm btn-secondary active" onclick="filterTickets('all', this)">All</button>
+          <button class="btn btn-sm btn-secondary" onclick="filterTickets('open', this)">Open</button>
+          <button class="btn btn-sm btn-secondary" onclick="filterTickets('in_progress', this)">In Progress</button>
+          <button class="btn btn-sm btn-secondary" onclick="filterTickets('resolved', this)">Resolved</button>
+          <button class="btn btn-sm btn-secondary" onclick="filterTickets('closed', this)">Closed</button>
+        </div>
+        <div id="tickets-list"></div>
+        <div class="pagination" id="tickets-pagination"></div>
+      </div>
+
+      <!-- SQL Console -->
+      <div class="admin-section" id="sec-sql">
+        <div class="section-head">
+          <h2>SQL Console</h2>
+          <p>Run read-only queries against the database. Only SELECT statements are allowed.</p>
+        </div>
+        <textarea class="sql-area" id="sql-input" placeholder="SELECT * FROM public.profiles LIMIT 10;" rows="5"></textarea>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="runSQL()">Run Query</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('sql-input').value='';document.getElementById('sql-result').textContent=''">Clear</button>
+        </div>
+        <div class="sql-result" id="sql-result" style="display:none"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modals -->
+
+  <!-- Tier Change Confirm -->
+  <div class="modal-overlay" id="modal-tier">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="tier-modal-title">Change Tier</h3>
+        <button class="btn-icon" onclick="closeModal('modal-tier')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px" id="tier-modal-desc"></p>
+      <div class="input-group" style="margin-bottom:16px">
+        <label>New Tier</label>
+        <select class="input-field" id="tier-modal-select">
+          <option value="starter">Starter</option>
+          <option value="basic">Basic</option>
+          <option value="family">Family</option>
+          <option value="pro">Pro</option>
+        </select>
+      </div>
+      <div class="flex gap-2" style="justify-content:flex-end">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-tier')">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="tier-modal-confirm">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm -->
+  <div class="modal-overlay" id="modal-delete">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button class="btn-icon" onclick="closeModal('modal-delete')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px" id="delete-modal-desc"></p>
+      <div class="flex gap-2" style="justify-content:flex-end">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('modal-delete')">Cancel</button>
+        <button class="btn btn-sm" id="delete-modal-confirm" style="background:#dc2626;color:#fff">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Pet -->
+  <div class="modal-overlay" id="modal-edit-pet">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Pet</h3>
+        <button class="btn-icon" onclick="closeModal('modal-edit-pet')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="admin-edit-pet-form" class="flex flex-col gap-4">
+        <input type="hidden" id="edit-pet-id">
+        <div class="input-group">
+          <label>Name</label>
+          <input type="text" class="input-field" id="edit-pet-name">
+        </div>
+        <div class="input-group">
+          <label>Breed</label>
+          <input type="text" class="input-field" id="edit-pet-breed">
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Weight (kg)</label>
+            <input type="number" class="input-field" id="edit-pet-weight" step="0.5">
+          </div>
+          <div class="input-group">
+            <label>Birth Date</label>
+            <input type="date" class="input-field" id="edit-pet-birth">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Medical Flags</label>
+          <input type="text" class="input-field" id="edit-pet-flags">
+        </div>
+        <div class="flex gap-2" style="justify-content:flex-end">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modal-edit-pet')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.admin-body').innerHTML = '<div style="text-align:center;padding:48px"><h3>Could not load Supabase SDK</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
+      });
+    }
+  </script>
+  <script src="js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    /* ========================================
+       Wagr — Admin Dashboard
+       ======================================== */
+
+    const ADMIN_PAGE_SIZE = 50;
+    let currentUserPage = 0;
+    let currentPetPage = 0;
+    let currentLogPage = 0;
+
+    /* --- Init --- */
+    document.addEventListener('DOMContentLoaded', async () => {
+      try { initSupabase(); } catch(e) { console.error('Init failed:', e); }
+
+      const user = await getCurrentUser();
+      if (!user) { window.location.href = 'auth.html'; return; }
+
+      AppState.setUser(user);
+      document.getElementById('admin-email').textContent = user.email;
+
+      // Verify admin
+      let isAdmin = false;
+      try {
+        const profile = await getProfile(user.id);
+        if (profile && profile.is_admin) {
+          isAdmin = true;
+        } else if (profile && !profile.is_admin) {
+          document.querySelector('.admin-body').innerHTML = `
+            <div style="text-align:center;padding:64px 24px">
+              <div style="margin-bottom:16px"><i data-lucide="lock" style="width:32px;height:32px"></i></div>
+              <h3 style="margin-bottom:8px">Not an Admin</h3>
+              <p style="color:var(--text-secondary);font-size:0.85rem;max-width:400px;margin:0 auto">Your account (${escapeHtml(user.email)}) does not have admin access.</p>
+              <p style="color:var(--text-muted);font-size:0.78rem;margin-top:12px">Run this SQL in Supabase SQL Editor to gain access:<br><code style="background:var(--bg-tertiary);padding:4px 8px;border-radius:4px;font-size:0.72rem">UPDATE profiles SET is_admin = true WHERE email = '${escapeHtml(user.email)}';</code></p>
+              <a href="dashboard.html" class="btn btn-primary btn-sm" style="margin-top:16px">Back to Dashboard</a>
+            </div>`;
+          lucide.createIcons();
+          return;
+        }
+      } catch (e) {
+        // Profile might not exist — try to create it
+        console.warn('Profile check failed:', e.message);
+        try {
+          await db().from('profiles').insert({ id: user.id, email: user.email, tier: 'starter', is_admin: false }).select().single();
+          showToast('Profile created. You need admin access — see instructions below.', 'info');
+        } catch (ie) {}
+        document.querySelector('.admin-body').innerHTML = `
+          <div style="text-align:center;padding:64px 24px">
+            <div style="margin-bottom:16px"><i data-lucide="triangle-alert" style="width:32px;height:32px"></i></div>
+            <h3 style="margin-bottom:8px">Setup Required</h3>
+            <p style="color:var(--text-secondary);font-size:0.85rem;max-width:420px;margin:0 auto">Your profile exists but the admin setup SQL may not have been run yet.</p>
+            <div style="background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;padding:16px;margin:20px auto;max-width:500px;text-align:left">
+              <p style="font-size:0.78rem;font-weight:600;margin-bottom:8px">Run this in Supabase → SQL Editor:</p>
+              <code style="font-size:0.72rem;color:var(--orange-600);word-break:break-all">UPDATE profiles SET is_admin = true, tier = 'pro' WHERE email = '${escapeHtml(user.email)}';</code>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="location.reload()" style="margin-top:8px">Retry After Running SQL</button>
+          </div>`;
+        lucide.createIcons();
+      }
+
+      if (!isAdmin) return;
+      showToast('Admin access verified', 'success');
+
+      loadOverview();
+    });
+
+    /* --- Tab Switching --- */
+    function switchAdminTab(tab) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('sec-' + tab).classList.add('active');
+
+      if (tab === 'overview') loadOverview();
+      if (tab === 'users') loadUsers();
+      if (tab === 'pets') loadPets();
+      if (tab === 'logs') loadLogs();
+      if (tab === 'support') loadSupportTickets();
+    }
+
+    /* ========================================
+       OVERVIEW
+       ======================================== */
+    async function loadOverview() {
+      const grid = document.getElementById('stats-grid');
+      grid.innerHTML = '<div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Loading...</div></div>'.repeat(6);
+
+      try {
+        const { data, error } = await db().rpc('admin_get_stats');
+        if (error) throw error;
+        const s = data;
+
+        grid.innerHTML = `
+          <div class="stat-card accent">
+            <div class="stat-value">${s.total_users}</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.total_pets}</div>
+            <div class="stat-label">Total Pets</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.total_logs}</div>
+            <div class="stat-label">Total Logs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.free_users}</div>
+            <div class="stat-label">Free Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#d97706">${s.essential_users}</div>
+            <div class="stat-label">Essential Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#16a34a">${s.pro_users}</div>
+            <div class="stat-label">Pro Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.logs_today}</div>
+            <div class="stat-label">Logs Today</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.logs_7d}</div>
+            <div class="stat-label">Logs (7d)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.logs_30d}</div>
+            <div class="stat-label">Logs (30d)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.new_users_7d}</div>
+            <div class="stat-label">New Users (7d)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.new_users_30d}</div>
+            <div class="stat-label">New Users (30d)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${s.pets_with_sitter_token}</div>
+            <div class="stat-label">Sitter Links Active</div>
+          </div>
+        `;
+      } catch (err) {
+        grid.innerHTML = `<div class="stat-card" style="grid-column:1/-1"><p style="color:var(--text-secondary);font-size:0.85rem">Could not load stats: ${escapeHtml(err.message)}</p></div>`;
+      }
+
+      // Recent users
+      try {
+        const { data, error } = await db().rpc('admin_list_users', { page_offset: 0, page_limit: 10 });
+        if (error) throw error;
+        renderUsersTable(data || [], 'recent-users-body', false);
+      } catch (err) {
+        document.getElementById('recent-users-body').innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-muted)">${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+
+    /* ========================================
+       USERS
+       ======================================== */
+    async function loadUsers() {
+      const body = document.getElementById('users-body');
+      body.innerHTML = '<tr class="table-loading"><td colspan="7">Loading...</td></tr>';
+
+      const search = document.getElementById('user-search')?.value || '';
+      const tierFilter = document.getElementById('user-tier-filter')?.value || '';
+
+      try {
+        const { data, error } = await db().rpc('admin_list_users', {
+          search_term: search,
+          page_offset: currentUserPage * ADMIN_PAGE_SIZE,
+          page_limit: ADMIN_PAGE_SIZE
+        });
+        if (error) throw error;
+
+        let users = data || [];
+        if (tierFilter) users = users.filter(u => u.tier === tierFilter);
+
+        renderUsersTable(users, 'users-body', true);
+        renderPagination('users-pagination', currentUserPage, users.length < ADMIN_PAGE_SIZE, () => {
+          currentUserPage++;
+          loadUsers();
+        }, () => {
+          currentUserPage = Math.max(0, currentUserPage - 1);
+          loadUsers();
+        });
+      } catch (err) {
+        body.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+
+    function renderUsersTable(users, bodyId, showActions) {
+      const body = document.getElementById(bodyId);
+      if (!users || users.length === 0) {
+        body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px">No users found.</td></tr>';
+        return;
+      }
+
+      body.innerHTML = users.map(u => `
+        <tr>
+          <td style="font-weight:500">${escapeHtml(u.email)}</td>
+          <td><span class="tier-${u.tier}" style="font-weight:500;text-transform:capitalize">${u.tier}</span></td>
+          <td>${u.is_admin ? '<span style="color:#dc2626;font-weight:600;font-size:0.75rem">YES</span>' : '—'}</td>
+          <td>${u.pet_count}</td>
+          <td>${u.log_count}</td>
+          <td class="mono">${new Date(u.created_at).toLocaleDateString()}</td>
+          ${showActions ? `
+          <td style="text-align:right">
+            <div class="action-btns" style="justify-content:flex-end">
+              <button class="action-btn edit" onclick="viewUserDetail('${u.id}')">View</button>
+              <button class="action-btn upgrade" onclick="openTierModal('${u.id}','${u.email}','${u.tier}')">Tier</button>
+              ${!u.is_admin ? `<button class="action-btn danger" onclick="openDeleteModal('user','${u.id}','${u.email}')">Delete</button>` : ''}
+            </div>
+          </td>` : ''}
+        </tr>
+      `).join('');
+    }
+
+    const debounceSearchUsers = debounce(() => { currentUserPage = 0; loadUsers(); }, 350);
+
+    /* --- User Detail --- */
+    async function viewUserDetail(userId) {
+      const panel = document.getElementById('user-detail');
+      const info = document.getElementById('detail-user-info');
+      const petsDiv = document.getElementById('detail-user-pets');
+      const logsBody = document.getElementById('detail-user-logs');
+
+      panel.style.display = 'block';
+      info.innerHTML = '<div style="color:var(--text-muted)">Loading...</div>';
+      petsDiv.innerHTML = '';
+      logsBody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted)">Loading...</td></tr>';
+
+      // User info
+      try {
+        const { data, error } = await db().rpc('admin_list_users', { search_term: '', page_offset: 0, page_limit: 1 });
+        // Better: direct query
+        const { data: profile } = await db().from('profiles').select('*').eq('id', userId).single();
+        if (profile) {
+          document.getElementById('detail-user-title').textContent = profile.email;
+          info.innerHTML = `
+            <div class="detail-item"><label>Email</label><div class="val">${escapeHtml(profile.email)}</div></div>
+            <div class="detail-item"><label>Tier</label><div class="val tier-${profile.tier}" style="text-transform:capitalize">${profile.tier}</div></div>
+            <div class="detail-item"><label>Admin</label><div class="val">${profile.is_admin ? 'Yes' : 'No'}</div></div>
+            <div class="detail-item"><label>Paystack Code</label><div class="val" style="font-size:0.8rem;color:var(--text-secondary)">${profile.paystack_customer_code || '—'}</div></div>
+            <div class="detail-item"><label>Joined</label><div class="val">${new Date(profile.created_at).toLocaleString()}</div></div>
+            <div class="detail-item"><label>User ID</label><div class="val" style="font-size:0.75rem;font-family:monospace">${profile.id}</div></div>
+          `;
+        }
+      } catch (e) {
+        info.innerHTML = `<div style="color:#dc2626">${escapeHtml(e.message)}</div>`;
+      }
+
+      // Pets
+      try {
+        const { data: pets } = await db().rpc('admin_get_user_pets', { target_user_id: userId });
+        if (pets && pets.length > 0) {
+          petsDiv.innerHTML = pets.map(p => `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-subtle)">
+              <div>
+                <span style="font-weight:500;font-size:0.85rem">${escapeHtml(p.name)}</span>
+                <span style="font-size:0.78rem;color:var(--text-secondary);margin-left:8px">${p.breed || ''}${p.weight_kg ? ' · ' + p.weight_kg + 'kg' : ''}</span>
+              </div>
+              <span style="font-size:0.75rem;color:var(--text-muted)">${p.log_count} logs</span>
+            </div>
+          `).join('');
+        } else {
+          petsDiv.innerHTML = '<p style="font-size:0.82rem;color:var(--text-muted)">No pets.</p>';
+        }
+      } catch (e) { petsDiv.innerHTML = `<p style="color:#dc2626;font-size:0.82rem">${escapeHtml(e.message)}</p>`; }
+
+      // Logs
+      try {
+        const { data: logs } = await db().rpc('admin_get_user_logs', { target_user_id: userId, page_limit: 25 });
+        if (logs && logs.length > 0) {
+          logsBody.innerHTML = logs.map(l => `
+            <tr>
+              <td>${getLogIcon(l.log_type)} ${l.log_type}</td>
+              <td>${escapeHtml(l.title)}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(l.notes || '—')}</td>
+              <td class="mono">${new Date(l.created_at).toLocaleString()}</td>
+            </tr>
+          `).join('');
+          lucide.createIcons();
+        } else {
+          logsBody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted)">No logs.</td></tr>';
+        }
+      } catch (e) { logsBody.innerHTML = `<tr><td colspan="4" style="color:#dc2626">${escapeHtml(e.message)}</td></tr>`; }
+    }
+
+    /* --- Tier Change --- */
+    function openTierModal(userId, email, currentTier) {
+      document.getElementById('tier-modal-title').textContent = `Change Tier — ${email}`;
+      document.getElementById('tier-modal-desc').textContent = `Current tier: ${currentTier}. Select a new tier below.`;
+      document.getElementById('tier-modal-select').value = currentTier;
+      openModal('modal-tier');
+
+      document.getElementById('tier-modal-confirm').onclick = async () => {
+        const newTier = document.getElementById('tier-modal-select').value;
+        try {
+          const { data, error } = await db().rpc('admin_set_user_tier', {
+            target_user_id: userId,
+            new_tier: newTier
+          });
+          if (error) throw error;
+          showToast(`Tier updated to ${newTier}.`, 'success');
+          closeModal('modal-tier');
+          loadUsers();
+          loadOverview();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      };
+    }
+
+    /* ========================================
+       PETS
+       ======================================== */
+    async function loadPets() {
+      const body = document.getElementById('pets-body');
+      body.innerHTML = '<tr class="table-loading"><td colspan="8">Loading...</td></tr>';
+
+      const search = document.getElementById('pet-search')?.value || '';
+
+      try {
+        const { data, error } = await db().rpc('admin_list_pets', {
+          search_term: search,
+          page_offset: currentPetPage * ADMIN_PAGE_SIZE,
+          page_limit: ADMIN_PAGE_SIZE
+        });
+        if (error) throw error;
+        const pets = data || [];
+
+        body.innerHTML = pets.length === 0
+          ? '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:24px">No pets found.</td></tr>'
+          : pets.map(p => `
+            <tr>
+              <td style="font-weight:500">${escapeHtml(p.name)}</td>
+              <td>${escapeHtml(p.breed || '—')}</td>
+              <td>${p.weight_kg ? p.weight_kg + 'kg' : '—'}</td>
+              <td style="font-size:0.78rem">${escapeHtml(p.owner_email)}</td>
+              <td>${p.log_count}</td>
+              <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.78rem">${escapeHtml(p.medical_flags || '—')}</td>
+              <td class="mono">${new Date(p.created_at).toLocaleDateString()}</td>
+              <td style="text-align:right">
+                <div class="action-btns" style="justify-content:flex-end">
+                  <button class="action-btn edit" onclick="openEditPetModal('${p.id}','${escapeHtml(p.name)}','${escapeHtml(p.breed || '')}',${p.weight_kg || 'null'},'${p.birth_date || ''}','${escapeHtml(p.medical_flags || '')}')">Edit</button>
+                  <button class="action-btn danger" onclick="openDeleteModal('pet','${p.id}','${escapeHtml(p.name)}')">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+
+        renderPagination('pets-pagination', currentPetPage, pets.length < ADMIN_PAGE_SIZE, () => {
+          currentPetPage++;
+          loadPets();
+        }, () => {
+          currentPetPage = Math.max(0, currentPetPage - 1);
+          loadPets();
+        });
+      } catch (err) {
+        body.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-muted)">${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+
+    const debounceSearchPets = debounce(() => { currentPetPage = 0; loadPets(); }, 350);
+
+    function openEditPetModal(petId, name, breed, weight, birth, flags) {
+      document.getElementById('edit-pet-id').value = petId;
+      document.getElementById('edit-pet-name').value = name;
+      document.getElementById('edit-pet-breed').value = breed;
+      document.getElementById('edit-pet-weight').value = weight || '';
+      document.getElementById('edit-pet-birth').value = birth || '';
+      document.getElementById('edit-pet-flags').value = flags;
+      openModal('modal-edit-pet');
+    }
+
+    document.getElementById('admin-edit-pet-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const petId = document.getElementById('edit-pet-id').value;
+      try {
+        await db().from('pets').update({
+          name: document.getElementById('edit-pet-name').value.trim(),
+          breed: document.getElementById('edit-pet-breed').value.trim(),
+          weight_kg: parseFloat(document.getElementById('edit-pet-weight').value) || null,
+          birth_date: document.getElementById('edit-pet-birth').value || null,
+          medical_flags: document.getElementById('edit-pet-flags').value.trim()
+        }).eq('id', petId);
+        showToast('Pet updated.', 'success');
+        closeModal('modal-edit-pet');
+        loadPets();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    });
+
+    /* ========================================
+       LOGS
+       ======================================== */
+    async function loadLogs() {
+      const body = document.getElementById('logs-body');
+      body.innerHTML = '<tr class="table-loading"><td colspan="7">Loading...</td></tr>';
+
+      const filterType = document.getElementById('log-type-filter')?.value || '';
+
+      try {
+        const { data, error } = await db().rpc('admin_list_logs', {
+          filter_type: filterType,
+          page_offset: currentLogPage * ADMIN_PAGE_SIZE,
+          page_limit: ADMIN_PAGE_SIZE
+        });
+        if (error) throw error;
+        const logs = data || [];
+
+        body.innerHTML = logs.length === 0
+          ? '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px">No logs found.</td></tr>'
+          : logs.map(l => `
+            <tr>
+              <td>${getLogIcon(l.log_type)} ${l.log_type}</td>
+              <td style="font-weight:500">${escapeHtml(l.title)}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(l.notes || '—')}</td>
+              <td style="font-size:0.82rem">${escapeHtml(l.pet_name)}</td>
+              <td style="font-size:0.78rem">${escapeHtml(l.owner_email)}</td>
+              <td class="mono">${new Date(l.created_at).toLocaleString()}</td>
+              <td style="text-align:right">
+                <button class="action-btn danger" onclick="openDeleteModal('log','${l.id}','${escapeHtml(l.title)}')">Delete</button>
+              </td>
+            </tr>
+          `).join('');
+        lucide.createIcons();
+
+        renderPagination('logs-pagination', currentLogPage, logs.length < ADMIN_PAGE_SIZE, () => {
+          currentLogPage++;
+          loadLogs();
+        }, () => {
+          currentLogPage = Math.max(0, currentLogPage - 1);
+          loadLogs();
+        });
+      } catch (err) {
+        body.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+
+    /* ========================================
+       SQL CONSOLE
+       ======================================== */
+    async function runSQL() {
+      const input = document.getElementById('sql-input').value.trim();
+      const resultEl = document.getElementById('sql-result');
+      resultEl.style.display = 'block';
+      resultEl.textContent = 'Running...';
+
+      if (!input) { resultEl.textContent = 'Enter a query.'; return; }
+      if (!input.toUpperCase().startsWith('SELECT')) {
+        resultEl.textContent = 'Only SELECT queries are allowed for safety.';
+        return;
+      }
+
+      try {
+        const { data, error } = await db().rpc('admin_get_stats');
+        // We can't run raw SQL via the client SDK safely.
+        // Use the REST API with PostgREST filter syntax as a workaround
+        // For a real SQL console, you'd need an Edge Function
+
+        // Let's try using the PostgREST endpoint directly
+        const url = `${SUPABASE_URL}/rest/v1/rpc/admin_get_stats`;
+        resultEl.textContent = 'Note: Raw SQL execution requires a Supabase Edge Function.\n\nFor now, use the Users, Pets, and Logs tabs to manage data.\n\nTo run raw SQL, go to Supabase Dashboard → SQL Editor.';
+
+      } catch (err) {
+        resultEl.textContent = `Error: ${err.message}`;
+}
+    }
+
+    /* ========================================
+       SUPPORT TICKETS
+       ======================================== */
+    let currentTicketFilter = 'all';
+
+    async function loadSupportTickets() {
+      const container = document.getElementById('tickets-list');
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Loading tickets...</div>';
+
+      try {
+        let query = db().from('support_tickets').select('*').order('created_at', { ascending: false });
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        const tickets = data || [];
+
+        // Filter by status
+        let filtered = tickets;
+        if (currentTicketFilter !== 'all') {
+          filtered = tickets.filter(t => t.status === currentTicketFilter);
+        }
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted)">No tickets found.</div>';
+          return;
+        }
+
+        container.innerHTML = filtered.map(t => `
+          <div class="ticket-card">
+            <div class="ticket-header">
+              <div>
+                <div class="ticket-subject">${escapeHtml(t.subject)}</div>
+                <div class="ticket-meta">From: ${escapeHtml(t.user_email)} | ${t.user_name || 'Anonymous'} | ${new Date(t.created_at).toLocaleString()}</div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span class="ticket-priority ${t.priority}">${t.priority}</span>
+                <span class="ticket-status ${t.status}">${t.status.replace('_', ' ')}</span>
+              </div>
+            </div>
+            <div class="ticket-body">${escapeHtml(t.message)}</div>
+            ${t.admin_response ? `
+              <div class="ticket-response">
+                <div class="ticket-response-label">Admin Response (${t.admin_responded_at ? new Date(t.admin_responded_at).toLocaleString() : ''})</div>
+                <div class="ticket-response-text">${escapeHtml(t.admin_response)}</div>
+              </div>
+            ` : ''}
+            <div class="ticket-actions">
+              ${t.status !== 'closed' ? `
+                <button class="btn btn-sm btn-secondary" onclick="showReplyForm('${t.id}')">${t.admin_response ? 'Update' : 'Reply'}</button>
+              ` : ''}
+              <button class="btn btn-sm btn-ghost" onclick="closeTicketAdmin('${t.id}')" ${t.status === 'closed' ? 'disabled' : ''}>Close</button>
+              <button class="btn btn-sm btn-ghost danger" onclick="deleteTicket('${t.id}')">Delete</button>
+            </div>
+            <div class="ticket-reply-form" id="reply-${t.id}" style="display:none">
+              <textarea id="reply-text-${t.id}" placeholder="Type your response..."></textarea>
+              <button class="btn btn-primary btn-sm" onclick="submitReply('${t.id}')">Send Response</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<div style="padding:20px;text-align:center;color:#dc2626">Error loading tickets.</div>';
+        console.error(err);
+      }
+    }
+
+    function filterTickets(filter, btn) {
+      currentTicketFilter = filter;
+      document.querySelectorAll('.ticket-filters .btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadSupportTickets();
+    }
+
+    function showReplyForm(ticketId) {
+      document.querySelectorAll('.ticket-reply-form').forEach(f => f.style.display = 'none');
+      document.getElementById('reply-' + ticketId).style.display = 'block';
+    }
+
+    async function submitReply(ticketId) {
+      const text = document.getElementById('reply-text-' + ticketId).value.trim();
+      if (!text) { showToast('Please enter a response.', 'error'); return; }
+
+      try {
+        const { data } = await db().from('support_tickets').update({
+          admin_response: text,
+          admin_responded_at: new Date().toISOString(),
+          status: 'in_progress'
+        }).eq('id', ticketId).select().single();
+
+        showToast('Response sent!', 'success');
+        loadSupportTickets();
+
+        // Send email notification to ticket creator
+        if (data?.user_email) {
+          try {
+            await fetch((window.location.origin || 'https://houndos.app') + '/api/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ type: 'support_reply', to: data.user_email, toName: data.user_name, message: text }),
+            });
+          } catch (e) { console.log('Support reply email not sent:', e.message); }
+        }
+      } catch (err) {
+        showToast('Could not send response.', 'error');
+      }
+    }
+
+    async function closeTicketAdmin(ticketId) {
+      if (!confirm('Close this ticket?')) return;
+      try {
+        await db().from('support_tickets').update({ status: 'closed' }).eq('id', ticketId);
+        showToast('Ticket closed.', 'success');
+        loadSupportTickets();
+      } catch (err) {
+        showToast('Could not close ticket.', 'error');
+      }
+    }
+
+    async function deleteTicket(ticketId) {
+      if (!confirm('Delete this ticket? This cannot be undone.')) return;
+      try {
+        await db().from('support_tickets').delete().eq('id', ticketId);
+        showToast('Ticket deleted.', 'success');
+        loadSupportTickets();
+      } catch (err) {
+        showToast('Could not delete ticket.', 'error');
+      }
+    }
+
+    /* ========================================
+       PAGINATION
+       ======================================== */
+    function openDeleteModal(type, id, name) {
+      const descs = {
+        user: `This will permanently delete the user "${name}", all their pets, and all logs. This cannot be undone.`,
+        pet: `This will permanently delete the pet "${name}" and all its logs. This cannot be undone.`,
+        log: `This will permanently delete this log entry "${name}". This cannot be undone.`
+      };
+      document.getElementById('delete-modal-desc').textContent = descs[type];
+      openModal('modal-delete');
+
+      document.getElementById('delete-modal-confirm').onclick = async () => {
+        try {
+          if (type === 'user') {
+            const { error } = await db().rpc('admin_delete_user', { target_user_id: id });
+            if (error) throw error;
+            showToast('User deleted.', 'success');
+            loadUsers();
+          } else if (type === 'pet') {
+            const { error } = await db().from('pets').delete().eq('id', id);
+            if (error) throw error;
+            showToast('Pet deleted.', 'success');
+            loadPets();
+          } else if (type === 'log') {
+            const { error } = await db().from('pet_logs').delete().eq('id', id);
+            if (error) throw error;
+            showToast('Log deleted.', 'success');
+            loadLogs();
+          }
+          closeModal('modal-delete');
+          loadOverview();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      };
+    }
+
+    /* ========================================
+       PAGINATION
+       ======================================== */
+    function renderPagination(containerId, currentPage, isLastPage, onNext, onPrev) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = `
+        <button onclick="arguments[0].handler()" ${currentPage === 0 ? 'disabled' : ''} id="pg-prev">Previous</button>
+        <span class="page-info">Page ${currentPage + 1}</span>
+        <button onclick="arguments[0].handler()" ${isLastPage ? 'disabled' : ''} id="pg-next">Next</button>
+      `;
+      document.getElementById('pg-prev').addEventListener('click', onPrev);
+      document.getElementById('pg-next').addEventListener('click', onNext);
+    }
+
+    /* --- Theme & Init --- */
+    document.addEventListener('DOMContentLoaded', () => {
+      ThemeManager.init();
+      lucide.createIcons();
+    });
+  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+</body>
+</html>

@@ -1,0 +1,3574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Wagr</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="css/globals.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
+  <style>
+    /* --- Greeting --- */
+    .greeting { margin-bottom: 24px; }
+    .greeting h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.02em; }
+    .greeting p { font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px; }
+
+    /* --- Summary Cards --- */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .summary-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .summary-card .sc-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .summary-card .sc-icon.orange { background: var(--orange-50); }
+    [data-theme="dark"] .summary-card .sc-icon.orange { background: rgba(249,115,22,0.12); }
+    .summary-card .sc-icon.green { background: #f0fdf4; }
+    [data-theme="dark"] .summary-card .sc-icon.green { background: rgba(22,163,74,0.12); }
+    .summary-card .sc-icon.blue { background: #eff6ff; }
+    [data-theme="dark"] .summary-card .sc-icon.blue { background: rgba(59,130,246,0.12); }
+    .summary-card .sc-text h4 { font-size: 0.78rem; font-weight: 600; margin-bottom: 2px; }
+    .summary-card .sc-text p { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* --- Streak --- */
+    .streak-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      margin-bottom: 20px;
+    }
+    .streak-card .streak-emoji { display: flex; }
+    .streak-card .streak-text { font-size: 0.82rem; font-weight: 500; }
+    .streak-card .streak-text span { color: var(--orange-600); font-weight: 700; }
+    [data-theme="dark"] .streak-card .streak-text span { color: var(--orange-400); }
+
+    /* --- Empty Welcome --- */
+    .welcome-state {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .welcome-state .welcome-emoji { margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
+    .welcome-state h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+    .welcome-state p { font-size: 0.85rem; color: var(--text-secondary); max-width: 320px; margin: 0 auto 20px; line-height: 1.6; }
+
+    /* --- Locked Feature Cards --- */
+    .locked-feature {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .locked-feature .lock-emoji { margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
+    .locked-feature h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+    .locked-feature p { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; max-width: 340px; margin-left: auto; margin-right: auto; line-height: 1.55; }
+    .locked-feature .perks { text-align: left; max-width: 280px; margin: 0 auto 20px; }
+    .locked-feature .perks li {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8rem; color: var(--text-secondary); padding: 5px 0;
+    }
+    .locked-feature .perks li svg { width: 14px; height: 14px; stroke: var(--orange-500); fill: none; stroke-width: 2.5; flex-shrink: 0; }
+
+    /* --- AI Data Sources --- */
+    .ai-data-sources {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 500px) {
+      .ai-data-sources { grid-template-columns: 1fr; }
+    }
+    .ai-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      transition: background 0.15s;
+    }
+    .ai-checkbox:hover { background: var(--bg-tertiary); }
+    .ai-checkbox input { width: 16px; height: 16px; cursor: pointer; }
+    .ai-checkbox span { flex: 1; }
+
+    /* --- AI Teaser --- */
+    .ai-teaser {
+      position: relative;
+      overflow: hidden;
+    }
+    .ai-teaser .ai-sample {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      position: relative;
+    }
+    .ai-teaser .ai-blur {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60%;
+      background: linear-gradient(to bottom, transparent, var(--bg-secondary) 70%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 20px;
+    }
+
+    /* --- Upgrade nudge in sidebar --- */
+    .sidebar-upgrade {
+      margin: 8px;
+      padding: 14px;
+      background: var(--orange-50);
+      border: 1px solid var(--orange-200);
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+    [data-theme="dark"] .sidebar-upgrade {
+      background: rgba(249,115,22,0.08);
+      border-color: rgba(249,115,22,0.2);
+    }
+    .sidebar-upgrade p { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 8px; line-height: 1.4; }
+    .sidebar-upgrade .btn { width: 100%; font-size: 0.78rem; padding: 7px 14px; }
+
+    /* --- Quick Log on home --- */
+    .quick-log-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    /* --- Support FAB --- */
+    .support-fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--orange-600);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(234,88,12,0.35);
+      transition: all 0.2s;
+      z-index: 500;
+    }
+    .support-fab:hover {
+      background: var(--orange-700);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(234,88,12,0.4);
+    }
+    .support-fab svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    @media (max-width: 768px) {
+      .support-fab { bottom: 90px; }
+    }
+
+    /* --- Support Tab Styles --- */
+    .ticket-card-user {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .ticket-status-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+    .ticket-status-badge.open { background: #fef2f2; color: #dc2626; }
+    .ticket-status-badge.in_progress { background: #fef3c7; color: #d97706; }
+    .ticket-status-badge.resolved { background: #f0fdf4; color: #16a34a; }
+    .ticket-status-badge.closed { background: var(--bg-tertiary); color: var(--text-muted); }
+    .ticket-priority-badge {
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+    .ticket-priority-badge.low { background: var(--bg-tertiary); color: var(--text-muted); }
+    .ticket-priority-badge.normal { background: #dbeafe; color: #1d4ed8; }
+    .ticket-priority-badge.high { background: #fef3c7; color: #d97706; }
+    .ticket-priority-badge.urgent { background: #fef2f2; color: #dc2626; }
+    .admin-response-box {
+      background: var(--bg-tertiary);
+      border-left: 3px solid var(--orange-500);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      margin-top: 12px;
+    }
+    .quick-log-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 8px;
+      border-radius: var(--radius-lg);
+      font-size: 0.82rem;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .quick-log-btn:hover {
+      border-color: var(--orange-400);
+      background: var(--orange-50);
+    }
+    [data-theme="dark"] .quick-log-btn:hover {
+      background: rgba(249,115,22,0.08);
+    }
+
+    /* --- Pet avatar in sidebar --- */
+    .pet-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      margin: 8px 12px;
+    }
+    .pet-badge .pet-avatar {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-full);
+      background: var(--orange-100);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .pet-badge .pet-avatar { background: rgba(249,115,22,0.15); }
+    .pet-badge .pet-info { min-width: 0; }
+    .pet-badge .pet-info .pet-name { font-size: 0.82rem; font-weight: 600; }
+    .pet-badge .pet-info .pet-breed { font-size: 0.68rem; color: var(--text-muted); }
+
+    /* --- Food Log Cards --- */
+    .food-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+    .food-card .fc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .food-card .fc-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .food-card .fc-brand {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .food-card .fc-portion {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .food-card .fc-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .food-card .fc-nutrition {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+    .food-card .fc-nutrition .nutri-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .food-card .fc-nutrition .nutri-val {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .food-card .fc-nutrition .nutri-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+    .food-card .analyze-btn {
+      margin-top: 10px;
+      width: 100%;
+      font-size: 0.78rem;
+    }
+
+    /* Food type badges */
+    .food-type-badge {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .food-type-badge.commercial { background: #dbeafe; color: #1d4ed8; }
+    .food-type-badge.homemade { background: #fef3c7; color: #b45309; }
+    .food-type-badge.raw { background: #fce7f3; color: #be185d; }
+    .food-type-badge.treat { background: #d1fae5; color: #047857; }
+    .food-type-badge.supplement { background: #e0e7ff; color: #4338ca; }
+    [data-theme="dark"] .food-type-badge.commercial { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    [data-theme="dark"] .food-type-badge.homemade { background: rgba(251,191,36,0.2); color: #fbbf24; }
+    [data-theme="dark"] .food-type-badge.raw { background: rgba(236,72,153,0.2); color: #f472b6; }
+    [data-theme="dark"] .food-type-badge.treat { background: rgba(16,185,129,0.2); color: #34d399; }
+    [data-theme="dark"] .food-type-badge.supplement { background: rgba(99,102,241,0.2); color: #818cf8; }
+
+    /* Nutrition paywall */
+    .nutrition-locked {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      margin-top: 12px;
+    }
+    .nutrition-locked p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    /* --- Dashboard Pricing Cards --- */
+    #modal-pricing .pricing-grid-dash {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 4px 0;
+    }
+    @media (max-width: 820px) {
+      #modal-pricing .pricing-grid-dash { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      #modal-pricing .pricing-grid-dash { grid-template-columns: 1fr; }
+    }
+    #modal-pricing .pricing-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s;
+    }
+    #modal-pricing .pricing-card .plan-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    #modal-pricing .pricing-card .plan-price {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    #modal-pricing .pricing-card .plan-price .period {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    #modal-pricing .pricing-card .plan-desc {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    #modal-pricing .pricing-card .plan-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 14px;
+      flex: 1;
+    }
+    #modal-pricing .pricing-card .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      padding: 3px 0;
+    }
+    #modal-pricing .pricing-card .plan-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 3px 12px;
+      background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    #modal-pricing .pricing-card.featured {
+      position: relative;
+      border: 2px solid var(--orange-500);
+      box-shadow: 0 0 0 1px var(--orange-500), 0 4px 20px rgba(234,88,12,0.1);
+      padding-top: 24px;
+    }
+    #modal-pricing .pricing-card .btn.w-full { width: 100%; }
+    #modal-pricing .pricing-card .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+
+    <!-- Desktop Sidebar -->
+    <aside class="dash-sidebar hide-mobile">
+      <div class="dash-sidebar-header">
+        <a href="index.html" class="dash-sidebar-logo">
+          <div class="logo-mark">H</div>
+          Wagr
+        </a>
+      </div>
+
+      <!-- Active Pet Badge -->
+      <div class="pet-badge" id="sidebar-pet-badge" style="display:none">
+        <div class="pet-avatar"><i data-lucide="dog"></i></div>
+        <div class="pet-info">
+          <div class="pet-name" id="sidebar-pet-name">—</div>
+          <div class="pet-breed" id="sidebar-pet-breed">No pet</div>
+        </div>
+      </div>
+
+      <nav class="dash-sidebar-nav">
+        <a href="#" class="active" data-tab="home" onclick="switchTab('home', this)">
+          <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
+        <a href="#" data-tab="timeline" onclick="switchTab('timeline', this)">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Timeline
+        </a>
+        <a href="#" data-tab="qr" onclick="switchTab('qr', this)">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+          QR Tags
+        </a>
+        <a href="#" data-tab="ai" onclick="switchTab('ai', this)">
+          <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93"/><path d="M8.56 6.22A4 4 0 0 1 12 2"/><circle cx="12" cy="14" r="4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+          AI Reports
+        </a>
+        <a href="#" data-tab="food" onclick="switchTab('food', this)">
+          <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          Food Log
+        </a>
+        <a href="#" data-tab="symptoms" onclick="switchTab('symptoms', this)">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Symptoms
+        </a>
+        <a href="#" data-tab="grooming" onclick="switchTab('grooming', this)">
+          <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+          Grooming
+        </a>
+        <a href="#" data-tab="sitter" onclick="switchTab('sitter', this)">
+          <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+          Sitter Links
+        </a>
+        <a href="#" data-tab="coparent" onclick="switchTab('coparent', this)">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Co-parents
+        </a>
+        <a href="#" data-tab="support" onclick="switchTab('support', this)">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Support
+        </a>
+        <div class="divider" style="margin:8px 12px"></div>
+        <a href="#" data-tab="pets" onclick="switchTab('pets', this)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          My Pets
+        </a>
+        <a href="#" data-tab="settings" onclick="switchTab('settings', this)">
+          <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          Settings
+        </a>
+        <a href="admin.html" id="admin-sidebar-link" style="display:none;color:#dc2626">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Admin
+        </a>
+      </nav>
+
+      <!-- Upgrade nudge (free users) -->
+      <div class="sidebar-upgrade" id="sidebar-upgrade" style="display:none">
+        <p>Unlock timeline, food log, QR tags, and more.</p>
+        <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">See Plans</button>
+      </div>
+
+      <div class="dash-sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar" id="sidebar-avatar">?</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebar-name">Loading...</div>
+            <div class="user-tier" id="sidebar-tier"></div>
+          </div>
+          <button class="theme-toggle" onclick="ThemeManager.toggle()" style="margin-left:auto;width:28px;height:28px"></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dashboard-main">
+
+      <!-- Mobile Header -->
+      <div class="mobile-header hide-desktop" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)">
+        <a href="index.html" class="navbar-logo" style="font-size:0.9rem">
+          <div class="logo-mark" style="width:24px;height:24px;font-size:0.65rem">H</div>
+          Wagr
+        </a>
+        <div class="flex items-center gap-2">
+          <button class="theme-toggle" onclick="ThemeManager.toggle()" style="width:32px;height:32px"></button>
+          <button class="btn-icon" onclick="toggleMobileMenu()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="sidebar-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+      <div class="sidebar" id="mobile-menu" style="width:280px">
+        <div class="sidebar-header" style="display:flex;align-items:center;justify-content:space-between">
+          <div class="navbar-logo"><div class="logo-mark" style="width:24px;height:24px;font-size:0.65rem">H</div> Wagr</div>
+          <button class="btn-icon" onclick="closeMobileMenu()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="pet-badge" id="mobile-pet-badge" style="display:none">
+        <div class="pet-avatar"><i data-lucide="dog"></i></div>
+          <div class="pet-info">
+            <div class="pet-name" id="mobile-pet-name">—</div>
+            <div class="pet-breed" id="mobile-pet-breed"></div>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="#" onclick="switchTab('home');closeMobileMenu()">Home</a>
+          <a href="#" onclick="switchTab('timeline');closeMobileMenu()">Timeline</a>
+          <a href="#" onclick="switchTab('qr');closeMobileMenu()">QR Tags</a>
+          <a href="#" onclick="switchTab('ai');closeMobileMenu()">AI Reports</a>
+          <a href="#" onclick="switchTab('food');closeMobileMenu()">Food Log</a>
+          <a href="#" onclick="switchTab('sitter');closeMobileMenu()">Sitter Links</a>
+          <a href="#" onclick="switchTab('coparent');closeMobileMenu()">Co-parents</a>
+          <a href="#" onclick="switchTab('pets');closeMobileMenu()">My Pets</a>
+          <a href="#" onclick="switchTab('settings');closeMobileMenu()">Settings</a>
+          <a href="admin.html" id="admin-mobile-link" style="display:none;color:#dc2626">Admin Panel</a>
+          <div class="divider" style="margin:12px 0"></div>
+          <a href="index.html">← Back to Home</a>
+          <button onclick="handleLogout()" style="color:#dc2626">Sign Out</button>
+        </nav>
+      </div>
+
+      <!-- Pet Selector Bar -->
+      <div class="pet-selector">
+        <select id="pet-select" onchange="handlePetChange(this.value)">
+          <option value="">Select a pet...</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" id="add-pet-btn" onclick="openModal('modal-add-pet')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Pet
+        </button>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <div id="dashboard-loading" style="display:block">
+          <div style="text-align:center;padding:60px 20px">
+            <div style="font-size:2rem;margin-bottom:16px"><i data-lucide="dog" style="width:32px;height:32px"></i></div>
+            <h2 style="margin-bottom:8px">Loading Wagr...</h2>
+            <p style="color:var(--text-secondary)">Please wait while we set up your dashboard.</p>
+            <p style="color:var(--text-muted);font-size:0.8rem;margin-top:20px">If this takes too long, check the console (F12) for errors.</p>
+          </div>
+        </div>
+
+        <!-- ===== HOME TAB ===== -->
+        <div class="tab-content" id="tab-home">
+          <div id="home-inner">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- ===== TIMELINE TAB ===== -->
+        <div class="tab-content" id="tab-timeline">
+          <div class="timeline-header">
+            <h2>Timeline</h2>
+            <div class="quick-log-row" style="margin-bottom:0">
+              <button class="quick-log-btn" onclick="openLogModal('meal')">Feed</button>
+              <button class="quick-log-btn" onclick="openLogModal('medication')">Meds</button>
+              <button class="quick-log-btn" onclick="openLogModal('bathroom')">Walk</button>
+              <button class="quick-log-btn" onclick="openLogModal('custom')">Note</button>
+            </div>
+          </div>
+          <div id="timeline-feed"></div>
+        </div>
+
+        <!-- ===== QR TAB ===== -->
+        <div class="tab-content" id="tab-qr">
+          <div class="timeline-header"><h2>QR Emergency Tag</h2></div>
+          <div id="qr-section">
+            <div id="qr-active" style="display:none">
+              <div class="card" style="padding:32px">
+                <div class="qr-container">
+                  <div class="qr-canvas-wrap" id="qr-canvas"></div>
+                  <button class="btn btn-primary" onclick="downloadQR()">Download Tag for Print</button>
+                  <div class="qr-url" id="qr-url"></div>
+                </div>
+              </div>
+              <div class="card" style="margin-top:16px">
+                <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Scan Another Pet's Tag</h3>
+                <div id="qr-reader" style="width:100%;max-width:280px;margin:0 auto 12px"></div>
+                <button class="btn btn-secondary btn-sm" id="scan-qr-btn" onclick="startQRScan()">Start Scanner</button>
+                <button class="btn btn-ghost btn-sm" id="stop-qr-btn" onclick="stopQRScan()" style="display:none">Stop Scanner</button>
+              </div>
+            </div>
+            <div id="qr-no-pet" class="locked-feature" style="display:none">
+              <span class="lock-emoji"><i data-lucide="tag" style="width:24px;height:24px"></i></span>
+              <h3>Generate a QR tag for your pet</h3>
+              <p>Add a pet first, then create a scannable tag that links to their emergency profile.</p>
+            </div>
+            <div id="qr-locked" class="locked-feature" style="display:none">
+              <span class="lock-emoji"><i data-lucide="tag" style="width:24px;height:24px"></i></span>
+              <h3>QR Emergency Tags</h3>
+              <p>Anyone who finds your dog scans the tag and sees their medical info. You get their GPS location instantly.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Printable QR code for collar tags</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Live GPS location alerts when scanned</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Public profile with medical flags</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== AI REPORTS TAB ===== -->
+        <div class="tab-content" id="tab-ai">
+          <div class="timeline-header"><h2>AI Vet-Prep Report</h2></div>
+          <div id="ai-section">
+            <!-- Pro: active -->
+            <div id="ai-active" style="display:none">
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px">Compile your pet's data into a clinical summary for your vet.</p>
+              
+              <div class="card" style="margin-bottom:16px">
+                <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:12px">Include in Report</h4>
+                <div class="ai-data-sources">
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-timeline" checked> <span><i data-lucide="clipboard-list" style="width:14px;height:14px;vertical-align:middle"></i> Timeline (meals, meds, bathroom)</span></label>
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-food" checked> <span><i data-lucide="utensils-crossed" style="width:14px;height:14px;vertical-align:middle"></i> Food Log</span></label>
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-gi"> <span><i data-lucide="stethoscope" style="width:14px;height:14px;vertical-align:middle"></i> GI (vomit/feces)</span></label>
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-cardio"> <span><i data-lucide="heart" style="width:14px;height:14px;vertical-align:middle"></i> Cardiology (respiratory)</span></label>
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-tests"> <span><i data-lucide="flask-conical" style="width:14px;height:14px;vertical-align:middle"></i> Test Results</span></label>
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-derma"> <span><i data-lucide="bandage" style="width:14px;height:14px;vertical-align:middle"></i> Dermatology (skin)</span></label>
+                  <label class="ai-checkbox"><input type="checkbox" id="ai-grooming"> <span><i data-lucide="scissors" style="width:14px;height:14px;vertical-align:middle"></i> Grooming</span></label>
+                </div>
+              </div>
+              
+              <div class="input-group" style="margin-bottom:16px">
+                <label style="font-size:0.8rem;font-weight:500">Time Period</label>
+                <select class="input-field" id="ai-days" style="max-width:200px">
+                  <option value="7">Last 7 days</option>
+                  <option value="14">Last 14 days</option>
+                  <option value="30" selected>Last 30 days</option>
+                  <option value="60">Last 60 days</option>
+                  <option value="90">Last 90 days</option>
+                </select>
+              </div>
+              
+              <button class="btn btn-primary" id="generate-ai-btn" onclick="handleGenerateReport()">Generate Report</button>
+              <div id="ai-report-output" style="margin-top:20px;display:none"></div>
+            </div>
+            <!-- Teaser for non-pro -->
+            <div id="ai-teaser" style="display:none">
+              <div class="locked-feature ai-teaser" style="text-align:left">
+                <h3 style="text-align:center;margin-bottom:4px"><i data-lucide="bot" style="width:20px;height:20px;vertical-align:middle;margin-right:4px"></i> AI-Powered Vet Reports</h3>
+                <p style="text-align:center;margin-bottom:20px">One click turns messy logs into a clinical summary your vet can actually use.</p>
+                <div class="ai-sample">
+                  <strong>Clinical Summary — Buddy (Golden Retriever, 14.2kg)</strong><br><br>
+                  <strong>Feeding Pattern:</strong> Consistent 2x daily. Morning meal averages 1.5 cups kibble. Evening meal varies between kibble, chicken & rice, and raw diet. Notable: skipped evening meal on Jan 12 and Jan 18 — both followed by bathroom irregularity next morning.<br><br>
+                  <strong>Medication:</strong> Monthly heartworm (Heartgard) administered on the 1st of each month. No missed doses in the reporting period. Probiotic supplement added Jan 8 — correlation with improved stool consistency noted Jan 10–15.<br><br>
+                  <strong>Bathroom Activity:</strong> Average 2.3 eliminations per day. Two episodes of loose stool (Jan 13, Jan 19) both occurring 12–18 hours after a skipped meal. Otherwise normal consistency...
+                </div>
+                <div class="ai-blur">
+                  <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== FOOD LOG TAB ===== -->
+        <div class="tab-content" id="tab-food">
+          <div class="timeline-header">
+            <h2>Food Log</h2>
+            <button class="btn btn-primary btn-sm" id="add-food-btn" onclick="openModal('modal-add-food')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Food
+            </button>
+          </div>
+          <div id="food-section">
+            <div id="food-no-pet" class="welcome-state" style="display:none">
+              <span class="welcome-emoji"><i data-lucide="utensils-crossed" style="width:32px;height:32px"></i></span>
+              <h3>Add a pet first</h3>
+              <p>Add a pet to start logging their meals and track nutrition.</p>
+              <button class="btn btn-primary" onclick="openModal('modal-add-pet')">Add Pet</button>
+            </div>
+            <div id="food-list" class="flex flex-col gap-3"></div>
+          </div>
+        </div>
+
+        <!-- ===== SYMPTOMS TAB (PRO) ===== -->
+        <div class="tab-content" id="tab-symptoms">
+          <div class="timeline-header">
+            <h2>Symptom Tracker</h2>
+            <button class="btn btn-primary btn-sm" id="add-symptom-btn" onclick="openModal('modal-add-symptom')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Symptom
+            </button>
+          </div>
+          <div id="symptoms-section">
+            <div id="symptoms-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="stethoscope" style="width:24px;height:24px"></i></span>
+              <h3>Symptom Tracking for Vets</h3>
+              <p>Track GI issues (vomit/feces), respiratory rate, test results, and skin conditions. Generate reports to share with your vet.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> GI Tracking (with photos)</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Respiratory Rate Logging</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Test Results & Reports</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Dermatology (with photos)</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+            </div>
+            <div id="symptoms-active" style="display:none">
+              <div class="symptom-tabs" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+                <button class="btn btn-sm btn-secondary active" onclick="filterSymptoms('all')">All</button>
+                <button class="btn btn-sm btn-secondary" onclick="filterSymptoms('gi')">GI</button>
+                <button class="btn btn-sm btn-secondary" onclick="filterSymptoms('cardio')">Cardio</button>
+                <button class="btn btn-sm btn-secondary" onclick="filterSymptoms('tests')">Tests</button>
+                <button class="btn btn-sm btn-secondary" onclick="filterSymptoms('derma')">Derma</button>
+              </div>
+              <div id="symptoms-list" class="flex flex-col gap-3"></div>
+              <button class="btn btn-primary" style="margin-top:16px" onclick="handleGenerateSymptomReport()">Generate Vet Report</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== GROOMING TAB (PRO) ===== -->
+        <div class="tab-content" id="tab-grooming">
+          <div class="timeline-header">
+            <h2>Grooming Appointments</h2>
+            <button class="btn btn-primary btn-sm" id="add-grooming-btn" onclick="openModal('modal-add-grooming')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Appointment
+            </button>
+          </div>
+          <div id="grooming-section">
+            <div id="grooming-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="scissors" style="width:24px;height:24px"></i></span>
+              <h3>Grooming Appointments</h3>
+              <p>Track all your pet's grooming appointments, products used, and results. Keep a history for your groomer.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Date & time tracking</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Products used</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Photo history</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Groomer notes</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+            </div>
+            <div id="grooming-active" style="display:none">
+              <div id="grooming-list" class="flex flex-col gap-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SITTER TAB ===== -->
+        <div class="tab-content" id="tab-sitter">
+          <div class="timeline-header"><h2>Sitter Magic Links</h2></div>
+          <div id="sitter-section">
+            <div id="sitter-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="link" style="width:24px;height:24px"></i></span>
+              <h3>Sitter Magic Links</h3>
+              <p>Your sitter gets their own magic link — no account needed. They can view the timeline and add care events that sync to your dashboard instantly.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No app download for sitters</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Real-time sync to your dashboard</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Links expire automatically</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+            </div>
+            <div id="sitter-active" style="display:none">
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px">Share this link with your sitter. They can view and add entries for <strong id="sitter-pet-name"></strong> without creating an account.</p>
+              <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+                <input type="email" id="sitter-email-input" class="input-field" placeholder="Sitter's email (optional)" style="flex:1;min-width:180px;padding:8px 12px;font-size:0.82rem">
+                <button class="btn btn-primary" id="generate-sitter-btn" onclick="handleGenerateSitterLink()">Generate Link</button>
+              </div>
+              <div class="sitter-link-box" id="sitter-link-box" style="display:none">
+                <input type="text" id="sitter-link-url" readonly>
+                <button class="btn btn-sm btn-secondary" onclick="copyToClipboard(document.getElementById('sitter-link-url').value)">Copy</button>
+                <button class="btn btn-sm btn-secondary" id="sitter-send-email-btn" onclick="handleSendSitterEmail()" style="display:none">Send Email</button>
+              </div>
+              
+              <div class="divider" style="margin:24px 0"></div>
+              
+              <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:8px"><i data-lucide="clipboard-list" style="width:16px;height:16px;vertical-align:middle;margin-right:4px"></i> Care Plans</h3>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px">Create detailed care instructions for your pet sitter — includes feeding schedule, medications, vet info, and more.</p>
+              
+              <div id="care-plans-list" class="flex flex-col gap-3" style="margin-bottom:16px"></div>
+              
+              <button class="btn btn-secondary" onclick="openModal('modal-add-care-plan')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Create Care Plan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== PETS TAB ===== -->
+        <div class="tab-content" id="tab-pets">
+          <div class="timeline-header">
+            <h2>My Pets</h2>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-add-pet')">Add Pet</button>
+          </div>
+          <div id="pets-list" class="flex flex-col gap-3"></div>
+        </div>
+
+        <!-- ===== SETTINGS TAB ===== -->
+        <div class="tab-content" id="tab-settings">
+          <div class="timeline-header"><h2>Settings</h2></div>
+          <div class="flex flex-col gap-4" style="max-width:480px">
+            <!-- Profile -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Profile</h3>
+              <div class="input-group" style="margin-bottom:12px">
+                <label>Your Name</label>
+                <input type="text" class="input-field" id="settings-name" placeholder="Enter your name" style="margin-bottom:8px">
+                <button class="btn btn-secondary btn-sm" onclick="handleUpdateName()">Save Name</button>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary)" id="settings-email">—</p>
+            </div>
+
+            <!-- Email & Password -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Email &amp; Password</h3>
+              <div class="input-group" style="margin-bottom:12px">
+                <label>Change Email</label>
+                <input type="email" class="input-field" id="settings-new-email" placeholder="new@email.com" style="margin-bottom:8px">
+                <button class="btn btn-secondary btn-sm" onclick="handleChangeEmail()">Update Email</button>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">A confirmation will be sent to both addresses.</p>
+              </div>
+              <div class="divider" style="margin:12px 0"></div>
+              <div class="input-group">
+                <label>Change Password</label>
+                <input type="password" class="input-field" id="settings-current-pw" placeholder="Current password" style="margin-bottom:8px" autocomplete="current-password">
+                <input type="password" class="input-field" id="settings-new-pw" placeholder="New password (min 8 chars)" style="margin-bottom:8px" autocomplete="new-password">
+                <button class="btn btn-secondary btn-sm" onclick="handleChangePassword()">Update Password</button>
+              </div>
+            </div>
+
+            <!-- Notification Preferences -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Notifications</h3>
+              <div class="flex items-center justify-between" style="margin-bottom:10px">
+                <div><span style="font-size:0.85rem">Email Updates</span><p style="font-size:0.75rem;color:var(--text-muted);margin:0">Product news and tips</p></div>
+                <div class="toggle-switch" id="notif-email-updates" onclick="toggleNotif('email_updates')"></div>
+              </div>
+              <div class="flex items-center justify-between" style="margin-bottom:10px">
+                <div><span style="font-size:0.85rem">Sitter Activity</span><p style="font-size:0.75rem;color:var(--text-muted);margin:0">When your sitter logs care events</p></div>
+                <div class="toggle-switch" id="notif-sitter-activity" onclick="toggleNotif('sitter_activity')"></div>
+              </div>
+              <div class="flex items-center justify-between" style="margin-bottom:10px">
+                <div><span style="font-size:0.85rem">Billing Alerts</span><p style="font-size:0.75rem;color:var(--text-muted);margin:0">Payment confirmations and expiry warnings</p></div>
+                <div class="toggle-switch" id="notif-billing-alerts" onclick="toggleNotif('billing_alerts')"></div>
+              </div>
+              <div class="flex items-center justify-between">
+                <div><span style="font-size:0.85rem">Marketing</span><p style="font-size:0.75rem;color:var(--text-muted);margin:0">Promotions and special offers</p></div>
+                <div class="toggle-switch" id="notif-marketing" onclick="toggleNotif('marketing')"></div>
+              </div>
+            </div>
+
+            <!-- Appearance -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Appearance</h3>
+              <div class="flex items-center justify-between">
+                <span style="font-size:0.85rem">Dark Mode</span>
+                <div class="toggle-switch" id="settings-dark-toggle" onclick="ThemeManager.toggle()"></div>
+              </div>
+            </div>
+
+            <!-- Privacy -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Privacy</h3>
+              <div class="flex items-center justify-between">
+                <span style="font-size:0.85rem">Usage Analytics</span>
+                <div class="toggle-switch" id="settings-analytics-toggle" onclick="toggleAnalyticsConsent()"></div>
+              </div>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Help us improve with anonymous usage data.</p>
+            </div>
+
+            <!-- Billing & Subscription -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:4px">Billing &amp; Subscription</h3>
+              <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:4px" id="settings-tier">Starter</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:2px" id="settings-sub-status"></div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px" id="settings-next-billing"></div>
+              <div class="flex gap-2" style="flex-wrap:wrap;margin-bottom:12px">
+                <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Change Plan</button>
+                <button class="btn btn-secondary btn-sm" id="btn-manage-sub" onclick="handleManageSubscription()" style="display:none">Manage Subscription</button>
+              </div>
+              <div id="billing-history" style="font-size:0.82rem"></div>
+            </div>
+
+            <!-- Account -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:4px">Account</h3>
+              <div class="flex gap-2" style="margin-bottom:12px">
+                <button class="btn btn-ghost btn-sm" onclick="handleLogout()" style="color:#dc2626">Sign Out</button>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="confirmDeleteAccount()" style="color:#dc2626">Delete Account</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CO-PARENT TAB ===== -->
+        <div class="tab-content" id="tab-coparent">
+          <div class="timeline-header">
+            <h2>Co-parents</h2>
+            <span id="coparent-tier-badge" class="tier-badge"></span>
+          </div>
+          <div id="coparent-content"></div>
+        </div>
+
+        <!-- ===== SUPPORT TAB ===== -->
+        <div class="tab-content" id="tab-support">
+          <div class="timeline-header">
+            <h2>Support</h2>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-support-ticket')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Ticket
+            </button>
+          </div>
+          <div id="support-tickets-list"></div>
+        </div>
+
+      </div>
+
+<!-- Mobile Bottom Nav -->
+      <nav class="bottom-nav hide-desktop">
+        <div class="bottom-nav-inner">
+          <a href="#" class="active" data-tab="home" onclick="switchTab('home', this)">
+            <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Home
+          </a>
+          <a href="#" data-tab="timeline" onclick="switchTab('timeline', this)">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Log
+          </a>
+          <a href="#" onclick="handleQuickLogTap()" style="color:var(--orange-600)">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Log
+          </a>
+          <a href="#" data-tab="support" onclick="switchTab('support', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Support
+          </a>
+          <a href="#" data-tab="settings" onclick="switchTab('settings', this)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            More
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Add Pet Modal -->
+  <div class="modal-overlay" id="modal-add-pet">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add New Pet</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-pet')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-pet-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label>Name</label>
+          <input type="text" class="input-field" id="pet-name" placeholder="e.g. Buddy" required>
+        </div>
+        <div class="input-group">
+          <label>Breed</label>
+          <input type="text" class="input-field" id="pet-breed" placeholder="e.g. Golden Retriever">
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Weight (kg)</label>
+            <input type="number" class="input-field" id="pet-weight" placeholder="12" min="0.5" step="0.5">
+          </div>
+          <div class="input-group">
+            <label>Birth Date</label>
+            <input type="date" class="input-field" id="pet-birth">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Medical Flags</label>
+          <input type="text" class="input-field" id="pet-flags" placeholder="e.g. Allergic to chicken, needs daily meds">
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Add Pet</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Log Modal -->
+  <div class="modal-overlay" id="modal-add-log">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="log-modal-title">Log Entry</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-log')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-log-form" class="flex flex-col gap-4">
+        <input type="hidden" id="log-type">
+        <div class="input-group">
+          <label>Title</label>
+          <input type="text" class="input-field" id="log-title" placeholder="e.g. Morning kibble, Heartworm pill" required>
+        </div>
+        <div class="input-group">
+          <label>Notes (optional)</label>
+          <textarea class="input-field" id="log-notes" placeholder="Any additional details..." rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Save Entry</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pricing Modal -->
+  <div class="modal-overlay" id="modal-pricing">
+    <div class="modal" style="max-width:900px">
+      <div class="modal-header">
+        <h3>Choose Your Plan</h3>
+        <button class="btn-icon" onclick="closeModal('modal-pricing')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:16px;font-size:0.82rem">
+        <span id="dash-monthly-label" style="color:var(--text-secondary)">Monthly</span>
+        <div class="toggle-switch" id="dash-pricing-toggle" onclick="toggleDashPricing()" style="vertical-align:middle"></div>
+        <span id="dash-yearly-label" style="color:var(--text-secondary)">Yearly</span>
+        <span class="save-badge" style="font-size:0.7rem;padding:2px 8px;background:var(--orange-100);color:var(--orange-700);border-radius:99px;font-weight:600">Save ~17%</span>
+      </div>
+      <div id="pricing-cards"></div>
+    </div>
+  </div>
+
+  <!-- Add Food Modal -->
+  <div class="modal-overlay" id="modal-add-food">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Log Food</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-food')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-food-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label>Food Type</label>
+          <select class="input-field" id="food-type" required>
+            <option value="">Select type...</option>
+            <option value="commercial">Commercial (kibble, wet food)</option>
+            <option value="homemade">Homemade</option>
+            <option value="raw">Raw Diet</option>
+            <option value="treat">Treat</option>
+            <option value="supplement">Supplement</option>
+          </select>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Brand</label>
+            <input type="text" class="input-field" id="food-brand" placeholder="e.g. Royal Canin">
+          </div>
+          <div class="input-group">
+            <label>Product Name</label>
+            <input type="text" class="input-field" id="food-product" placeholder="e.g. Adult Chicken">
+          </div>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Portion Size</label>
+            <input type="number" class="input-field" id="food-portion" placeholder="1.5" step="0.1" min="0.1">
+          </div>
+          <div class="input-group">
+            <label>Unit</label>
+            <select class="input-field" id="food-unit">
+              <option value="cups">cups</option>
+              <option value="oz">oz</option>
+              <option value="g">grams</option>
+              <option value="tbsp">tbsp</option>
+              <option value="pieces">pieces</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group" id="ingredients-group" style="display:none">
+          <label>Ingredients (one per line)</label>
+          <textarea class="input-field" id="food-ingredients" placeholder="e.g.&#10;1 cup rice&#10;2 chicken breasts&#10;0.5 cup carrots" rows="3"></textarea>
+        </div>
+        <div class="input-group">
+          <label>Notes (optional)</label>
+          <textarea class="input-field" id="food-notes" placeholder="Any additional details..." rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Save Food Entry</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Symptom Modal -->
+  <div class="modal-overlay" id="modal-add-symptom">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h3>Add Symptom Entry</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-symptom')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-symptom-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label>Category</label>
+          <select class="input-field" id="symptom-category" required onchange="updateSymptomFields()">
+            <option value="">Select category...</option>
+            <option value="gi">GI (Vomit/Feces)</option>
+            <option value="cardio">Cardiology (Respiratory)</option>
+            <option value="tests">Test Results</option>
+            <option value="derma">Dermatology (Skin)</option>
+          </select>
+        </div>
+        
+        <!-- GI Fields -->
+        <div id="gi-fields" style="display:none">
+          <div class="grid grid-2" style="gap:12px">
+            <div class="input-group">
+              <label>Type</label>
+              <select class="input-field" id="gi-type">
+                <option value="vomit">Vomit</option>
+                <option value="feces">Feces</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Consistency</label>
+              <select class="input-field" id="gi-consistency">
+                <option value="">Select...</option>
+                <option value="solid">Solid</option>
+                <option value="soft">Soft</option>
+                <option value="liquid">Liquid</option>
+                <option value="mucoid">Mucoid</option>
+                <option value="bloody">Bloody</option>
+                <option value="foreign_object">Foreign Object</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Notes</label>
+            <textarea class="input-field" id="gi-notes" rows="2" placeholder="Describe appearance, frequency, etc."></textarea>
+          </div>
+        </div>
+        
+        <!-- Cardio Fields -->
+        <div id="cardio-fields" style="display:none">
+          <div class="grid grid-2" style="gap:12px">
+            <div class="input-group">
+              <label>Respiratory Rate (breaths/min)</label>
+              <input type="number" class="input-field" id="cardio-rate" placeholder="e.g. 30" min="1" max="100">
+            </div>
+            <div class="input-group">
+              <label>Position</label>
+              <select class="input-field" id="cardio-position">
+                <option value="standing">Standing</option>
+                <option value="sitting">Sitting</option>
+                <option value="lying">Lying</option>
+              </select>
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Effort</label>
+            <select class="input-field" id="cardio-effort">
+              <option value="normal">Normal</option>
+              <option value="labored">Labored</option>
+              <option value="rapid">Rapid</option>
+              <option value="shallow">Shallow</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Notes</label>
+            <textarea class="input-field" id="cardio-notes" rows="2" placeholder="Any observations..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Test Results Fields -->
+        <div id="tests-fields" style="display:none">
+          <div class="input-group">
+            <label>Test Name</label>
+            <input type="text" class="input-field" id="test-name" placeholder="e.g. Blood Panel, Urinalysis">
+          </div>
+          <div class="grid grid-2" style="gap:12px">
+            <div class="input-group">
+              <label>Test Date</label>
+              <input type="date" class="input-field" id="test-date">
+            </div>
+            <div class="input-group">
+              <label>Veterinarian</label>
+              <input type="text" class="input-field" id="test-vet" placeholder="Dr. Smith">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Diagnosis/Results</label>
+            <textarea class="input-field" id="test-diagnosis" rows="2" placeholder="Diagnosis or key results..."></textarea>
+          </div>
+          <div class="input-group">
+            <label>Notes</label>
+            <textarea class="input-field" id="test-notes" rows="2" placeholder="Additional notes..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Dermatology Fields -->
+        <div id="derma-fields" style="display:none">
+          <div class="grid grid-2" style="gap:12px">
+            <div class="input-group">
+              <label>Issue Type</label>
+              <select class="input-field" id="derma-type">
+                <option value="">Select...</option>
+                <option value="rash">Rash</option>
+                <option value="lump">Lump/Bump</option>
+                <option value="hot_spot">Hot Spot</option>
+                <option value="wound">Wound</option>
+                <option value="hair_loss">Hair Loss</option>
+                <option value="itching">Itching</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Location</label>
+              <input type="text" class="input-field" id="derma-location" placeholder="e.g. Back leg, ear">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Severity</label>
+            <select class="input-field" id="derma-severity">
+              <option value="mild">Mild</option>
+              <option value="moderate">Moderate</option>
+              <option value="severe">Severe</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Description</label>
+            <textarea class="input-field" id="derma-description" rows="2" placeholder="Describe the issue..."></textarea>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-full">Save Symptom</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Grooming Modal -->
+  <div class="modal-overlay" id="modal-add-grooming">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-header">
+        <h3>Add Grooming Appointment</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-grooming')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-grooming-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label>Date & Time</label>
+          <input type="datetime-local" class="input-field" id="grooming-date" required>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Groomer Name</label>
+            <input type="text" class="input-field" id="grooming-groomer" placeholder="e.g. Sarah's Pet Spa">
+          </div>
+          <div class="input-group">
+            <label>Location</label>
+            <input type="text" class="input-field" id="grooming-location" placeholder="Address or shop name">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Services Performed</label>
+          <div class="flex flex-col gap-2" style="font-size:0.85rem">
+            <label><input type="checkbox" id="groom-service-bath" value="Bath"> Bath</label>
+            <label><input type="checkbox" id="groom-service-haircut" value="Haircut"> Haircut</label>
+            <label><input type="checkbox" id="groom-service-nails" value="Nail Trim"> Nail Trim</label>
+            <label><input type="checkbox" id="groom-service-teeth" value="Teeth Cleaning"> Teeth Cleaning</label>
+            <label><input type="checkbox" id="groom-service-ear" value="Ear Cleaning"> Ear Cleaning</label>
+            <label><input type="checkbox" id="groom-service-deshed" value="De-shedding"> De-shedding</label>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Products Used (one per line)</label>
+          <textarea class="input-field" id="grooming-products" rows="3" placeholder="e.g.&#10;Oatmeal shampoo&#10;Conditioner&#10;Flea treatment"></textarea>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Cost ($)</label>
+            <input type="number" class="input-field" id="grooming-cost" placeholder="0.00" step="0.01" min="0">
+          </div>
+          <div class="input-group">
+            <label>Rating</label>
+            <select class="input-field" id="grooming-rating">
+              <option value="">No rating</option>
+              <option value="5">★★★★★</option>
+              <option value="4">★★★★</option>
+              <option value="3">★★★</option>
+              <option value="2">★★</option>
+              <option value="1">★</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Notes</label>
+          <textarea class="input-field" id="grooming-notes" rows="3" placeholder="How did it go? Any issues?"></textarea>
+        </div>
+<button type="submit" class="btn btn-primary w-full">Save Appointment</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Support Ticket Modal -->
+  <div class="modal-overlay" id="modal-support-ticket">
+    <div class="modal" style="max-width:440px">
+      <div class="modal-header">
+        <h3>New Support Ticket</h3>
+        <button class="btn-icon" onclick="closeModal('modal-support-ticket')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="support-ticket-form" class="flex flex-col gap-4">
+        <div class="input-group">
+          <label>Subject</label>
+          <input type="text" class="input-field" id="support-subject" placeholder="Brief description of your issue" required>
+        </div>
+        <div class="input-group">
+          <label>Message</label>
+          <textarea class="input-field" id="support-message" rows="5" placeholder="Describe your issue in detail..." required></textarea>
+        </div>
+        <div class="input-group">
+          <label>Priority</label>
+          <select class="input-field" id="support-priority">
+            <option value="low">Low - General question</option>
+            <option value="normal" selected>Normal - Issue with feature</option>
+            <option value="high">High - Something broken</option>
+            <option value="urgent">Urgent - Critical problem</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Submit Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Care Plan Modal -->
+  <div class="modal-overlay" id="modal-add-care-plan">
+    <div class="modal" style="max-width:560px">
+      <div class="modal-header">
+        <h3>Create Care Plan</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-care-plan')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-care-plan-form" class="flex flex-col gap-4">
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Sitter Name</label>
+            <input type="text" class="input-field" id="care-sitter-name" placeholder="e.g. Sarah" required>
+          </div>
+          <div class="input-group">
+            <label>Sitter Email</label>
+            <input type="email" class="input-field" id="care-sitter-email" placeholder="sitter@email.com">
+          </div>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Start Date</label>
+            <input type="date" class="input-field" id="care-start-date" required>
+          </div>
+          <div class="input-group">
+            <label>End Date</label>
+            <input type="date" class="input-field" id="care-end-date" required>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Feeding Instructions</label>
+          <textarea class="input-field" id="care-feeding" rows="3" placeholder="What, how much, and when to feed"></textarea>
+        </div>
+        <div class="input-group">
+          <label>Medication Instructions</label>
+          <textarea class="input-field" id="care-medication" rows="3" placeholder="Dosage, timing, and any special instructions"></textarea>
+        </div>
+        <div class="input-group">
+          <label>Walking / Exercise</label>
+          <textarea class="input-field" id="care-exercise" rows="3" placeholder="Walk schedule, route preferences, leash behavior"></textarea>
+        </div>
+        <div class="input-group">
+          <label>Behavioral Notes</label>
+          <textarea class="input-field" id="care-behavior" rows="2" placeholder="Temperament, triggers, favorite toys, crate training"></textarea>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Emergency Contact</label>
+            <input type="text" class="input-field" id="care-emergency" placeholder="Name and phone number">
+          </div>
+          <div class="input-group">
+            <label>Vet Info</label>
+            <input type="text" class="input-field" id="care-vet" placeholder="Clinic name and phone">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Additional Notes</label>
+          <textarea class="input-field" id="care-notes" rows="2" placeholder="Anything else the sitter should know"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Create Care Plan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Support Button -->
+  <button class="support-fab" onclick="openModal('modal-support-ticket')" title="Contact Support">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://js.paystack.co/v2/inline.js"></script>
+  <script>
+    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.dashboard-content').innerHTML = '<div style="text-align:center;padding:48px 24px"><h3>Could not load Supabase SDK</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
+      });
+    }
+  </script>
+  <script src="js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    /* ========================================
+       Wagr — Dashboard Controller
+       ======================================== */
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('DOM loaded, initializing...');
+      console.log('Supabase library:', typeof window.supabase);
+      
+      try { 
+        initSupabase(); 
+        console.log('Supabase initialized');
+        lucide.createIcons();
+      } catch(e) { 
+        console.error('Init failed:', e); 
+        document.getElementById('dashboard-loading').innerHTML = '<div style="padding:20px;text-align:center"><h3>Failed to initialize Supabase</h3><p>Error: ' + e.message + '</p><p>Make sure you\'re running on a local server (not just opening the file).</p></div>';
+        return;
+      }
+
+      const sitterToken = getUrlParam('sitter_token');
+      if (sitterToken) { await handleSitterMode(sitterToken); return; }
+
+      try {
+        console.log('Getting current user...');
+        const user = await getCurrentUser();
+        console.log('User:', user);
+        if (!user) { window.location.href = 'auth.html'; return; }
+        AppState.setUser(user);
+      } catch (e) { 
+        console.error('Auth error:', e);
+        window.location.href = 'auth.html'; 
+        return;
+      }
+
+      try {
+        renderDashboardPricing();
+        await loadDashboard();
+        console.log('Dashboard loaded successfully');
+        
+        // Show dashboard, hide loading
+        document.getElementById('dashboard-loading').style.display = 'none';
+        document.getElementById('tab-home').classList.add('active');
+      } catch(e) {
+        console.error('Dashboard load error:', e);
+        document.getElementById('dashboard-loading').innerHTML = '<div style="padding:20px;text-align:center"><h3>Error loading dashboard</h3><p>' + e.message + '</p><button onclick="location.reload()" class="btn btn-primary" style="margin-top:16px">Retry</button></div>';
+      }
+    });
+
+    // Refresh profile/tier when user returns from Paystack redirect
+    document.addEventListener('visibilitychange', async () => {
+      if (document.visibilityState === 'visible' && AppState.user) {
+        try {
+          const profile = await getProfile(AppState.user.id);
+          if (profile && profile.tier !== AppState.tier) {
+            AppState.setProfile(profile);
+            updateUIForUser();
+            renderHomeTab();
+            showToast(`Plan upgraded to ${profile.tier.charAt(0).toUpperCase() + profile.tier.slice(1)}!`, 'success');
+          }
+        } catch (e) {
+          // Silently fail — not critical
+        }
+      }
+    });
+
+    // Support form handler
+    document.getElementById('support-ticket-form')?.addEventListener('submit', handleSubmitSupport);
+
+    async function loadDashboard() {
+      console.log('Loading dashboard...');
+      
+      // Profile
+      try {
+        const profile = await getProfile(AppState.user.id);
+        AppState.setProfile(profile);
+        console.log('Profile loaded:', profile);
+      } catch (e) {
+        console.log('Profile not found, creating...');
+        try {
+          const { data } = await db().from('profiles').insert({ id: AppState.user.id, email: AppState.user.email, tier: 'starter' }).select().single();
+          if (data) AppState.setProfile(data);
+          else AppState.setProfile({ id: AppState.user.id, email: AppState.user.email, tier: 'starter' });
+        } catch (ie) {
+          AppState.setProfile({ id: AppState.user.id, email: AppState.user.email, tier: 'starter' });
+        }
+      }
+
+      // Pets (own + co-parented)
+      try {
+        const ownPets = await getPets(AppState.user.id);
+        let allPets = [...ownPets];
+        try {
+          const sharedPets = await getCoparentPets(AppState.user.id);
+          const ownIds = new Set(ownPets.map(p => p.id));
+          sharedPets.forEach(p => { if (!ownIds.has(p.id)) allPets.push({ ...p, _coparent: true }); });
+        } catch (e) { console.warn('Could not load co-parented pets:', e); }
+        AppState.setPets(allPets);
+        console.log('Pets loaded:', allPets.length);
+        if (allPets.length > 0) AppState.setActivePet(allPets[0]);
+      } catch (e) { 
+        console.error('Error loading pets:', e);
+        AppState.setPets([]); 
+      }
+
+      // Logs
+      if (AppState.activePet) {
+        try {
+          const logs = await getLogs(AppState.activePet.id);
+          AppState.setLogs(logs);
+          console.log('Logs loaded:', logs.length);
+        } catch (e) { 
+          console.error('Error loading logs:', e);
+          AppState.setLogs([]); 
+        }
+        try {
+          foodLogs = await getFoodLogs(AppState.activePet.id);
+          console.log('Food logs loaded:', foodLogs.length);
+        } catch (e) { 
+          console.error('Error loading food logs:', e);
+          foodLogs = []; 
+        }
+        // Load symptom logs
+        try { giLogs = await getGiLogs(AppState.activePet.id); } catch(e) { giLogs = []; }
+        try { cardioLogs = await getCardioLogs(AppState.activePet.id); } catch(e) { cardioLogs = []; }
+        try { testResults = await getTestResults(AppState.activePet.id); } catch(e) { testResults = []; }
+        try { dermaLogs = await getDermaLogs(AppState.activePet.id); } catch(e) { dermaLogs = []; }
+        try { groomingAppointments = await getGroomingAppointments(AppState.activePet.id); } catch(e) { groomingAppointments = []; }
+      }
+
+      updateUIForUser();
+      renderPetSelector(AppState.pets, AppState.activePet?.id);
+      renderHomeTab();
+      console.log('Dashboard render complete');
+    }
+
+    /* --- Time-based greeting --- */
+    function getGreeting() {
+      const h = new Date().getHours();
+      if (h < 12) return 'Good morning';
+      if (h < 17) return 'Good afternoon';
+      return 'Good evening';
+    }
+
+    /* --- Calculate streak --- */
+    function calcStreak(logs) {
+      if (!logs || logs.length === 0) return 0;
+      const days = new Set();
+      logs.forEach(l => days.add(new Date(l.created_at).toDateString()));
+      let streak = 0;
+      const d = new Date();
+      while (days.has(d.toDateString())) {
+        streak++;
+        d.setDate(d.getDate() - 1);
+      }
+      return streak;
+    }
+
+    /* --- Home Tab Renderer --- */
+    function renderHomeTab() {
+      const el = document.getElementById('home-inner');
+      if (!el) return;
+      const name = AppState.user?.display_name || AppState.user?.email?.split('@')[0] || 'there';
+      const hasPet = !!AppState.activePet;
+      const tier = AppState.tier || 'starter';
+      const logs = AppState.logs || [];
+
+      // Greeting
+      let html = `<div class="greeting"><h1>${getGreeting()}, ${escapeHtml(name)}</h1>`;
+      if (hasPet) {
+        html += `<p>Here's what's happening with ${escapeHtml(AppState.activePet.name)} today.</p>`;
+      } else {
+        html += `<p>Get started by adding your first pet.</p>`;
+      }
+      html += `</div>`;
+
+      // No pet? Show welcome
+      if (!hasPet) {
+        html += `
+          <div class="welcome-state">
+            <span class="welcome-emoji"><i data-lucide="paw-print" style="width:32px;height:32px"></i></span>
+            <h3>Add your first pet</h3>
+            <p>Once you add your dog, you'll see their daily summary, care timeline, and more right here.</p>
+            <button class="btn btn-primary" onclick="openModal('modal-add-pet')">Add Your Dog</button>
+          </div>`;
+        el.innerHTML = html;
+        lucide.createIcons();
+        return;
+      }
+
+      // Streak
+      const streak = calcStreak(logs);
+      if (streak > 0) {
+        html += `<div class="streak-card"><span class="streak-emoji"><i data-lucide="flame" style="width:18px;height:18px"></i></span><div class="streak-text"><span>${streak}-day streak!</span> Keep logging to stay on track.</div></div>`;
+      }
+
+      // Quick log buttons
+      if (tier === 'pro') {
+        html += `
+          <div class="quick-log-row">
+            <button class="quick-log-btn" onclick="openLogModal('meal')"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i> Feed</button>
+            <button class="quick-log-btn" onclick="openLogModal('medication')"><i data-lucide="pill" style="width:16px;height:16px"></i> Meds</button>
+            <button class="quick-log-btn" onclick="openLogModal('bathroom')"><i data-lucide="footprints" style="width:16px;height:16px"></i> Walk</button>
+          </div>`;
+      } else if (tier === 'basic') {
+        html += `
+          <div class="quick-log-row">
+            <button class="quick-log-btn" onclick="openLogModal('meal')"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i> Feed</button>
+            <button class="quick-log-btn" onclick="openLogModal('medication')"><i data-lucide="pill" style="width:16px;height:16px"></i> Meds</button>
+            <button class="quick-log-btn" onclick="openLogModal('bathroom')"><i data-lucide="footprints" style="width:16px;height:16px"></i> Walk</button>
+          </div>`;
+      } else {
+        // Starter tier - notes only
+        html += `
+          <div class="quick-log-row">
+            <button class="quick-log-btn" onclick="openLogModal('custom')"><i data-lucide="file-text" style="width:16px;height:16px"></i> Add Note</button>
+          </div>`;
+      }
+
+      // Summary cards - show meal/med/bathroom for paid, notes for free
+      const today = new Date().toDateString();
+      const lastMeal = logs.find(l => l.log_type === 'meal');
+      const lastMed = logs.find(l => l.log_type === 'medication');
+      const lastBath = logs.find(l => l.log_type === 'bathroom');
+
+      html += `<div class="summary-grid">`;
+      if (tier === 'starter') {
+        const lastNote = logs.find(l => l.log_type === 'custom');
+        html += `<div class="summary-card" style="grid-column: span 3"><div class="sc-icon blue"><i data-lucide="file-text" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastNote ? escapeHtml(lastNote.title) : 'No notes yet'}</h4><p>${lastNote ? formatDateTime(lastNote.created_at) : 'Add notes about your dog'}</p></div></div>`;
+      } else {
+        html += `<div class="summary-card"><div class="sc-icon orange"><i data-lucide="utensils-crossed" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMeal ? escapeHtml(lastMeal.title) : 'No meal logged'}</h4><p>${lastMeal ? formatDateTime(lastMeal.created_at) : 'Log the first meal of the day'}</p></div></div>`;
+        html += `<div class="summary-card"><div class="sc-icon blue"><i data-lucide="pill" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMed ? escapeHtml(lastMed.title) : 'No medication'}</h4><p>${lastMed ? formatDateTime(lastMed.created_at) : 'No meds recorded yet'}</p></div></div>`;
+        html += `<div class="summary-card"><div class="sc-icon green"><i data-lucide="footprints" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastBath ? escapeHtml(lastBath.title) : 'No walk logged'}</h4><p>${lastBath ? formatDateTime(lastBath.created_at) : 'Log the last bathroom break'}</p></div></div>`;
+      }
+      html += `</div>`;
+
+      // Starter tier: log prompt
+      if (tier === 'starter') {
+        html += `
+          <div class="locked-feature" style="margin-top:8px">
+            <h3>Start tracking ${escapeHtml(AppState.activePet.name)}'s day</h3>
+            <p>Log meals, medications, and bathroom breaks. See patterns your vet will thank you for.</p>
+            <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Timeline — from $4.99/mo</button>
+          </div>`;
+      }
+
+      // Recent activity (last 5)
+      if (logs.length > 0 && tier !== 'starter') {
+        html += `<div class="timeline-header" style="margin-top:20px"><h2>Recent Activity</h2></div>`;
+        html += `<div class="timeline">`;
+        logs.slice(0, 5).forEach(l => {
+          html += `
+            <div class="timeline-item">
+              <div class="timeline-icon ${getLogColor(l.log_type)}">${getLogIcon(l.log_type)}</div>
+              <div class="timeline-body">
+                <div class="timeline-title">${escapeHtml(l.title)}</div>
+                ${l.notes ? `<div class="timeline-notes">${escapeHtml(l.notes)}</div>` : ''}
+                <div class="timeline-time">${formatDateTime(l.created_at)}</div>
+              </div>
+            </div>`;
+        });
+        html += `</div>`;
+        html += `<button class="btn btn-ghost btn-sm" onclick="switchTab('timeline')" style="margin-top:8px">View full timeline →</button>`;
+      }
+
+      el.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    /* --- Refresh profile from server (e.g., after Paystack webhook upgrade) --- */
+    async function refreshProfile() {
+      if (!AppState.user) return;
+      try {
+        const profile = await getProfile(AppState.user.id);
+        if (profile) {
+          const oldTier = AppState.tier;
+          AppState.setProfile(profile);
+          if (profile.tier !== oldTier) {
+            renderHomeTab();
+          }
+        }
+      } catch (e) {
+        // Silently fail
+      }
+    }
+
+    /* --- UI Update --- */
+    function updateUIForUser() {
+      const email = AppState.user?.email || '';
+      const name = AppState.user?.display_name || email.split('@')[0];
+      const initials = (AppState.user?.display_name || email).charAt(0).toUpperCase();
+      const tier = AppState.tier;
+
+      ['sidebar-avatar', 'mobile-avatar'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = initials; });
+      ['sidebar-name', 'mobile-name'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = name; });
+      const tierLabels = { starter: 'Starter', basic: 'Basic', family: 'Family', pro: 'Pro' };
+      ['sidebar-tier', 'mobile-tier'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = tierLabels[tier] || 'Free'; });
+
+      const settingsEmail = document.getElementById('settings-email');
+      const settingsTier = document.getElementById('settings-tier');
+      const settingsName = document.getElementById('settings-name');
+      if (settingsEmail) settingsEmail.textContent = email;
+      if (settingsName) settingsName.value = AppState.user?.display_name || '';
+      if (settingsTier) settingsTier.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+
+      // Subscription management visibility
+      const subStatus = document.getElementById('settings-sub-status');
+      const manageBtn = document.getElementById('btn-manage-sub');
+      if (tier !== 'starter' && AppState.profile?.subscription_code) {
+        if (subStatus) subStatus.textContent = 'Subscription active';
+        if (manageBtn) manageBtn.style.display = 'inline-flex';
+      } else if (tier !== 'starter') {
+        if (subStatus) subStatus.textContent = 'Active (legacy)';
+        if (manageBtn) manageBtn.style.display = 'none';
+      } else {
+        if (subStatus) subStatus.textContent = '';
+        if (manageBtn) manageBtn.style.display = 'none';
+      }
+
+      // Sidebar upgrade nudge
+      const upgradeNudge = document.getElementById('sidebar-upgrade');
+      if (upgradeNudge) upgradeNudge.style.display = tier === 'starter' ? 'block' : 'none';
+
+      // Pet badge in sidebar
+      const petBadge = document.getElementById('sidebar-pet-badge');
+      const mobilePetBadge = document.getElementById('mobile-pet-badge');
+      if (AppState.activePet) {
+        if (petBadge) { petBadge.style.display = 'flex'; document.getElementById('sidebar-pet-name').textContent = AppState.activePet.name; document.getElementById('sidebar-pet-breed').textContent = AppState.activePet.breed || 'No breed'; }
+        if (mobilePetBadge) { mobilePetBadge.style.display = 'flex'; document.getElementById('mobile-pet-name').textContent = AppState.activePet.name; document.getElementById('mobile-pet-breed').textContent = AppState.activePet.breed || ''; }
+      } else {
+        if (petBadge) petBadge.style.display = 'none';
+        if (mobilePetBadge) mobilePetBadge.style.display = 'none';
+      }
+
+      // Add pet button
+      const addPetBtn = document.getElementById('add-pet-btn');
+      if (addPetBtn) addPetBtn.style.display = AppState.pets.length >= AppState.maxPets() ? 'none' : 'flex';
+
+      // Admin links
+      if (AppState.profile?.is_admin) {
+        const sl = document.getElementById('admin-sidebar-link'); if (sl) sl.style.display = 'flex';
+        const ml = document.getElementById('admin-mobile-link'); if (ml) ml.style.display = 'block';
+      }
+
+      // Dark toggle
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const dt = document.getElementById('settings-dark-toggle'); if (dt) dt.classList.toggle('active', isDark);
+
+      // Analytics toggle
+      const at = document.getElementById('settings-analytics-toggle');
+      if (at) at.classList.toggle('active', typeof analyticsConsented === 'function' && analyticsConsented());
+
+      // Notification prefs
+      const prefs = AppState.profile?.notification_preferences || {};
+      ['email_updates','sitter_activity','billing_alerts','marketing'].forEach(key => {
+        const el = document.getElementById('notif-' + key.replace(/_/g, '-'));
+        if (el) el.classList.toggle('active', prefs[key] !== false);
+      });
+
+      // Billing info
+      loadBillingInfo();
+
+      updateFeatureAccess();
+    }
+
+    /* --- Billing Info --- */
+    async function loadBillingInfo() {
+      const tier = AppState.tier;
+      const nextBilling = document.getElementById('settings-next-billing');
+      if (nextBilling) {
+        if (tier !== 'starter' && AppState.profile?.next_billing_date) {
+          const d = new Date(AppState.profile.next_billing_date);
+          nextBilling.textContent = 'Next billing: ' + d.toLocaleDateString();
+        } else if (tier !== 'starter') {
+          nextBilling.textContent = 'Billing date unavailable';
+        } else {
+          nextBilling.textContent = '';
+        }
+      }
+      // Payment history
+      const historyEl = document.getElementById('billing-history');
+      if (!historyEl) return;
+      if (tier === 'starter') { historyEl.innerHTML = ''; return; }
+      try {
+        const payments = await getPaymentHistory(AppState.user.id);
+        if (payments.length === 0) {
+          historyEl.innerHTML = '<p style="font-size:0.78rem;color:var(--text-muted)">No payment history yet.</p>';
+          return;
+        }
+        historyEl.innerHTML = '<div style="font-size:0.78rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Payment History</div>' +
+          payments.map(p => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:0.78rem;border-bottom:1px solid var(--border-color)">
+              <span style="color:var(--text-secondary)">${new Date(p.paid_at).toLocaleDateString()}</span>
+              <span style="font-weight:600">${p.currency === 'NGN' ? '₦' : '$'}${p.amount}</span>
+              <span style="color:${p.status === 'success' ? 'var(--green-600,#16a34a)' : p.status === 'refunded' ? 'var(--orange-600)' : 'var(--text-muted)'}">${p.status}</span>
+            </div>
+          `).join('');
+      } catch (e) {
+        historyEl.innerHTML = '';
+      }
+    }
+
+    /* --- Analytics consent toggle --- */
+    function toggleAnalyticsConsent() {
+      if (typeof analyticsConsented !== 'function') return;
+      const enabled = !analyticsConsented();
+      setAnalyticsConsent(enabled);
+      const at = document.getElementById('settings-analytics-toggle');
+      if (at) at.classList.toggle('active', enabled);
+      if (enabled && typeof trackPageView === 'function') trackPageView();
+    }
+
+    function updateFeatureAccess() {
+      const hasPet = !!AppState.activePet;
+      const tier = AppState.tier;
+
+      // QR
+      const qrActive = document.getElementById('qr-active');
+      const qrLocked = document.getElementById('qr-locked');
+      const qrNoPet = document.getElementById('qr-no-pet');
+      if (!hasPet) { show(qrNoPet); hide(qrActive); hide(qrLocked); }
+      else if (!AppState.canAccess('qr_passive')) { show(qrLocked); hide(qrActive); hide(qrNoPet); }
+      else { show(qrActive); hide(qrLocked); hide(qrNoPet); generateQR(); }
+
+      // AI
+      const aiActive = document.getElementById('ai-active');
+      const aiTeaser = document.getElementById('ai-teaser');
+      if (AppState.canAccess('ai_report')) { show(aiActive); hide(aiTeaser); }
+      else { hide(aiActive); show(aiTeaser); }
+
+      // Sitter
+      const sitterLocked = document.getElementById('sitter-locked');
+      const sitterActive = document.getElementById('sitter-active');
+      if (AppState.canAccess('sitter_link') && hasPet) { show(sitterActive); hide(sitterLocked); const spn = document.getElementById('sitter-pet-name'); if (spn) spn.textContent = AppState.activePet.name; }
+      else { hide(sitterActive); show(sitterLocked); }
+
+      // Symptoms
+      const symptomsLocked = document.getElementById('symptoms-locked');
+      const symptomsActive = document.getElementById('symptoms-active');
+      if (AppState.canAccess('symptom_tracking')) { show(symptomsActive); hide(symptomsLocked); }
+      else { hide(symptomsActive); show(symptomsLocked); }
+
+      // Grooming
+      const groomingLocked = document.getElementById('grooming-locked');
+      const groomingActive = document.getElementById('grooming-active');
+      if (AppState.canAccess('grooming')) { show(groomingActive); hide(groomingLocked); }
+      else { hide(groomingActive); show(groomingLocked); }
+    }
+
+    function show(el) { if (el) el.style.display = 'block'; }
+    function hide(el) { if (el) el.style.display = 'none'; }
+
+    /* --- Tab Switching --- */
+    function switchTab(tab, el) {
+      if (el && el.preventDefault) el.preventDefault();
+      document.querySelectorAll('.dash-sidebar-nav a').forEach(a => a.classList.remove('active'));
+      const sl = document.querySelector(`.dash-sidebar-nav a[data-tab="${tab}"]`); if (sl) sl.classList.add('active');
+      document.querySelectorAll('.bottom-nav a').forEach(a => a.classList.remove('active'));
+      const bl = document.querySelector(`.bottom-nav a[data-tab="${tab}"]`); if (bl) bl.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(t => { t.classList.remove('active'); t.style.display = ''; });
+      const te = document.getElementById('tab-' + tab); if (te) te.classList.add('active');
+      if (tab === 'home') renderHomeTab();
+      if (['qr','ai','sitter','symptoms','grooming'].includes(tab)) updateFeatureAccess();
+      if (tab === 'settings') { refreshProfile().then(() => { updateUIForUser(); loadBillingInfo(); }); }
+      if (tab === 'pets') renderPetsList();
+      if (tab === 'timeline') handleTimelineTab();
+      if (tab === 'food') { renderFoodTab(); }
+      if (tab === 'symptoms') { renderSymptomsTab(); }
+      if (tab === 'grooming') { renderGroomingTab(); }
+      if (tab === 'sitter') { loadCarePlans(); }
+      if (tab === 'coparent') { renderCoparentsTab(); }
+      if (tab === 'support') { renderSupportTab(); }
+      if (['qr','ai','sitter','coparent','symptoms','grooming','support'].includes(tab)) updateFeatureAccess();
+      // Track feature usage for analytics
+      if (typeof trackFeature === 'function') trackFeature('tab_' + tab);
+    }
+
+    /* --- Mobile Menu --- */
+    function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('active'); document.getElementById('mobile-menu-overlay').classList.toggle('active'); }
+    function closeMobileMenu() { document.getElementById('mobile-menu').classList.remove('active'); document.getElementById('mobile-menu-overlay').classList.remove('active'); }
+
+    /* --- Pet Change --- */
+    async function handlePetChange(petId) {
+      if (!petId) return;
+      const pet = AppState.pets.find(p => p.id === petId);
+      if (pet) {
+        AppState.setActivePet(pet);
+        try { const logs = await getLogs(pet.id); AppState.setLogs(logs); renderTimeline(logs); } catch(e) { renderTimeline([]); }
+        try { foodLogs = await getFoodLogs(pet.id); } catch(e) { foodLogs = []; }
+        // Load symptom logs
+        try { giLogs = await getGiLogs(pet.id); } catch(e) { giLogs = []; }
+        try { cardioLogs = await getCardioLogs(pet.id); } catch(e) { cardioLogs = []; }
+        try { testResults = await getTestResults(pet.id); } catch(e) { testResults = []; }
+        try { dermaLogs = await getDermaLogs(pet.id); } catch(e) { dermaLogs = []; }
+        try { groomingAppointments = await getGroomingAppointments(pet.id); } catch(e) { groomingAppointments = []; }
+        updateFeatureAccess();
+        updateUIForUser();
+        renderHomeTab();
+        if (AppState.activeTab === 'food') renderFoodTab();
+        if (AppState.activeTab === 'symptoms') renderSymptomsTab();
+      }
+    }
+
+    /* --- Add Pet --- */
+    document.getElementById('add-pet-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('pet-name').value.trim();
+      const breed = document.getElementById('pet-breed').value.trim();
+      const weight = parseFloat(document.getElementById('pet-weight').value) || null;
+      const birthDate = document.getElementById('pet-birth').value || null;
+      const flags = document.getElementById('pet-flags').value.trim();
+      if (!name) { showToast('Please enter a name.', 'error'); return; }
+      try {
+        const pet = await addPet({ user_id: AppState.user.id, name, breed, weight_kg: weight, birth_date: birthDate, medical_flags: flags });
+        AppState.pets.push(pet);
+        AppState.setPets(AppState.pets);
+        AppState.setActivePet(pet);
+        renderPetSelector(AppState.pets, pet.id);
+        renderTimeline([]);
+        updateFeatureAccess();
+        updateUIForUser();
+        renderHomeTab();
+        closeModal('modal-add-pet');
+        document.getElementById('add-pet-form').reset();
+        showToast(`${name} added!`, 'success');
+      } catch (err) { showToast(err.message || 'Could not add pet.', 'error'); }
+    });
+
+    /* --- Pets List --- */
+    function renderPetsList() {
+      const c = document.getElementById('pets-list');
+      if (!c) return;
+      if (AppState.pets.length === 0) { c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="paw-print" style="width:32px;height:32px"></i></span><h3>No pets yet</h3><p>Add your first pet to get started.</p><button class="btn btn-primary" onclick="openModal(\'modal-add-pet\')">Add Pet</button></div>'; lucide.createIcons(); return; }
+      c.innerHTML = AppState.pets.map(pet => `
+        <div class="card flex items-center justify-between" style="padding:16px 20px">
+          <div class="flex items-center gap-3">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--orange-50);display:flex;align-items:center;justify-content:center"><i data-lucide="dog" style="width:18px;height:18px"></i></div>
+            <div>
+              <div style="font-size:0.9rem;font-weight:600">${escapeHtml(pet.name)}</div>
+              <div style="font-size:0.78rem;color:var(--text-secondary)">${pet.breed || 'No breed'}${pet.weight_kg ? ' · ' + pet.weight_kg + 'kg' : ''}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="btn btn-ghost btn-sm" onclick="editPet('${pet.id}')">Edit</button>
+            <button class="btn btn-ghost btn-sm" onclick="handleDeletePet('${pet.id}')" style="color:#dc2626">Delete</button>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function editPet(petId) {
+      const pet = AppState.pets.find(p => p.id === petId); if (!pet) return;
+      document.getElementById('pet-name').value = pet.name;
+      document.getElementById('pet-breed').value = pet.breed || '';
+      document.getElementById('pet-weight').value = pet.weight_kg || '';
+      document.getElementById('pet-birth').value = pet.birth_date || '';
+      document.getElementById('pet-flags').value = pet.medical_flags || '';
+      const form = document.getElementById('add-pet-form');
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const updated = await updatePet(petId, { name: document.getElementById('pet-name').value.trim(), breed: document.getElementById('pet-breed').value.trim(), weight_kg: parseFloat(document.getElementById('pet-weight').value) || null, birth_date: document.getElementById('pet-birth').value || null, medical_flags: document.getElementById('pet-flags').value.trim() });
+          const idx = AppState.pets.findIndex(p => p.id === petId);
+          AppState.pets[idx] = updated;
+          AppState.setPets(AppState.pets);
+          if (AppState.activePet?.id === petId) AppState.setActivePet(updated);
+          renderPetSelector(AppState.pets, petId);
+          renderPetsList();
+          renderHomeTab();
+          updateUIForUser();
+          closeModal('modal-add-pet');
+          form.reset();
+          showToast('Pet updated!', 'success');
+        } catch (err) { showToast(err.message, 'error'); }
+      };
+      openModal('modal-add-pet');
+    }
+
+    async function handleDeletePet(petId) {
+      if (!confirm('Delete this pet and all their logs?')) return;
+      try {
+        await deletePet(petId);
+        AppState.pets = AppState.pets.filter(p => p.id !== petId);
+        AppState.setPets(AppState.pets);
+        if (AppState.activePet?.id === petId) { AppState.setActivePet(AppState.pets[0] || null); if (AppState.pets[0]) await handlePetChange(AppState.pets[0].id); }
+        renderPetSelector(AppState.pets, AppState.activePet?.id);
+        renderPetsList();
+        renderHomeTab();
+        updateUIForUser();
+        showToast('Pet deleted.', 'info');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    /* --- Timeline Tab Handler --- */
+    function handleTimelineTab() {
+      const tier = AppState.tier || 'starter';
+      const hasPet = !!AppState.activePet;
+
+      if (!hasPet) {
+        renderTimeline([]);
+        return;
+      }
+
+      if (tier === 'starter') {
+        const container = document.getElementById('timeline-feed');
+        if (container) {
+          container.innerHTML = `
+            <div class="locked-feature" style="margin-top:24px">
+              <span class="lock-emoji"><i data-lucide="clipboard-list" style="width:24px;height:24px"></i></span>
+              <h3>Timeline Logging</h3>
+              <p>Log meals, medications, bathroom breaks, and more. See a complete timeline of your dog's day.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Track meals and portions</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Log medications & supplements</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Bathroom & walk tracking</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Daily streak & activity summary</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Timeline — from $4.99/mo</button>
+            </div>`;
+          lucide.createIcons();
+        }
+      } else {
+        renderTimeline(AppState.logs);
+      }
+    }
+
+    /* --- Log Modal --- */
+    function openLogModal(type) {
+      if (!AppState.activePet) { showToast('Add a pet first.', 'error'); return; }
+      
+      // Free users can only add notes (custom type)
+      if (AppState.tier === 'starter' && type !== 'custom') {
+        openModal('modal-pricing');
+        return;
+      }
+      
+      document.getElementById('log-type').value = type;
+      const titles = { meal: 'Log Meal', medication: 'Log Medication', bathroom: 'Log Bathroom', custom: 'Add Note' };
+      document.getElementById('log-modal-title').textContent = titles[type] || 'Log Entry';
+      document.getElementById('log-title').value = '';
+      document.getElementById('log-notes').value = '';
+      openModal('modal-add-log');
+    }
+
+    function handleQuickLogTap() {
+      if (!AppState.activePet) { showToast('Add a pet first.', 'error'); return; }
+      if (AppState.tier === 'starter') { openModal('modal-pricing'); return; }
+      openLogModal('meal');
+    }
+
+    /* --- Food Log --- */
+    let foodLogs = [];
+
+    function getFoodTypeLabel(type) {
+      const labels = { commercial: 'Commercial', homemade: 'Homemade', raw: 'Raw', treat: 'Treat', supplement: 'Supplement' };
+      return labels[type] || type;
+    }
+
+    async function loadFoodLogs() {
+      if (!AppState.activePet) { foodLogs = []; return; }
+      try {
+        foodLogs = await getFoodLogs(AppState.activePet.id);
+      } catch (e) { foodLogs = []; }
+    }
+
+    function renderFoodTab() {
+      const list = document.getElementById('food-list');
+      const noPet = document.getElementById('food-no-pet');
+      const addBtn = document.getElementById('add-food-btn');
+      const tier = AppState.tier || 'starter';
+      const canAddFood = AppState.canAccess('food_log');
+
+      if (!AppState.activePet) {
+        if (list) list.style.display = 'none';
+        if (noPet) noPet.style.display = 'block';
+        if (addBtn) addBtn.style.display = 'none';
+        return;
+      }
+
+      if (noPet) noPet.style.display = 'none';
+      if (list) list.style.display = 'flex';
+      
+      // Show add button only for Basic+/Family+/Pro, show upgrade for Starter
+      if (addBtn) {
+        if (canAddFood) {
+          addBtn.style.display = 'inline-flex';
+        } else {
+          addBtn.style.display = 'none';
+        }
+      }
+
+      renderFoodList(tier, canAddFood);
+    }
+
+    async function renderFoodList(tier, canAddFood) {
+      await loadFoodLogs();
+      const c = document.getElementById('food-list');
+      if (!c) return;
+
+      const canAnalyze = AppState.canAccess('food_analysis');
+
+      if (foodLogs.length === 0) {
+        let buttonHtml = '';
+        if (canAddFood) {
+          buttonHtml = `<button class="btn btn-primary" onclick="openModal('modal-add-food')">Log First Meal</button>`;
+        } else {
+          buttonHtml = `
+            <div class="locked-feature" style="margin-top:8px">
+              <h3>Track your dog's nutrition</h3>
+              <p>Log food brands, portions, and homemade recipes. Get nutritional analysis to understand what they're eating.</p>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Food Log — from $4.99/mo</button>
+            </div>`;
+        }
+        c.innerHTML = `<div class="welcome-state">
+          <span class="welcome-emoji"><i data-lucide="utensils-crossed" style="width:32px;height:32px"></i></span>
+          <h3>No food logged yet</h3>
+          <p>Track what your dog eats — brands, portions, homemade recipes.</p>
+          ${buttonHtml}
+        </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      c.innerHTML = foodLogs.map(food => {
+        const portion = `${food.portion_size} ${food.portion_unit}`;
+        const hasNutrition = food.protein_percentage !== null;
+
+        let nutritionHtml = '';
+        if (hasNutrition) {
+          nutritionHtml = `
+            <div class="fc-nutrition">
+              <div class="nutri-item"><span class="nutri-val">${food.calories_per_cup || '—'}</span><span class="nutri-label">kcal/cup</span></div>
+              <div class="nutri-item"><span class="nutri-val">${food.protein_percentage}%</span><span class="nutri-label">Protein</span></div>
+              <div class="nutri-item"><span class="nutri-val">${food.fat_percentage}%</span><span class="nutri-label">Fat</span></div>
+              <div class="nutri-item"><span class="nutri-val">${food.carbs_percentage || '—'}%</span><span class="nutri-label">Carbs</span></div>
+            </div>`;
+        } else if (canAnalyze) {
+          nutritionHtml = `<button class="btn btn-secondary btn-sm analyze-btn" onclick="analyzeFood('${food.id}')">Analyze Nutrition</button>`;
+        } else {
+          nutritionHtml = `
+            <div class="nutrition-locked">
+              <p>Get nutritional analysis with Basic plan or above.</p>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Unlock — from $4.99/mo</button>
+            </div>`;
+        }
+
+        // Show edit/delete only for paid users
+        const actionsHtml = canAddFood ? `
+          <div style="margin-top:10px;display:flex;justify-content:flex-end;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="editFood('${food.id}')" style="font-size:0.72rem">Edit</button>
+            <button class="btn btn-ghost btn-sm" onclick="deleteFood('${food.id}')" style="color:#dc2626;font-size:0.72rem">Delete</button>
+          </div>
+        ` : '';
+
+        return `
+          <div class="food-card">
+            <div class="fc-header">
+              <div>
+                <div class="fc-title">${escapeHtml(food.product_name || food.brand_name || 'Food Entry')}</div>
+                <div class="fc-brand">${escapeHtml(food.brand_name || '')} ${food.product_name ? '— ' + escapeHtml(food.product_name) : ''}</div>
+              </div>
+              <span class="food-type-badge ${food.food_type}">${getFoodTypeLabel(food.food_type)}</span>
+            </div>
+            <div class="fc-portion">Portion: ${portion}</div>
+            <div class="fc-meta">
+              <span>${formatDateTime(food.fed_at)}</span>
+              ${food.ingredients ? `<span>${food.ingredients.split('\n').length} ingredients</span>` : ''}
+            </div>
+            ${nutritionHtml}
+            ${actionsHtml}
+          </div>`;
+      }).join('');
+    }
+
+    // Show/hide ingredients based on food type
+    document.getElementById('food-type')?.addEventListener('change', function() {
+      const ingGroup = document.getElementById('ingredients-group');
+      if (this.value === 'homemade' || this.value === 'raw') {
+        ingGroup.style.display = 'block';
+      } else {
+        ingGroup.style.display = 'none';
+      }
+    });
+
+    // Add food form
+    document.getElementById('add-food-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      
+      // Check if user can add food logs
+      if (!AppState.canAccess('food_log')) {
+        openModal('modal-pricing');
+        return;
+      }
+
+      const foodType = document.getElementById('food-type').value;
+      const brand = document.getElementById('food-brand').value.trim();
+      const product = document.getElementById('food-product').value.trim();
+      const portion = parseFloat(document.getElementById('food-portion').value) || 0;
+      const unit = document.getElementById('food-unit').value;
+      const ingredients = document.getElementById('food-ingredients').value.trim();
+      const notes = document.getElementById('food-notes').value.trim();
+
+      if (!foodType) { showToast('Select a food type.', 'error'); return; }
+      if (!brand && !product) { showToast('Enter brand or product name.', 'error'); return; }
+      if (portion <= 0) { showToast('Enter a valid portion size.', 'error'); return; }
+
+      try {
+        const foodLog = await addFoodLog({
+          pet_id: AppState.activePet.id,
+          user_id: AppState.user.id,
+          food_type: foodType,
+          brand_name: brand,
+          product_name: product,
+          portion_size: portion,
+          portion_unit: unit,
+          ingredients: ingredients,
+          notes: notes,
+          fed_at: new Date().toISOString()
+        });
+        showToast('Food logged!', 'success');
+        closeModal('modal-add-food');
+        document.getElementById('add-food-form').reset();
+        document.getElementById('ingredients-group').style.display = 'none';
+        renderFoodList(AppState.tier || 'starter', AppState.canAccess('food_log'));
+      } catch (err) { showToast(err.message || 'Could not save food entry.', 'error'); }
+    });
+
+    async function analyzeFood(foodId) {
+      const food = foodLogs.find(f => f.id === foodId);
+      if (!food) return;
+
+      const btn = document.querySelector(`[onclick="analyzeFood('${foodId}')"]`);
+      if (btn) { btn.textContent = 'Analyzing...'; btn.disabled = true; }
+
+      try {
+        const analyzed = await analyzeNutrition(food);
+        await updateFoodLog(foodId, {
+          calories_per_cup: analyzed.calories_per_cup,
+          protein_percentage: analyzed.protein_percentage,
+          fat_percentage: analyzed.fat_percentage,
+          fiber_percentage: analyzed.fiber_percentage,
+          carbs_percentage: analyzed.carbs_percentage,
+          moisture_percentage: analyzed.moisture_percentage
+        });
+        showToast('Nutrition analyzed!', 'success');
+        renderFoodList();
+      } catch (err) { showToast(err.message || 'Analysis failed.', 'error'); renderFoodList(); }
+    }
+
+    async function deleteFood(foodId) {
+      if (!confirm('Delete this food entry?')) return;
+      try {
+        await deleteFoodLog(foodId);
+        foodLogs = foodLogs.filter(f => f.id !== foodId);
+        renderFoodList();
+        showToast('Entry deleted.', 'info');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    function editFood(foodId) {
+      const food = foodLogs.find(f => f.id === foodId);
+      if (!food) return;
+
+      document.getElementById('food-type').value = food.food_type || '';
+      document.getElementById('food-brand').value = food.brand_name || '';
+      document.getElementById('food-product').value = food.product_name || '';
+      document.getElementById('food-portion').value = food.portion_size || '';
+      document.getElementById('food-unit').value = food.portion_unit || 'cups';
+      document.getElementById('food-ingredients').value = food.ingredients || '';
+      document.getElementById('food-notes').value = food.notes || '';
+
+      const ingGroup = document.getElementById('ingredients-group');
+      if (food.food_type === 'homemade' || food.food_type === 'raw') {
+        ingGroup.style.display = 'block';
+      } else {
+        ingGroup.style.display = 'none';
+      }
+
+      const form = document.getElementById('add-food-form');
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const updated = await updateFoodLog(foodId, {
+            food_type: document.getElementById('food-type').value,
+            brand_name: document.getElementById('food-brand').value.trim(),
+            product_name: document.getElementById('food-product').value.trim(),
+            portion_size: parseFloat(document.getElementById('food-portion').value) || null,
+            portion_unit: document.getElementById('food-unit').value,
+            ingredients: document.getElementById('food-ingredients').value.trim(),
+            notes: document.getElementById('food-notes').value.trim()
+          });
+          const idx = foodLogs.findIndex(f => f.id === foodId);
+          if (idx > -1) foodLogs[idx] = updated;
+          showToast('Food entry updated!', 'success');
+          closeModal('modal-add-food');
+          form.reset();
+          form.onsubmit = null; // Reset to default add handler
+          document.getElementById('ingredients-group').style.display = 'none';
+          renderFoodList();
+        } catch (err) { showToast(err.message, 'error'); }
+      };
+      openModal('modal-add-food');
+    }
+
+    document.getElementById('add-log-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = document.getElementById('log-type').value;
+      const title = document.getElementById('log-title').value.trim();
+      const notes = document.getElementById('log-notes').value.trim();
+      if (!title) { showToast('Please enter a title.', 'error'); return; }
+      try {
+        const log = await addLog({ pet_id: AppState.activePet.id, user_id: AppState.user.id, log_type: type, title, notes });
+        AppState.logs.unshift(log);
+        renderTimeline(AppState.logs);
+        renderHomeTab();
+        closeModal('modal-add-log');
+        showToast('Entry logged!', 'success');
+      } catch (err) { showToast(err.message || 'Could not save entry.', 'error'); }
+    });
+
+    async function handleDeleteLog(logId) {
+      if (!confirm('Delete this entry?')) return;
+      try {
+        await deleteLog(logId);
+        AppState.logs = AppState.logs.filter(l => l.id !== logId);
+        renderTimeline(AppState.logs);
+        renderHomeTab();
+        showToast('Entry deleted.', 'info');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    /* --- Symptom Tracking (Pro) --- */
+    let giLogs = [], cardioLogs = [], testResults = [], dermaLogs = [];
+    let symptomFilter = 'all';
+
+    function updateSymptomFields() {
+      const cat = document.getElementById('symptom-category').value;
+      document.getElementById('gi-fields').style.display = cat === 'gi' ? 'block' : 'none';
+      document.getElementById('cardio-fields').style.display = cat === 'cardio' ? 'block' : 'none';
+      document.getElementById('tests-fields').style.display = cat === 'tests' ? 'block' : 'none';
+      document.getElementById('derma-fields').style.display = cat === 'derma' ? 'block' : 'none';
+    }
+
+    async function loadAllSymptomLogs() {
+      if (!AppState.activePet) return;
+      try { giLogs = await getGiLogs(AppState.activePet.id); } catch(e) { giLogs = []; }
+      try { cardioLogs = await getCardioLogs(AppState.activePet.id); } catch(e) { cardioLogs = []; }
+      try { testResults = await getTestResults(AppState.activePet.id); } catch(e) { testResults = []; }
+      try { dermaLogs = await getDermaLogs(AppState.activePet.id); } catch(e) { dermaLogs = []; }
+    }
+
+    function renderSymptomsTab() {
+      const locked = document.getElementById('symptoms-locked');
+      const active = document.getElementById('symptoms-active');
+      const addBtn = document.getElementById('add-symptom-btn');
+
+      if (!AppState.activePet) {
+        locked.style.display = 'none';
+        active.style.display = 'none';
+        return;
+      }
+
+      if (AppState.canAccess('symptom_tracking')) {
+        locked.style.display = 'none';
+        active.style.display = 'block';
+        if (addBtn) addBtn.style.display = 'inline-flex';
+        loadAllSymptomLogs().then(() => renderSymptomList());
+      } else {
+        locked.style.display = 'block';
+        active.style.display = 'none';
+        if (addBtn) addBtn.style.display = 'none';
+      }
+    }
+
+    function filterSymptoms(type) {
+      symptomFilter = type;
+      document.querySelectorAll('.symptom-tabs button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      renderSymptomList();
+    }
+
+    function renderSymptomList() {
+      const c = document.getElementById('symptoms-list');
+      if (!c) return;
+
+      let items = [];
+      giLogs.forEach(l => items.push({ type: 'gi', data: l, date: l.recorded_at }));
+      cardioLogs.forEach(l => items.push({ type: 'cardio', data: l, date: l.recorded_at }));
+      testResults.forEach(l => items.push({ type: 'tests', data: l, date: l.test_date || l.created_at }));
+      dermaLogs.forEach(l => items.push({ type: 'derma', data: l, date: l.recorded_at }));
+
+      items.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (symptomFilter !== 'all') {
+        items = items.filter(i => i.type === symptomFilter);
+      }
+
+      if (items.length === 0) {
+        c.innerHTML = `<div class="welcome-state">
+          <span class="welcome-emoji"><i data-lucide="stethoscope" style="width:32px;height:32px"></i></span>
+          <h3>No symptoms logged</h3>
+          <p>Track GI issues, respiratory rate, test results, and skin conditions.</p>
+        </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      c.innerHTML = items.map(item => {
+        let icon = 'stethoscope', title = '', desc = '';
+        if (item.type === 'gi') {
+          icon = 'alert-triangle';
+          title = `GI: ${item.data.log_type}`;
+          desc = `${item.data.consistency || ''} ${item.data.notes || ''}`;
+        } else if (item.type === 'cardio') {
+          icon = 'heart';
+          title = `Respiratory: ${item.data.respiratory_rate} bpm`;
+          desc = `${item.data.position || ''} ${item.data.effort || ''}`;
+        } else if (item.type === 'tests') {
+          icon = 'clipboard-list';
+          title = item.data.test_name;
+          desc = item.data.diagnosis || '';
+        } else if (item.type === 'derma') {
+          icon = 'bandage';
+          title = `Skin: ${item.data.issue_type}`;
+          desc = `${item.data.location || ''} - ${item.data.severity || ''}`;
+        }
+
+        return `
+          <div class="card" style="padding:16px">
+            <div class="flex items-center gap-3">
+              <div><i data-lucide="${icon}" style="width:20px;height:20px"></i></div>
+              <div style="flex:1">
+                <div style="font-weight:600">${title}</div>
+                <div style="font-size:0.8rem;color:var(--text-secondary)">${desc}</div>
+                <div style="font-size:0.7rem;color:var(--text-muted)">${formatDateTime(item.date)}</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="color:#dc2626" onclick="deleteSymptom('${item.type}', '${item.data.id}')">Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    document.getElementById('add-symptom-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+
+      const category = document.getElementById('symptom-category').value;
+      const logData = { 
+        pet_id: AppState.activePet.id, 
+        user_id: AppState.user.id 
+      };
+
+      try {
+        if (category === 'gi') {
+          await addGiLog({
+            ...logData,
+            log_type: document.getElementById('gi-type').value,
+            consistency: document.getElementById('gi-consistency').value,
+            notes: document.getElementById('gi-notes').value,
+            recorded_at: new Date().toISOString()
+          });
+        } else if (category === 'cardio') {
+          await addCardioLog({
+            ...logData,
+            respiratory_rate: parseInt(document.getElementById('cardio-rate').value),
+            position: document.getElementById('cardio-position').value,
+            effort: document.getElementById('cardio-effort').value,
+            notes: document.getElementById('cardio-notes').value,
+            recorded_at: new Date().toISOString()
+          });
+        } else if (category === 'tests') {
+          await addTestResult({
+            ...logData,
+            test_name: document.getElementById('test-name').value,
+            test_date: document.getElementById('test-date').value,
+            veterinarian: document.getElementById('test-vet').value,
+            diagnosis: document.getElementById('test-diagnosis').value,
+            notes: document.getElementById('test-notes').value
+          });
+        } else if (category === 'derma') {
+          await addDermaLog({
+            ...logData,
+            issue_type: document.getElementById('derma-type').value,
+            location: document.getElementById('derma-location').value,
+            severity: document.getElementById('derma-severity').value,
+            description: document.getElementById('derma-description').value,
+            recorded_at: new Date().toISOString()
+          });
+        }
+
+        showToast('Symptom logged!', 'success');
+        closeModal('modal-add-symptom');
+        document.getElementById('add-symptom-form').reset();
+        document.querySelectorAll('#gi-fields, #cardio-fields, #tests-fields, #derma-fields').forEach(el => el.style.display = 'none');
+        renderSymptomsTab();
+      } catch (err) { showToast(err.message || 'Could not save symptom.', 'error'); }
+    });
+
+    async function deleteSymptom(type, id) {
+      if (!confirm('Delete this entry?')) return;
+      try {
+        if (type === 'gi') await deleteGiLog(id);
+        else if (type === 'cardio') await deleteCardioLog(id);
+        else if (type === 'tests') await deleteTestResult(id);
+        else if (type === 'derma') await deleteDermaLog(id);
+        showToast('Entry deleted.', 'info');
+        renderSymptomsTab();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    async function handleGenerateSymptomReport() {
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      const end = new Date().toISOString().split('T')[0];
+      const start = new Date(Date.now() - 30*24*60*60*1000).toISOString().split('T')[0];
+      try {
+        const report = await generateSymptomReport(AppState.activePet.id, start, end);
+        const blob = new Blob([report], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${AppState.activePet.name}-symptom-report.md`;
+        a.click();
+        showToast('Report generated!', 'success');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    /* --- Grooming (Pro) --- */
+    let groomingAppointments = [];
+
+    async function loadGroomingAppointments() {
+      if (!AppState.activePet) { groomingAppointments = []; return; }
+      try { groomingAppointments = await getGroomingAppointments(AppState.activePet.id); }
+      catch(e) { groomingAppointments = []; }
+    }
+
+    function renderGroomingTab() {
+      const locked = document.getElementById('grooming-locked');
+      const active = document.getElementById('grooming-active');
+      const addBtn = document.getElementById('add-grooming-btn');
+
+      if (!AppState.activePet) {
+        locked.style.display = 'none';
+        active.style.display = 'none';
+        return;
+      }
+
+      if (AppState.canAccess('grooming')) {
+        locked.style.display = 'none';
+        active.style.display = 'block';
+        if (addBtn) addBtn.style.display = 'inline-flex';
+        loadGroomingAppointments().then(() => renderGroomingList());
+      } else {
+        locked.style.display = 'block';
+        active.style.display = 'none';
+        if (addBtn) addBtn.style.display = 'none';
+      }
+    }
+
+    function renderGroomingList() {
+      const c = document.getElementById('grooming-list');
+      if (!c) return;
+
+      if (groomingAppointments.length === 0) {
+        c.innerHTML = `<div class="welcome-state">
+          <span class="welcome-emoji"><i data-lucide="scissors" style="width:32px;height:32px"></i></span>
+          <h3>No grooming appointments</h3>
+          <p>Track your pet's grooming history, products used, and results.</p>
+        </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      c.innerHTML = groomingAppointments.map(apt => {
+        const date = new Date(apt.appointment_date);
+        const services = apt.services ? apt.services.join(', ') : '';
+        const products = apt.products_used ? apt.products_used.join(', ') : '';
+        const rating = apt.rating ? Array(apt.rating).fill('<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>').join('') : '';
+
+        return `
+          <div class="card" style="padding:16px">
+            <div class="flex items-center justify-between" style="margin-bottom:8px">
+              <div style="font-weight:600">${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</div>
+              <div style="font-size:0.85rem;display:flex;gap:2px">${rating}</div>
+            </div>
+            <div style="font-size:0.9rem;margin-bottom:4px">${apt.groomer_name || 'Grooming'}</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary)">${apt.location || ''}</div>
+            ${services ? `<div style="font-size:0.75rem;margin-top:8px"><strong>Services:</strong> ${services}</div>` : ''}
+            ${products ? `<div style="font-size:0.75rem"><strong>Products:</strong> ${products}</div>` : ''}
+            ${apt.cost ? `<div style="font-size:0.8rem;margin-top:8px">Cost: $${apt.cost}</div>` : ''}
+            ${apt.notes ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-top:8px">${apt.notes}</div>` : ''}
+            <div style="margin-top:12px;display:flex;justify-content:flex-end">
+              <button class="btn btn-ghost btn-sm" onclick="deleteGrooming('${apt.id}')" style="color:#dc2626">Delete</button>
+            </div>
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    document.getElementById('add-grooming-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+
+      const services = [];
+      if (document.getElementById('groom-service-bath').checked) services.push('Bath');
+      if (document.getElementById('groom-service-haircut').checked) services.push('Haircut');
+      if (document.getElementById('groom-service-nails').checked) services.push('Nail Trim');
+      if (document.getElementById('groom-service-teeth').checked) services.push('Teeth Cleaning');
+      if (document.getElementById('groom-service-ear').checked) services.push('Ear Cleaning');
+      if (document.getElementById('groom-service-deshed').checked) services.push('De-shedding');
+
+      const productsText = document.getElementById('grooming-products').value.trim();
+      const products = productsText ? productsText.split('\n').filter(p => p.trim()) : [];
+
+      try {
+        await addGroomingAppointment({
+          pet_id: AppState.activePet.id,
+          user_id: AppState.user.id,
+          appointment_date: document.getElementById('grooming-date').value,
+          groomer_name: document.getElementById('grooming-groomer').value.trim(),
+          location: document.getElementById('grooming-location').value.trim(),
+          services: services.length > 0 ? services : null,
+          products_used: products.length > 0 ? products : null,
+          cost: parseFloat(document.getElementById('grooming-cost').value) || null,
+          rating: parseInt(document.getElementById('grooming-rating').value) || null,
+          notes: document.getElementById('grooming-notes').value.trim()
+        });
+        showToast('Appointment saved!', 'success');
+        closeModal('modal-add-grooming');
+        document.getElementById('add-grooming-form').reset();
+        renderGroomingTab();
+      } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
+    });
+
+    async function deleteGrooming(id) {
+      if (!confirm('Delete this appointment?')) return;
+      try {
+        await deleteGroomingAppointment(id);
+        showToast('Deleted.', 'info');
+        renderGroomingTab();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    /* --- QR --- */
+    function generateQR() {
+      if (!AppState.activePet) return;
+      const canvas = document.getElementById('qr-canvas');
+      const urlEl = document.getElementById('qr-url');
+      if (!canvas) return;
+      const url = `${window.location.origin}/p/${AppState.activePet.id}`;
+      if (urlEl) urlEl.textContent = url;
+      canvas.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        QRCode.toCanvas(document.createElement('canvas'), url, { width: 200, margin: 2, color: { dark: '#000', light: '#fff' } }, (err, c) => { if (!err) canvas.appendChild(c); });
+      }
+    }
+    function downloadQR() {
+      const canvas = document.querySelector('#qr-canvas canvas'); if (!canvas) return;
+      const link = document.createElement('a');
+      link.download = `houndos-${AppState.activePet?.name || 'pet'}-qr.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    /* --- QR Scanner --- */
+    let qrScanner = null;
+    function startQRScan() {
+      const reader = document.getElementById('qr-reader');
+      const scanBtn = document.getElementById('scan-qr-btn');
+      const stopBtn = document.getElementById('stop-qr-btn');
+      if (qrScanner) return;
+      scanBtn.style.display = 'none';
+      stopBtn.style.display = 'inline-flex';
+      qrScanner = new Html5Qrcode('qr-reader');
+      qrScanner.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => {
+          stopQRScan();
+          handleScannedQR(decodedText);
+        },
+        () => {}
+      ).catch(err => { showToast('Camera access denied or unavailable.', 'error'); stopQRScan(); });
+    }
+    function stopQRScan() {
+      const scanBtn = document.getElementById('scan-qr-btn');
+      const stopBtn = document.getElementById('stop-qr-btn');
+      if (qrScanner) { qrScanner.stop().catch(() => {}); qrScanner = null; }
+      scanBtn.style.display = 'inline-flex';
+      stopBtn.style.display = 'none';
+    }
+    async function handleScannedQR(url) {
+      const match = url.match(/\/p\/([a-f0-9-]+)/i);
+      if (!match) { showToast('Invalid Wagr QR code.', 'error'); return; }
+      const petId = match[1];
+      if (petId === AppState.activePet?.id) { showToast('This is your own pet!', 'info'); return; }
+      try {
+        const pet = await getPublicPetProfile(petId);
+        if (!pet) { showToast('Pet not found.', 'error'); return; }
+        showToast(`Found ${pet.name}! Opening profile...`, 'success');
+        window.open(`public-profile.html?petId=${petId}`, '_blank');
+      } catch(e) { showToast('Could not load pet profile.', 'error'); }
+    }
+
+    /* --- AI Report --- */
+    async function handleGenerateReport() {
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      
+      // Get selected options
+      const options = {
+        includeTimeline: document.getElementById('ai-timeline').checked,
+        includeFood: document.getElementById('ai-food').checked,
+        includeGI: document.getElementById('ai-gi').checked,
+        includeCardio: document.getElementById('ai-cardio').checked,
+        includeTests: document.getElementById('ai-tests').checked,
+        includeDerma: document.getElementById('ai-derma').checked,
+        includeGrooming: document.getElementById('ai-grooming').checked,
+        days: parseInt(document.getElementById('ai-days').value)
+      };
+      
+      const btn = document.getElementById('generate-ai-btn');
+      const output = document.getElementById('ai-report-output');
+      btn.classList.add('btn-loading'); btn.textContent = 'Generating...';
+      output.style.display = 'none';
+      try {
+        const report = await generateVetReport(AppState.activePet.id, options);
+        output.innerHTML = `<div class="ai-report">${escapeHtml(report)}</div>`;
+        output.style.display = 'block';
+      } catch (err) { showToast(err.message || 'Could not generate report.', 'error'); }
+      finally { btn.classList.remove('btn-loading'); btn.textContent = 'Generate Report'; }
+    }
+
+    /* --- Email Notification --- */
+    async function sendEmailNotification(type, to, extra = {}) {
+      if (!to) return;
+      try {
+        const body = { type, to, ...extra };
+        if (AppState.user) body.toName = AppState.user.email?.split('@')[0] || '';
+        if (AppState.activePet && !body.petName) body.petName = AppState.activePet.name;
+        await fetch((window.location.origin || 'https://houndos.app') + '/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+      } catch (e) {
+        console.log('Email send (non-critical):', e.message);
+      }
+    }
+
+    /* --- Sitter --- */
+    async function handleGenerateSitterLink() {
+      if (!AppState.activePet) return;
+      const btn = document.getElementById('generate-sitter-btn');
+      btn.classList.add('btn-loading'); btn.textContent = 'Generating...';
+      try {
+        const token = await createSitterToken(AppState.activePet.id);
+        const link = `${window.location.origin}/dashboard.html?sitter_token=${token}`;
+        document.getElementById('sitter-link-url').value = link;
+        document.getElementById('sitter-link-box').style.display = 'flex';
+        showToast('Sitter link generated!', 'success');
+
+        // Auto-send email if sitter email is provided
+        const sitterEmail = document.getElementById('sitter-email-input').value.trim();
+        if (sitterEmail) {
+          sendEmailNotification('sitter_invite', sitterEmail, {
+            petName: AppState.activePet.name,
+            ownerName: AppState.user?.email?.split('@')[0] || 'A Wagr user',
+            link: link,
+          });
+        }
+      } catch (err) {
+        const link = `${window.location.origin}/dashboard.html?sitter_token=${generateHash()}`;
+        document.getElementById('sitter-link-url').value = link;
+        document.getElementById('sitter-link-box').style.display = 'flex';
+        showToast('Link generated (local mode).', 'info');
+        const sitterEmail = document.getElementById('sitter-email-input').value.trim();
+        if (sitterEmail) {
+          sendEmailNotification('sitter_invite', sitterEmail, {
+            petName: AppState.activePet?.name || 'their pet',
+            ownerName: AppState.user?.email?.split('@')[0] || 'A Wagr user',
+            link: link,
+          });
+        }
+      }
+      finally { btn.classList.remove('btn-loading'); btn.textContent = 'Generate New Link'; }
+    }
+
+    async function handleSendSitterEmail() {
+      const link = document.getElementById('sitter-link-url').value;
+      const sitterEmail = document.getElementById('sitter-email-input').value.trim();
+      if (!sitterEmail) { showToast('Enter a sitter email address first.', 'error'); return; }
+      if (!link) { showToast('Generate a link first.', 'error'); return; }
+      sendEmailNotification('sitter_invite', sitterEmail, {
+        petName: AppState.activePet?.name || 'their pet',
+        ownerName: AppState.user?.email?.split('@')[0] || 'A Wagr user',
+        link: link,
+      });
+    }
+
+    /* --- Sitter Mode --- */
+    async function handleSitterMode(token) {
+      try {
+        const pet = await verifySitterToken(token);
+        if (!pet) { showToast('Invalid or expired sitter link.', 'error'); window.location.href = 'index.html'; return; }
+        
+        // Check if sitter name is already saved
+        const savedName = localStorage.getItem('houndos_sitter_name');
+        
+        // Show name input if not set
+        if (!savedName) {
+          document.body.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px"><div class="card" style="max-width:360px;width:100%;text-align:center"><h2 style="margin-bottom:8px">Welcome!</h2><p style="color:var(--text-secondary);margin-bottom:20px;font-size:0.9rem">What\'s your name? Your entries will be labeled with your name.</p><form onsubmit="event.preventDefault(); startSitterMode(\'' + pet.id + '\', \'' + pet.user_id + '\', this.sittername.value)"><input type="text" class="input-field" name="sittername" placeholder="Your name" required style="margin-bottom:16px"><button type="submit" class="btn btn-primary w-full">Continue</button></form></div></div>';
+          return;
+        }
+        
+        startSitterMode(pet.id, pet.user_id, savedName);
+      } catch (err) { showToast('Error loading sitter view.', 'error'); }
+    }
+
+    async function startSitterMode(petId, userId, sitterName) {
+      try {
+        localStorage.setItem('houndos_sitter_name', sitterName);
+        const pet = await db().from('pets').select('*').eq('id', petId).single();
+        AppState.isSitter = true; AppState.sitterPetId = petId; AppState.activePet = pet.data;
+        document.querySelector('.dash-sidebar')?.remove(); document.querySelector('.bottom-nav')?.remove(); document.querySelector('.mobile-header')?.remove();
+        const main = document.querySelector('.dashboard-main');
+        main.innerHTML = '<div style="padding:16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)"><div class="flex items-center justify-between"><div><div style="font-size:0.85rem;font-weight:600">Sitting: ' + escapeHtml(pet.data.name) + '</div><div style="font-size:0.75rem;color:var(--text-secondary)">' + (pet.data.breed || '') + '</div></div><span class="badge badge-orange">' + escapeHtml(sitterName) + '</span></div></div><div class="dashboard-content"><div class="quick-log-row"><button class="quick-log-btn" onclick="sitterLog(\'meal\')">Feed</button><button class="quick-log-btn" onclick="sitterLog(\'medication\')">Meds</button><button class="quick-log-btn" onclick="sitterLog(\'bathroom\')">Walk</button></div><div class="timeline-header"><h2>Timeline</h2></div><div id="timeline-feed"></div></div>';
+        const logs = await getLogs(pet.id); AppState.setLogs(logs); renderTimeline(logs);
+      } catch (err) { showToast('Error loading sitter view.', 'error'); }
+    }
+
+    function sitterLog(type) {
+      document.getElementById('log-type').value = type;
+      document.getElementById('log-modal-title').textContent = { meal: 'Log Meal', medication: 'Log Meds', bathroom: 'Log Bathroom', custom: 'Add Note' }[type];
+      document.getElementById('log-title').value = ''; document.getElementById('log-notes').value = '';
+      const form = document.getElementById('add-log-form');
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        try {
+          // Include sitter name if available
+          const sitterName = localStorage.getItem('houndos_sitter_name') || 'Sitter';
+          const log = await addSitterLog({ 
+            pet_id: AppState.activePet.id, 
+            user_id: AppState.activePet.user_id, 
+            log_type: document.getElementById('log-type').value, 
+            title: document.getElementById('log-title').value.trim(), 
+            notes: document.getElementById('log-notes').value.trim(),
+            sitter_name: sitterName
+          });
+          AppState.logs.unshift(log); renderTimeline(AppState.logs); closeModal('modal-add-log'); showToast('Logged!', 'success');
+        } catch (err) { showToast('Could not save entry.', 'error'); }
+      };
+      openModal('modal-add-log');
+    }
+
+    /* --- Care Plans --- */
+    async function loadCarePlans() {
+      if (!AppState.activePet) return;
+      const container = document.getElementById('care-plans-list');
+      if (!container) return;
+      try {
+        const plans = await getCarePlans(AppState.activePet.id);
+        if (!plans.length) {
+          container.innerHTML = '<p style="font-size:0.82rem;color:var(--text-muted)">No care plans yet. Create one to share with your sitter.</p>';
+          return;
+        }
+        container.innerHTML = plans.map(p => `
+          <div class="card" style="padding:14px">
+            <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+              <div>
+                <div style="font-weight:600;font-size:0.9rem">${escapeHtml(p.sitter_name)}</div>
+                <div style="font-size:0.78rem;color:var(--text-muted)">${p.start_date} — ${p.end_date}</div>
+              </div>
+              <button class="btn btn-sm btn-ghost" onclick="handleShareCarePlan('${p.id}')">Share</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) { console.error('Load care plans:', err); }
+    }
+
+    async function handleCreateCarePlan(e) {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      const user = AppState.user;
+      if (!user) return;
+      const plan = {
+        pet_id: AppState.activePet.id,
+        user_id: user.id,
+        sitter_name: document.getElementById('care-sitter-name').value.trim(),
+        sitter_email: document.getElementById('care-sitter-email').value.trim(),
+        start_date: document.getElementById('care-start-date').value,
+        end_date: document.getElementById('care-end-date').value,
+        feeding_instructions: document.getElementById('care-feeding').value.trim(),
+        medication_instructions: document.getElementById('care-medication').value.trim(),
+        walking_exercise: document.getElementById('care-exercise').value.trim(),
+        behavioral_notes: document.getElementById('care-behavior').value.trim(),
+        emergency_contact: document.getElementById('care-emergency').value.trim(),
+        vet_info: document.getElementById('care-vet').value.trim(),
+        additional_notes: document.getElementById('care-notes').value.trim()
+      };
+      try {
+        await createCarePlan(plan);
+        closeModal('modal-add-care-plan');
+        showToast('Care plan created!', 'success');
+        loadCarePlans();
+        document.getElementById('add-care-plan-form').reset();
+      } catch (err) { showToast('Could not create care plan.', 'error'); }
+    }
+
+    async function handleShareCarePlan(planId) {
+      try {
+        const shareData = await shareCarePlan(planId);
+        // Show share options
+        const shareUrl = shareData.shareUrl;
+        const emailBody = encodeURIComponent(shareData.emailBody);
+        const emailSubject = encodeURIComponent(shareData.emailSubject);
+        
+        // Create share modal
+        const modalHtml = '<div class="modal-overlay active" onclick="if(event.target === this) this.remove()"><div class="modal" style="max-width:400px"><div class="modal-header"><h3>Share Care Plan</h3><button class="btn-icon" onclick="this.closest(\'.modal-overlay\').remove()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="flex flex-col gap-4"><div class="input-group"><label>Share Link</label><div class="flex gap-2"><input type="text" class="input-field" value="' + shareUrl + '" readonly id="care-plan-url"><button class="btn btn-secondary btn-sm" onclick="copyToClipboard(document.getElementById(\'care-plan-url\').value)">Copy</button></div></div>' + (shareData.sitterEmail ? '<a href="mailto:' + shareData.sitterEmail + '?subject=' + emailSubject + '&body=' + emailBody + '" class="btn btn-primary w-full" style="text-align:center">Send via Email</a>' : '<div class="input-group"><label>Sitter Email</label><input type="email" class="input-field" id="share-care-email" placeholder="sitter@email.com"></div><button class="btn btn-primary w-full" onclick="sendCarePlanEmail(\'' + shareUrl + '\')">Send Email</button>') + '</div></div></div>';
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+      } catch (err) { showToast('Could not share care plan.', 'error'); }
+    }
+
+    async function sendCarePlanEmail(shareUrl) {
+      const email = document.getElementById('share-care-email').value.trim();
+      if (!email) { showToast('Enter sitter email.', 'error'); return; }
+      const subject = encodeURIComponent('Pet Care Instructions');
+      const body = encodeURIComponent(`Here are the care instructions for your stay:\n\n${shareUrl}`);
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    // Set default dates for care plan
+    document.getElementById('add-care-plan-form')?.addEventListener('submit', handleCreateCarePlan);
+
+/* --- Pricing Modal --- */
+    function renderDashboardPricing() {
+      const c = document.getElementById('pricing-cards'); if (!c) return;
+      const ck = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#16a34a;fill:none;stroke-width:2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+      const currentTier = AppState.tier;
+      const y = isYearlyPricing;
+
+      const hasSub = AppState.profile?.subscription_code && currentTier !== 'starter';
+      function btn(tier, label) {
+        if (currentTier === tier) {
+          return '<button class="btn btn-secondary w-full btn-sm" onclick="closeAllModals()">Current Plan</button>';
+        }
+        if (hasSub) {
+          return '<button class="btn btn-primary w-full btn-sm" onclick="handleSwitchPlan(\'' + tier + '\')">Switch to ' + tier.charAt(0).toUpperCase() + tier.slice(1) + '</button>';
+        }
+        return '<button class="btn btn-primary w-full btn-sm" onclick="handleSubscribe(\'' + tier + '\')">' + label + '</button>';
+      }
+
+      c.innerHTML = `
+        <div class="pricing-grid-dash">
+          <div class="pricing-card">
+            <div class="plan-name">Starter</div>
+            <div class="plan-price">$0<span class="period">/mo</span></div>
+            <p class="plan-desc">1 pet &middot; Forever free</p>
+            <ul class="plan-features">
+              <li>${ck}<span>1 Pet Profile</span></li>
+              <li>${ck}<span>Toxicity & Calorie Calculators</span></li>
+              <li>${ck}<span>7-Day Timeline Logging</span></li>
+              <li>${ck}<span>Meal, Meds & Bathroom Logs</span></li>
+              <li>${ck}<span>Activity Streak</span></li>
+            </ul>
+            ${btn('starter', 'Current Plan')}
+          </div>
+          <div class="pricing-card">
+            <div class="plan-name">Basic</div>
+            <div class="plan-price">${y ? '$44' : '$4.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
+            <p class="plan-desc">Up to 2 Pets</p>
+            <ul class="plan-features">
+              <li>${ck}<span>Up to 2 Pets</span></li>
+              <li>${ck}<span>Unlimited Log History</span></li>
+              <li>${ck}<span>Food Log (all types)</span></li>
+              <li>${ck}<span>Passive QR Collar Tags</span></li>
+              <li>${ck}<span>Public Emergency Profile</span></li>
+              <li>${ck}<span>Support Tickets</span></li>
+            </ul>
+            ${btn('basic', y ? '$44/yr' : '$4.99/mo')}
+          </div>
+          <div class="pricing-card featured">
+            <div class="plan-badge">Popular</div>
+            <div class="plan-name">Family</div>
+            <div class="plan-price">${y ? '$89' : '$9.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
+            <p class="plan-desc">Up to 4 Pets</p>
+            <ul class="plan-features">
+              <li>${ck}<span>Up to 4 Pets</span></li>
+              <li>${ck}<span>Co-parent Sync (3 users)</span></li>
+              <li>${ck}<span>Active QR + GPS Alerts</span></li>
+              <li>${ck}<span>Sitter Magic Links</span></li>
+              <li>${ck}<span>Care Plans for Sitters</span></li>
+              <li>${ck}<span>Symptom Tracking (GI, Cardio, Derma, Tests)</span></li>
+              <li>${ck}<span>Grooming Appointments</span></li>
+              <li>${ck}<span>Medication &amp; Vaccine Reminders</span></li>
+              <li>${ck}<span>Feeding Schedule Templates</span></li>
+            </ul>
+            ${btn('family', y ? '$89/yr' : '$9.99/mo')}
+          </div>
+          <div class="pricing-card">
+            <div class="plan-name">Pro</div>
+            <div class="plan-price">${y ? '$149' : '$16.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
+            <p class="plan-desc">Unlimited Pets</p>
+            <ul class="plan-features">
+              <li>${ck}<span>Unlimited Pets</span></li>
+              <li>${ck}<span>AI Vet-Prep Reports (PDF)</span></li>
+              <li>${ck}<span>Unlimited Co-parent Users</span></li>
+              <li>${ck}<span>Sitter Handover Summary Email</span></li>
+              <li>${ck}<span>Weight Tracking &amp; Trend Charts</span></li>
+              <li>${ck}<span>Vet Records &amp; Document Storage</span></li>
+              <li>${ck}<span>Heat Cycle Tracker</span></li>
+              <li>${ck}<span>Multi-Pet Household Overview</span></li>
+              <li>${ck}<span>Food Inventory &amp; Restock Alerts</span></li>
+              <li>${ck}<span>Priority Support</span></li>
+            </ul>
+            ${btn('pro', y ? '$149/yr' : '$16.99/mo')}
+          </div>
+        </div>`;
+    }
+
+    /* --- Pricing Toggle --- */
+    let isYearlyPricing = false;
+    function toggleDashPricing() {
+      isYearlyPricing = !isYearlyPricing;
+      document.getElementById('dash-pricing-toggle').classList.toggle('active', isYearlyPricing);
+      renderDashboardPricing();
+    }
+
+    /* --- Subscription Management --- */
+    async function handleManageSubscription() {
+      if (!AppState.user) return;
+      showToast('Opening payment portal...', 'info');
+      try {
+        const res = await fetch((window.location.origin || 'https://houndos.app') + '/api/manage-subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: AppState.user.id, action: 'manage' }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.open(data.url, '_blank');
+          showToast('Payment portal opened in new tab.', 'success');
+        } else if (data.message) {
+          showToast(data.message, 'info');
+        } else {
+          showToast('Could not generate management link.', 'error');
+        }
+      } catch (err) {
+        console.error('Manage subscription error:', err);
+        showToast('Failed to open subscription management. Try again later.', 'error');
+      }
+    }
+
+    /* --- Switch Plan for Existing Subscribers --- */
+    async function handleSwitchPlan(newTier) {
+      if (!AppState.user) return;
+      const oldTier = AppState.tier;
+      if (oldTier === newTier) return;
+      showToast('Processing plan change...', 'info');
+
+      // Cancel old subscription via webhook trigger, then subscribe to new plan
+      // We start a new subscription directly; the old one auto-disables on next cycle
+      try {
+        if (typeof PaystackPop !== 'undefined') {
+          openPaystackCheckout(AppState.user.email, isYearlyPricing ? `${newTier}_yearly` : `${newTier}_monthly`, async () => {
+            showToast('Payment successful! Verifying...', 'success');
+            pollForTierUpgrade(newTier);
+          });
+        } else {
+          throw new Error('No Paystack');
+        }
+      } catch (e) {
+        showToast('Payment system unavailable. Please try again.', 'error');
+      }
+    }
+
+    /* --- Subscribe --- */
+    function handleSubscribe(tier) {
+      if (!AppState.user) { window.location.href = 'auth.html'; return; }
+      try {
+        if (typeof PaystackPop !== 'undefined') {
+          openPaystackCheckout(AppState.user.email, isYearlyPricing ? `${tier}_yearly` : `${tier}_monthly`, async () => {
+            showToast('Payment successful! Verifying...', 'success');
+            pollForTierUpgrade(tier);
+          });
+        } else throw new Error('No Paystack');
+      } catch (e) { applyTierDirectly(tier); }
+    }
+
+    async function applyTierDirectly(tier) {
+      showToast(`Upgrading to ${tier}...`, 'info');
+      try {
+        await updateProfile(AppState.user.id, { tier });
+        AppState.setTier(tier); updateUIForUser(); closeAllModals();
+        showToast(`Upgraded to ${tier}!`, 'success');
+        renderHomeTab();
+      } catch (err) {
+        AppState.setTier(tier); updateUIForUser(); closeAllModals();
+        showToast(`Upgraded to ${tier}! (session only)`, 'success');
+        renderHomeTab();
+      }
+    }
+
+    async function pollForTierUpgrade(expectedTier) {
+      let attempts = 0;
+      const poll = setInterval(async () => {
+        attempts++;
+        try {
+          const profile = await getProfile(AppState.user.id);
+          if (profile.tier !== 'starter') {
+            AppState.setProfile(profile); updateUIForUser(); clearInterval(poll); closeAllModals();
+            showToast(`Upgraded to ${profile.tier}!`, 'success');
+            // Send subscription confirmation email
+            sendEmailNotification('subscription', AppState.user?.email, {
+              tier: profile.tier,
+              plan: isYearlyPricing ? 'yearly' : 'monthly',
+              toName: AppState.user?.email?.split('@')[0] || '',
+            });
+            renderHomeTab();
+          }
+        } catch (e) {}
+        if (attempts > 30) { clearInterval(poll); showToast('Verification timed out. Please refresh.', 'error'); }
+      }, 2000);
+    }
+
+    /* --- Support Ticket --- */
+    async function handleSubmitSupport(e) {
+      e.preventDefault();
+      const user = AppState.user;
+      if (!user) { showToast('Please sign in first.', 'error'); return; }
+      
+      const ticket = {
+        user_id: user.id,
+        user_email: user.email,
+        user_name: user.email.split('@')[0],
+        subject: document.getElementById('support-subject').value.trim(),
+        message: document.getElementById('support-message').value.trim(),
+        priority: document.getElementById('support-priority').value
+      };
+      
+      if (!ticket.subject || !ticket.message) { showToast('Please fill in all fields.', 'error'); return; }
+      
+      try {
+        await createSupportTicket(ticket);
+        closeModal('modal-support-ticket');
+        showToast('Ticket submitted! We will respond shortly.', 'success');
+        document.getElementById('support-ticket-form').reset();
+        renderSupportTab();
+      } catch (err) {
+        showToast('Could not submit ticket. Please try again.', 'error');
+      }
+    }
+
+    /* --- Support Tab --- */
+    async function renderSupportTab() {
+      const container = document.getElementById('support-tickets-list');
+      if (!container) return;
+      
+      const user = AppState.user;
+      if (!user) {
+        container.innerHTML = '<div class="empty-state"><p>Please sign in to view your tickets.</p></div>';
+        return;
+      }
+      
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
+      
+      try {
+        const tickets = await getUserTickets(user.id);
+        
+        if (tickets.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <h4>No tickets yet</h4>
+              <p>Have an issue? Create a support ticket and we will help you.</p>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = tickets.map(t => `
+          <div class="ticket-card-user" style="margin-bottom:16px">
+            <div class="ticket-header">
+              <div>
+                <div style="font-weight:600;font-size:0.9rem">${escapeHtml(t.subject)}</div>
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px">
+                  ${new Date(t.created_at).toLocaleString()}
+                </div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <span class="ticket-status-badge ${t.status}">${t.status.replace('_', ' ')}</span>
+                <span class="ticket-priority-badge ${t.priority}">${t.priority}</span>
+              </div>
+            </div>
+            <div style="font-size:0.85rem;color:var(--text-secondary);margin:12px 0;line-height:1.5">${escapeHtml(t.message)}</div>
+            ${t.admin_response ? `
+              <div class="admin-response-box">
+                <div style="font-size:0.72rem;font-weight:600;color:var(--orange-600);margin-bottom:4px">Response from Wagr Team</div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5">${escapeHtml(t.admin_response)}</div>
+                ${t.admin_responded_at ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">${new Date(t.admin_responded_at).toLocaleString()}</div>` : ''}
+              </div>
+            ` : '<div style="font-size:0.82rem;color:var(--text-muted);font-style:italic">Awaiting response...</div>'}
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = '<div class="empty-state"><p style="color:#dc2626">Could not load tickets.</p></div>';
+      }
+    }
+
+    /* --- Update Name --- */
+    async function handleUpdateName() {
+      const input = document.getElementById('settings-name');
+      if (!input) return;
+      const name = input.value.trim();
+      if (!name) return;
+      try {
+        const { error } = await supabase.from('profiles').update({ display_name: name, updated_at: new Date().toISOString() }).eq('id', AppState.user?.id);
+        if (!error) {
+          AppState.user.display_name = name;
+          renderHomeTab();
+          showToast('Name updated!', 'success');
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    /* --- Change Email --- */
+    async function handleChangeEmail() {
+      const input = document.getElementById('settings-new-email');
+      if (!input) return;
+      const email = input.value.trim();
+      if (!email || !email.includes('@')) { showToast('Enter a valid email.', 'error'); return; }
+      try {
+        await updateEmail(email);
+        showToast('Confirmation sent to both addresses.', 'success');
+        input.value = '';
+      } catch (err) {
+        showToast(err.message || 'Could not update email.', 'error');
+      }
+    }
+
+    /* --- Change Password --- */
+    async function handleChangePassword() {
+      const currentPw = document.getElementById('settings-current-pw').value;
+      const newPw = document.getElementById('settings-new-pw').value;
+      if (!newPw || newPw.length < 8) { showToast('New password must be at least 8 characters.', 'error'); return; }
+      try {
+        // Re-authenticate first
+        if (currentPw) {
+          await reauthenticateUser(AppState.user.email, currentPw);
+        }
+        await updatePassword(newPw);
+        document.getElementById('settings-current-pw').value = '';
+        document.getElementById('settings-new-pw').value = '';
+        showToast('Password updated!', 'success');
+      } catch (err) {
+        const msg = err.message || '';
+        if (msg.includes('Invalid')) {
+          showToast('Current password is incorrect.', 'error');
+        } else {
+          showToast(msg || 'Could not update password.', 'error');
+        }
+      }
+    }
+
+    /* --- Notification Toggles --- */
+    async function toggleNotif(key) {
+      const prefs = Object.assign({}, AppState.profile?.notification_preferences || {});
+      prefs[key] = prefs[key] === false ? true : false;
+      try {
+        await updateNotificationPreferences(AppState.user.id, prefs);
+        AppState.profile.notification_preferences = prefs;
+        const el = document.getElementById('notif-' + key.replace(/_/g, '-'));
+        if (el) el.classList.toggle('active', prefs[key]);
+      } catch (e) {
+        showToast('Could not update preference.', 'error');
+      }
+    }
+
+    /* --- Delete Account --- */
+    async function confirmDeleteAccount() {
+      if (!confirm('Are you sure you want to delete your account? This will permanently remove all your data and cannot be undone.')) return;
+      const petId = AppState.activePet?.id;
+      if (petId) await supabase.from('pets').delete().eq('id', petId);
+      await supabase.from('profiles').delete().eq('id', AppState.user?.id);
+      const { error } = await supabase.auth.admin.deleteUser(AppState.user?.id);
+      if (error) console.error(error);
+      AppState.clear();
+      window.location.href = 'index.html';
+    }
+
+    /* --- Logout --- */
+    async function handleLogout() {
+      try { await signOut(); } catch (e) {}
+      AppState.clear(); window.location.href = 'index.html';
+    }
+
+    /* ========================================
+       CO-PARENTS TAB
+       ======================================== */
+    let coparentInviteLink = null;
+
+    async function renderCoparentsTab() {
+      const container = document.getElementById('coparent-content');
+      if (!container) return;
+
+      if (!AppState.canAccess('coparent_sync')) {
+        container.innerHTML = `
+          <div class="upgrade-card" style="text-align:center;padding:40px 24px">
+            <div style="margin-bottom:12px"><i data-lucide="users" style="width:40px;height:40px"></i></div>
+            <h3 style="margin-bottom:8px">Co-parent Sync</h3>
+            <p style="color:var(--text-secondary);max-width:420px;margin:0 auto 16px">
+              Add a partner, family member, or fellow pet parent to share care duties.
+              Co-parents can log meals, track symptoms, and stay in sync.
+            </p>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">
+              <strong>Family plan:</strong> up to 3 co-parents &middot;
+              <strong>Pro plan:</strong> unlimited co-parents
+            </p>
+            <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Family</button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      const maxCoparents = AppState.maxCoparents();
+      const badge = document.getElementById('coparent-tier-badge');
+      if (badge) badge.textContent = AppState.tier.toUpperCase() + (maxCoparents === Infinity ? ' ∞' : ' max ' + maxCoparents);
+
+      const pets = AppState.pets || [];
+      if (pets.length === 0) {
+        container.innerHTML =
+          `<div class="empty-state"><p style="color:var(--text-secondary)">Add a pet first to invite co-parents.</p></div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      let html = `
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-body" style="padding:20px">
+            <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:10px">How it works</h3>
+            <ol style="margin:0;padding-left:20px;color:var(--text-secondary);font-size:0.85rem;line-height:1.8">
+              <li><strong>Select a pet</strong> below to manage co-parents for that pet</li>
+              <li>Click <strong>"Generate Invite Link"</strong> — a one-time use link is created</li>
+              <li><strong>Share the link</strong> with your co-parent via email, text, or messaging app</li>
+              <li>They <strong>create an account</strong> (or sign in) and accept the invite</li>
+            </ol>
+            <div style="margin-top:12px;padding:12px;background:var(--bg-secondary);border-radius:var(--radius-sm);font-size:0.8rem;color:var(--text-muted)">
+              <strong>Co-parents can:</strong> log meals, medications, bathroom breaks, symptoms &middot;
+              view timeline, food log, and health records
+              <br>
+              <strong>Co-parents cannot:</strong> edit pet profile, manage billing, delete data, manage co-parents
+            </div>
+          </div>
+        </div>
+      `;
+
+      for (const pet of pets) {
+        try {
+          const coparents = await getCoparents(pet.id);
+          const used = coparents.length;
+          const remaining = maxCoparents === Infinity ? '∞' : Math.max(0, maxCoparents - used);
+
+          html += `
+            <div class="card" style="margin-bottom:16px">
+              <div class="card-body" style="padding:20px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                  <div>
+                    <h3 style="font-size:1rem;font-weight:600">${escapeHtml(pet.name)}</h3>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">
+                      Co-parent slots: ${used} used${maxCoparents !== Infinity ? ' / ' + maxCoparents : ''}
+                      ${pet._coparent ? '<span style="color:var(--orange-600);margin-left:8px">(shared with you)</span>' : ''}
+                    </div>
+                  </div>
+                  ${!pet._coparent ? `
+                  <div style="display:flex;gap:8px">
+                    <button class="btn btn-primary btn-sm" onclick="generateCoparentInvite('${pet.id}')">
+                      Generate Link
+                    </button>
+                  </div>
+                  ` : ''}
+                </div>
+
+                ${coparents.length > 0 ? `
+                  <div style="margin-bottom:12px">
+                    <div style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px">Co-parents</div>
+                    ${coparents.map(cp => `
+                      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--bg-secondary);border-radius:var(--radius-sm);margin-bottom:4px">
+                        <div>
+                          <span style="font-size:0.85rem">${escapeHtml(cp.email || 'Co-parent')}</span>
+                          <span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">since ${new Date(cp.created_at).toLocaleDateString()}</span>
+                        </div>
+                        ${!pet._coparent ? `<button class="btn btn-ghost btn-xs" style="color:#dc2626;font-size:0.75rem" onclick="removeCoparentHandler('${pet.id}','${cp.user_id}')">Remove</button>` : ''}
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : '<div style="color:var(--text-muted);font-size:0.85rem;margin-bottom:12px">No co-parents yet.</div>'}
+
+                ${coparentInviteLink && coparentInviteLink.petId === pet.id ? `
+                  <div style="padding:10px;background:var(--bg-secondary);border-radius:var(--radius-sm);font-size:0.82rem">
+                    <div style="font-weight:600;margin-bottom:4px;color:var(--orange-600)">Invite Link (one-time use)</div>
+                    <div style="display:flex;gap:6px;align-items:center">
+                      <input type="text" readonly class="input-field" value="${escapeHtml(coparentInviteLink.url)}" style="font-size:0.78rem;padding:4px 8px" id="coparent-link-input">
+                      <button class="btn btn-secondary btn-sm" onclick="copyInviteLink()">Copy</button>
+                      <button class="btn btn-ghost btn-sm" style="color:#dc2626;font-size:0.78rem" onclick="clearCoparentInviteLink()">Clear</button>
+                    </div>
+                    <div style="color:var(--text-muted);font-size:0.78rem;margin-top:4px">
+                      Expires ${new Date(coparentInviteLink.expiresAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        } catch (e) {
+          console.error('Error loading coparents for', pet.name, e);
+        }
+      }
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    async function generateCoparentInvite(petId) {
+      const btn = event?.target || document.querySelector(`[onclick="generateCoparentInvite('${petId}')"]`);
+      if (btn) { btn.textContent = 'Generating...'; btn.disabled = true; }
+      try {
+        const result = await createCoparentInvite(petId);
+        coparentInviteLink = { petId, url: result.inviteUrl, expiresAt: result.expiresAt };
+        showToast('Invite link created! Share it with your co-parent.', 'success');
+        renderCoparentsTab();
+      } catch (err) {
+        showToast(err.message || 'Could not create invite.', 'error');
+      } finally {
+        if (btn) { btn.textContent = 'Generate Link'; btn.disabled = false; }
+      }
+    }
+
+    function copyInviteLink() {
+      const input = document.getElementById('coparent-link-input');
+      if (input) {
+        input.select();
+        navigator.clipboard.writeText(input.value);
+        showToast('Link copied to clipboard!', 'success');
+      }
+    }
+
+    function clearCoparentInviteLink() {
+      coparentInviteLink = null;
+      renderCoparentsTab();
+    }
+
+    async function removeCoparentHandler(petId, userId) {
+      if (!confirm('Remove this co-parent?')) return;
+      try {
+        await removeCoparent(petId, userId);
+        showToast('Co-parent removed.', 'success');
+        renderCoparentsTab();
+      } catch (err) {
+        showToast(err.message || 'Could not remove co-parent.', 'error');
+      }
+    }
+  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+</body>
+</html>

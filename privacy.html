@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — Wagr</title>
+  <meta name="robots" content="index, follow">
+  <link rel="stylesheet" href="css/globals.css">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <style>
+    .legal-page {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .legal-page h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+    .legal-page .last-updated {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .legal-page h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 10px;
+    }
+    .legal-page h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    .legal-page p, .legal-page li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .legal-page ul, .legal-page ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+    .legal-page li {
+      margin-bottom: 6px;
+    }
+    .legal-page a {
+      color: var(--orange-600);
+      text-decoration: underline;
+    }
+    .legal-page a:hover {
+      color: var(--orange-700);
+    }
+    .legal-page .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+    .landing-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-inner .footer-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+    }
+    .footer-links a {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      transition: color 0.15s;
+      white-space: nowrap;
+    }
+    .footer-links a:hover { color: var(--text-primary); }
+    @media (max-width: 768px) {
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .footer-links {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <div class="flex items-center gap-4">
+        <button class="menu-toggle hide-desktop" onclick="toggleSidebar()">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <a href="index.html" class="navbar-logo">
+          <div class="logo-icon">H</div>
+          Wagr
+        </a>
+      </div>
+      <div class="navbar-links hide-mobile">
+        <a href="index.html#benefits">Why Wagr</a>
+        <a href="index.html#calculators">Free Tools</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="cookies.html">Cookies</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="theme-toggle" onclick="ThemeManager.toggle()"></button>
+        <a href="auth.html" class="btn btn-ghost btn-sm hide-mobile">Log in</a>
+        <a href="auth.html?mode=signup" class="btn btn-primary btn-sm">Start Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Sidebar -->
+  <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="navbar-logo">
+        <div class="logo-icon">H</div>
+        Wagr
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html#benefits" onclick="closeSidebar()">Why Wagr</a>
+      <a href="index.html#calculators" onclick="closeSidebar()">Free Tools</a>
+      <a href="index.html#pricing" onclick="closeSidebar()">Pricing</a>
+      <a href="privacy.html" onclick="closeSidebar()">Privacy Policy</a>
+      <a href="terms.html" onclick="closeSidebar()">Terms of Service</a>
+      <a href="cookies.html" onclick="closeSidebar()">Cookie Policy</a>
+      <div class="divider" style="margin:12px 0"></div>
+      <a href="auth.html" onclick="closeSidebar()">Log in</a>
+      <a href="auth.html?mode=signup" onclick="closeSidebar()">Create Account</a>
+    </nav>
+  </aside>
+
+  <div class="legal-page">
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      Back to Wagr
+    </a>
+
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last updated: May 21, 2026</p>
+
+    <p>Wagr ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform and services.</p>
+
+    <h2>1. Information We Collect</h2>
+
+    <h3>1.1 Information You Provide</h3>
+    <ul>
+      <li><strong>Account Information:</strong> When you register, we collect your email address and password. You may optionally provide your name and phone number.</li>
+      <li><strong>Pet Information:</strong> You may provide your pet's name, breed, weight, birth date, medical conditions, medications, food logs, and other care-related data.</li>
+      <li><strong>Communication:</strong> When you contact support, we collect your email address, subject, and message.</li>
+      <li><strong>Payment Information:</strong> If you subscribe to a paid plan, payments are processed by Paystack. We do not store credit card numbers. Paystack may share your billing email and transaction status with us.</li>
+    </ul>
+
+    <h3>1.2 Information Collected Automatically</h3>
+    <ul>
+      <li><strong>Usage Data:</strong> We collect information about how you interact with our platform, including pages visited, features used, and time spent.</li>
+      <li><strong>Device Information:</strong> We may collect your IP address, browser type, operating system, and device type.</li>
+      <li><strong>Location Data:</strong> If you use the QR location alert feature and grant permission, we collect GPS coordinates when you share your location with a pet owner. Location data is shared only once and is not stored permanently.</li>
+      <li><strong>Cookies:</strong> We use essential cookies for authentication and security. With your consent, we use analytics cookies to improve our service.</li>
+    </ul>
+
+    <h2>2. How We Use Your Information</h2>
+    <ul>
+      <li>To provide, maintain, and improve our pet care tracking services</li>
+      <li>To authenticate your account and secure your data</li>
+      <li>To process payments and manage subscriptions</li>
+      <li>To send service-related communications (e.g., payment confirmations, account updates)</li>
+      <li>To generate AI-powered vet reports based on your pet's logged data</li>
+      <li>To facilitate QR-based emergency location sharing</li>
+      <li>To respond to support inquiries and troubleshoot issues</li>
+      <li>To comply with legal obligations</li>
+    </ul>
+
+    <h2>3. Data Sharing and Disclosure</h2>
+    <p>We do not sell your personal information. We may share your data with:</p>
+    <ul>
+      <li><strong>Service Providers:</strong> We use Supabase for database hosting and authentication, Paystack for payment processing, and OpenRouter for AI report generation. These providers process data only as necessary to perform their functions.</li>
+      <li><strong>Emergency Contacts:</strong> When a QR tag is scanned and the finder shares their location, the pet owner receives the GPS coordinates. No other personal information is shared with the finder.</li>
+      <li><strong>Legal Requirements:</strong> We may disclose information if required by law or to protect our rights, property, or safety.</li>
+    </ul>
+
+    <h2>4. Data Security</h2>
+    <p>We implement industry-standard security measures including:</p>
+    <ul>
+      <li>Row-Level Security (RLS) in PostgreSQL — your data is isolated from other users</li>
+      <li>Encrypted connections (HTTPS) for all data transmission</li>
+      <li>Secure password hashing via Supabase Auth</li>
+      <li>API keys stored server-side, never exposed to the client</li>
+    </ul>
+    <p>However, no method of transmission over the Internet is 100% secure. We cannot guarantee absolute security.</p>
+
+    <h2>5. Data Retention</h2>
+    <p>We retain your data for as long as your account is active. If you delete your account, we permanently remove all associated data within 30 days. Logs and pet profiles are deleted immediately upon account deletion.</p>
+
+    <h2>6. Your Rights</h2>
+    <p>Depending on your jurisdiction, you may have the right to:</p>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of the personal data we hold about you</li>
+      <li><strong>Correction:</strong> Update inaccurate or incomplete data</li>
+      <li><strong>Deletion:</strong> Delete your account and all associated data</li>
+      <li><strong>Portability:</strong> Export your data in a machine-readable format</li>
+      <li><strong>Withdraw Consent:</strong> Withdraw consent for cookies and non-essential processing</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at support@houndos.app or use the in-app support ticket system.</p>
+
+    <h2>7. Third-Party Services</h2>
+    <div class="card">
+      <p><strong>Supabase</strong> — Database and authentication. <a href="https://supabase.com/privacy" target="_blank">Privacy Policy</a></p>
+      <p><strong>Paystack</strong> — Payment processing. <a href="https://paystack.com/privacy" target="_blank">Privacy Policy</a></p>
+      <p><strong>OpenRouter</strong> — AI model access for vet report generation. <a href="https://openrouter.ai/privacy" target="_blank">Privacy Policy</a></p>
+      <p><strong>Vercel</strong> — Hosting and serverless functions. <a href="https://vercel.com/privacy" target="_blank">Privacy Policy</a></p>
+    </div>
+
+    <h2>8. Children's Privacy</h2>
+    <p>Wagr is not intended for children under 13. We do not knowingly collect data from children. If you believe a child has provided us with personal data, contact us and we will delete it.</p>
+
+    <h2>9. International Data Transfers</h2>
+    <p>Your data may be processed in the United States and other countries where our service providers operate. By using Wagr, you consent to this transfer.</p>
+
+    <h2>10. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Material changes will be notified via email or through the platform. Your continued use after changes constitutes acceptance of the updated policy.</p>
+
+    <h2>11. Contact</h2>
+    <p>If you have questions about this Privacy Policy, please contact us:</p>
+    <ul>
+      <li>Email: support@houndos.app</li>
+      <li>In-app: Use the Support tab in your dashboard</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="navbar-logo" style="margin-bottom:4px">
+          <div class="logo-icon">H</div>
+          Wagr
+        </div>
+        <div class="footer-text">&copy; 2026 Wagr. Built for dog people.</div>
+      </div>
+      <div class="footer-links">
+        <a href="index.html#benefits">Why Wagr</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="index.html#calculators">Calculators</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="cookies.html">Cookies</a>
+        <a href="auth.html">Log in</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      ThemeManager.init();
+    });
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('active');
+      document.querySelector('.sidebar-overlay').classList.toggle('active');
+    }
+    function closeSidebar() {
+      document.querySelector('.sidebar')?.classList.remove('active');
+      document.querySelector('.sidebar-overlay')?.classList.remove('active');
+    }
+  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+</body>
+</html>

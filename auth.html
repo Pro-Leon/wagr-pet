@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Wagr</title>
+  <meta name="description" content="Log in or create your Wagr account to start tracking your dog's health, meals, and medications.">
+  <link rel="stylesheet" href="css/globals.css">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ea580c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.svg">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 380px;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .auth-header .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 24px;
+    }
+    .auth-header .logo .logo-mark {
+      width: 28px;
+      height: 28px;
+      background: var(--orange-600);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .auth-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .auth-header p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+    .auth-switch {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+    .auth-switch a {
+      color: var(--orange-600);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .auth-footer a {
+      color: var(--text-secondary);
+    }
+    .auth-footer a:hover { text-decoration: underline; }
+
+    .password-row {
+      position: relative;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 4px;
+    }
+    .auth-alert {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+    }
+    .auth-alert.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    [data-theme="dark"] .auth-alert.error {
+      background: rgba(220,38,38,0.1);
+      border-color: rgba(220,38,38,0.2);
+    }
+    .auth-alert.success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+    [data-theme="dark"] .auth-alert.success {
+      background: rgba(22,163,74,0.1);
+      border-color: rgba(22,163,74,0.2);
+    }
+    .btn-loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+        <a href="index.html" class="btn btn-ghost btn-sm" style="padding:6px 0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          Back
+        </a>
+        <button class="theme-toggle" onclick="ThemeManager.toggle()"></button>
+      </div>
+
+      <div class="auth-header">
+        <div class="logo">
+          <div class="logo-mark">H</div>
+          Wagr
+        </div>
+        <h1 id="auth-title">Welcome back</h1>
+        <p id="auth-subtitle">Sign in to your dashboard</p>
+      </div>
+
+      <div id="auth-alert" style="display:none"></div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" class="input-field" id="login-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+  <div class="input-group">
+    <label>Password</label>
+    <div class="password-row">
+      <input type="password" class="input-field" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+      <span class="password-toggle" onclick="togglePasswordVisibility('login-password', this)">Show</span>
+    </div>
+  </div>
+  <div style="text-align:right;margin-bottom:12px">
+    <a href="#" onclick="openResetForm();return false" style="font-size:0.82rem;color:var(--orange-600)">Forgot password?</a>
+  </div>
+  <button type="submit" class="btn btn-primary w-full" id="login-btn">Sign In</button>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signup-form" class="auth-form" style="display:none">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" class="input-field" id="signup-email" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-row">
+            <input type="password" class="input-field" id="signup-password" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password">
+            <span class="password-toggle" onclick="togglePasswordVisibility('signup-password', this)">Show</span>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" id="signup-btn">Create Account</button>
+      </form>
+
+      <div class="auth-switch">
+        <span id="switch-text">Don't have an account?</span>
+        <a id="switch-link" onclick="toggleAuthMode()">Create one</a>
+      </div>
+
+      <div class="auth-footer">
+        By continuing, you agree to our Terms of Service and Privacy Policy.
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Password Form (hidden, shown via "Forgot Password" link) -->
+  <div id="reset-form" style="display:none">
+    <div class="auth-card" style="margin-top:24px">
+      <div class="card" style="padding:28px">
+        <h2 style="font-size:1.1rem;margin-bottom:4px" id="reset-title">Reset Password</h2>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px" id="reset-desc">Enter your email and we'll send you a reset link.</p>
+        <div id="reset-step-1">
+          <div class="input-group" style="margin-bottom:16px">
+            <label>Email</label>
+            <input type="email" class="input-field" id="reset-email" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <button class="btn btn-primary w-full" id="reset-send-btn" onclick="handleSendReset()">Send Reset Link</button>
+          <div style="text-align:center;margin-top:12px">
+            <a href="#" onclick="closeResetForm();return false" style="font-size:0.82rem;color:var(--text-muted)">Back to sign in</a>
+          </div>
+        </div>
+        <div id="reset-step-2" style="display:none">
+          <div class="input-group" style="margin-bottom:16px">
+            <label>New Password</label>
+            <div class="password-row">
+              <input type="password" class="input-field" id="reset-new-password" placeholder="Min 8 characters" minlength="8">
+              <span class="password-toggle" onclick="togglePasswordVisibility('reset-new-password', this)">Show</span>
+            </div>
+          </div>
+          <button class="btn btn-primary w-full" id="reset-confirm-btn" onclick="handleConfirmReset()">Update Password</button>
+        </div>
+        <div id="reset-success" style="display:none;text-align:center">
+          <div style="margin-bottom:8px"><i data-lucide="check-circle" style="width:32px;height:32px;color:var(--green-600,#16a34a)"></i></div>
+          <p style="font-size:0.9rem;color:var(--text-secondary)"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.auth-card').innerHTML = '<div style="text-align:center;padding:32px"><h3 style="margin-bottom:8px">Could not load Supabase SDK</h3><p style="color:#666;font-size:14px">Check your connection and reload. If testing locally, use <code>npx serve</code> or <code>python3 -m http.server</code>.</p></div>';
+      });
+    }
+  </script>
+  <script src="js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    let isLogin = true;
+    let redirectUrl = null;
+    let isRecoveryFlow = false;
+
+    function getRedirectUrl() { return redirectUrl || 'dashboard.html'; }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      try { initSupabase(); } catch(e) { console.error('Init failed:', e); }
+
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('mode') === 'signup') {
+        toggleAuthMode();
+      }
+      redirectUrl = params.get('redirect') || null;
+
+      checkSession();
+      lucide.createIcons();
+
+      // Detect password recovery flow
+      if (window.location.hash && window.location.hash.includes('type=recovery')) {
+        isRecoveryFlow = true;
+        document.getElementById('login-form').closest('.auth-card').style.display = 'none';
+        document.getElementById('reset-form').style.display = 'block';
+        document.getElementById('reset-title').textContent = 'Set New Password';
+        document.getElementById('reset-desc').textContent = 'Enter your new password below.';
+        document.getElementById('reset-step-1').style.display = 'none';
+        document.getElementById('reset-step-2').style.display = 'block';
+        return;
+      }
+
+      handleAuthCallback();
+    });
+
+    async function checkSession() {
+      try {
+        const user = await getCurrentUser();
+        if (user) window.location.href = getRedirectUrl();
+      } catch (e) {}
+    }
+
+    async function handleAuthCallback() {
+      if (window.location.hash && window.location.hash.includes('access_token')) {
+        try {
+          const user = await getCurrentUser();
+          if (user) {
+            showToast('Signed in successfully!', 'success');
+            setTimeout(() => window.location.href = getRedirectUrl(), 800);
+          }
+        } catch (e) {}
+      }
+    }
+
+    function toggleAuthMode() {
+      isLogin = !isLogin;
+      const loginForm = document.getElementById('login-form');
+      const signupForm = document.getElementById('signup-form');
+      const title = document.getElementById('auth-title');
+      const subtitle = document.getElementById('auth-subtitle');
+      const switchText = document.getElementById('switch-text');
+      const switchLink = document.getElementById('switch-link');
+
+      if (isLogin) {
+        loginForm.style.display = 'flex';
+        signupForm.style.display = 'none';
+        title.textContent = 'Welcome back';
+        subtitle.textContent = 'Sign in to your dashboard';
+        switchText.textContent = "Don't have an account?";
+        switchLink.textContent = 'Create one';
+      } else {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'flex';
+        title.textContent = 'Create your account';
+        subtitle.textContent = 'Start tracking your dog\'s health';
+        switchText.textContent = 'Already have an account?';
+        switchLink.textContent = 'Sign in';
+      }
+      hideAlert();
+    }
+
+    function showAlert(message, type = 'error') {
+      const el = document.getElementById('auth-alert');
+      el.style.display = 'block';
+      el.className = `auth-alert ${type}`;
+      el.textContent = message;
+    }
+
+    function hideAlert() {
+      document.getElementById('auth-alert').style.display = 'none';
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'Hide';
+      } else {
+        input.type = 'password';
+        btn.textContent = 'Show';
+      }
+    }
+
+    /* --- Password Reset --- */
+    function openResetForm() {
+      document.getElementById('login-form').closest('.auth-card').style.display = 'none';
+      document.getElementById('reset-form').style.display = 'block';
+      document.getElementById('reset-title').textContent = 'Reset Password';
+      document.getElementById('reset-desc').textContent = 'Enter your email and we\'ll send you a reset link.';
+      document.getElementById('reset-step-1').style.display = 'block';
+      document.getElementById('reset-step-2').style.display = 'none';
+      document.getElementById('reset-success').style.display = 'none';
+    }
+
+    function closeResetForm() {
+      document.getElementById('reset-form').style.display = 'none';
+      document.getElementById('login-form').closest('.auth-card').style.display = 'block';
+    }
+
+    async function handleSendReset() {
+      const email = document.getElementById('reset-email').value.trim();
+      if (!email) { showAlert('Enter your email address.'); return; }
+      const btn = document.getElementById('reset-send-btn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      try {
+        await sendPasswordResetEmail(email);
+        document.getElementById('reset-step-1').style.display = 'none';
+        document.getElementById('reset-success').style.display = 'block';
+        document.getElementById('reset-success').querySelector('p').textContent =
+          `If ${email} is registered, you'll receive a reset link shortly. Check your spam folder too.`;
+      } catch (err) {
+        showAlert(err.message || 'Could not send reset email.');
+      } finally {
+        btn.textContent = 'Send Reset Link';
+        btn.disabled = false;
+      }
+    }
+
+    async function handleConfirmReset() {
+      const password = document.getElementById('reset-new-password').value;
+      if (!password || password.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
+      const btn = document.getElementById('reset-confirm-btn');
+      btn.textContent = 'Updating...';
+      btn.disabled = true;
+      try {
+        await updatePassword(password);
+        document.getElementById('reset-step-2').style.display = 'none';
+        document.getElementById('reset-success').style.display = 'block';
+        document.getElementById('reset-success').querySelector('p').textContent =
+          'Password updated successfully! You can now sign in with your new password.';
+        setTimeout(() => window.location.href = 'auth.html', 2000);
+      } catch (err) {
+        showAlert(err.message || 'Could not update password.');
+      } finally {
+        btn.textContent = 'Update Password';
+        btn.disabled = false;
+      }
+    }
+
+    /* --- Login --- */
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('login-btn');
+
+      if (!email || !password) { showAlert('Please fill in all fields.'); return; }
+
+      btn.classList.add('btn-loading');
+      btn.textContent = 'Signing in...';
+
+      try {
+        const data = await signIn(email, password);
+        AppState.setUser(data.user);
+
+        // Ensure profile exists
+        try { await getProfile(data.user.id); } catch (e) {
+          try {
+            await db().from('profiles')
+              .insert({ id: data.user.id, email: data.user.email, tier: 'starter' });
+          } catch (ie) { console.warn('Profile create:', ie.message); }
+        }
+
+        showToast('Signed in!', 'success');
+        window.location.href = getRedirectUrl();
+      } catch (err) {
+        const msg = err.message || '';
+        if (msg.includes('Invalid login')) {
+          showAlert('Wrong email or password. Double-check and try again.');
+        } else if (msg.includes('Email not confirmed')) {
+          showAlert('Please confirm your email first. Check your inbox.');
+        } else {
+          showAlert(msg || 'Could not sign in.');
+        }
+      } finally {
+        btn.classList.remove('btn-loading');
+        btn.textContent = 'Sign In';
+      }
+    });
+
+    /* --- Signup --- */
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const btn = document.getElementById('signup-btn');
+
+      if (!email || !password) { showAlert('Please fill in all fields.'); return; }
+      if (password.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
+
+      btn.classList.add('btn-loading');
+      btn.textContent = 'Creating account...';
+
+      try {
+        const data = await signUp(email, password);
+
+        if (data.session && data.user) {
+          // Email confirmation OFF — auto-logged in
+          AppState.setUser(data.user);
+          showToast('Account created!', 'success');
+          // Send welcome email (fire-and-forget)
+          try {
+            await fetch((window.location.origin || 'https://houndos.app') + '/api/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ type: 'welcome', to: email, toName: email.split('@')[0] }),
+            });
+          } catch (e) { console.log('Welcome email not sent:', e.message); }
+          window.location.href = 'dashboard.html';
+
+        } else if (data.user && !data.session) {
+          // Email confirmation ON — account created but needs verification
+          showAlert('Account created! Check your inbox to confirm your email, then sign in.', 'success');
+          setTimeout(() => {
+            document.getElementById('login-email').value = email;
+            toggleAuthMode();
+          }, 2000);
+
+        } else {
+          // Both null — usually means user already exists but unconfirmed,
+          // or Supabase signup returned empty. Try signing in directly.
+          showAlert('Your account may already exist. Try signing in with your credentials.', 'success');
+          setTimeout(() => {
+            document.getElementById('login-email').value = email;
+            toggleAuthMode();
+          }, 1500);
+        }
+      } catch (err) {
+        const msg = (err.message || '').toLowerCase();
+        if (msg.includes('already') || msg.includes('registered') || msg.includes('duplicate')) {
+          showAlert('This email is already registered. Signing you in...');
+          // Try to sign in directly
+          try {
+            const loginData = await signIn(email, password);
+            AppState.setUser(loginData.user);
+            showToast('Signed in!', 'success');
+            window.location.href = 'dashboard.html';
+            return;
+          } catch (loginErr) {
+            showAlert('Email already registered. Try signing in with your password.');
+            setTimeout(() => {
+              document.getElementById('login-email').value = email;
+              toggleAuthMode();
+            }, 1000);
+          }
+        } else if (msg.includes('password') || msg.includes('weak')) {
+          showAlert('Password is too weak. Use at least 8 characters with a mix of letters and numbers.');
+        } else if (msg.includes('rate') || msg.includes('too many')) {
+          showAlert('Too many attempts. Please wait a minute and try again.');
+        } else {
+          showAlert(msg || 'Could not create account. Please try again.');
+        }
+      } finally {
+        btn.classList.remove('btn-loading');
+        btn.textContent = 'Create Account';
+      }
+    });
+  </script>
+  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+</body>
+</html>
