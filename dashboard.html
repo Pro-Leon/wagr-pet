@@ -38,7 +38,15 @@
       display: flex;
       align-items: flex-start;
       gap: 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
+    .summary-card:hover {
+      border-color: var(--orange-500);
+      box-shadow: 0 0 0 1px var(--orange-500), var(--shadow-sm);
+    }
+    .summary-card:active { transform: scale(0.98); }
     .summary-card .sc-icon {
       width: 36px; height: 36px;
       border-radius: var(--radius-md);
@@ -67,6 +75,7 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
     }
     .streak-card .streak-emoji { display: flex; }
     .streak-card .streak-text { font-size: 0.82rem; font-weight: 500; }
@@ -214,6 +223,7 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 16px;
+      box-shadow: var(--shadow-sm);
     }
     .ticket-header {
       display: flex;
@@ -279,10 +289,12 @@
       align-items: center;
       gap: 10px;
       padding: 10px 12px;
-      background: var(--bg-tertiary);
+      background: var(--orange-50);
       border-radius: var(--radius-md);
       margin: 8px 12px;
+      box-shadow: var(--shadow-sm);
     }
+    [data-theme="dark"] .pet-badge { background: rgba(249,115,22,0.08); }
     .pet-badge .pet-avatar {
       width: 32px; height: 32px;
       border-radius: var(--radius-full);
@@ -302,6 +314,7 @@
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
       padding: 16px;
+      box-shadow: var(--shadow-sm);
     }
     .food-card .fc-header {
       display: flex;
@@ -493,6 +506,7 @@
       </div>
 
       <nav class="dash-sidebar-nav">
+        <div class="nav-section-label">DAILY</div>
         <a href="#" class="active" data-tab="home" onclick="switchTab('home', this)">
           <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           Home
@@ -501,14 +515,8 @@
           <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           Timeline
         </a>
-        <a href="#" data-tab="qr" onclick="switchTab('qr', this)">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
-          QR Tags
-        </a>
-        <a href="#" data-tab="ai" onclick="switchTab('ai', this)">
-          <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93"/><path d="M8.56 6.22A4 4 0 0 1 12 2"/><circle cx="12" cy="14" r="4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
-          AI Reports
-        </a>
+
+        <div class="nav-section-label">HEALTH</div>
         <a href="#" data-tab="food" onclick="switchTab('food', this)">
           <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
           Food Log
@@ -521,6 +529,12 @@
           <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
           Grooming
         </a>
+        <a href="#" data-tab="ai" onclick="switchTab('ai', this)">
+          <svg viewBox="0 0 24 24"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-1.4 3.58-3.25 3.93"/><path d="M8.56 6.22A4 4 0 0 1 12 2"/><circle cx="12" cy="14" r="4"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
+          AI Reports
+        </a>
+
+        <div class="nav-section-label">CARE TEAM</div>
         <a href="#" data-tab="sitter" onclick="switchTab('sitter', this)">
           <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
           Sitter Links
@@ -529,14 +543,19 @@
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Co-parents
         </a>
-        <a href="#" data-tab="support" onclick="switchTab('support', this)">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Support
+        <a href="#" data-tab="qr" onclick="switchTab('qr', this)">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/></svg>
+          QR Tags
         </a>
-        <div class="divider" style="margin:8px 12px"></div>
+
+        <div class="nav-section-label">ACCOUNT</div>
         <a href="#" data-tab="pets" onclick="switchTab('pets', this)">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
           My Pets
+        </a>
+        <a href="#" data-tab="support" onclick="switchTab('support', this)">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Support
         </a>
         <a href="#" data-tab="settings" onclick="switchTab('settings', this)">
           <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -550,7 +569,7 @@
 
       <!-- Upgrade nudge (free users) -->
       <div class="sidebar-upgrade" id="sidebar-upgrade" style="display:none">
-        <p>Unlock timeline, food log, QR tags, and more.</p>
+        <p>Unlimited history, AI reports, and more.</p>
         <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">See Plans</button>
       </div>
 
@@ -600,14 +619,24 @@
           </div>
         </div>
         <nav class="sidebar-nav">
+          <div class="nav-section-label">DAILY</div>
           <a href="#" onclick="switchTab('home');closeMobileMenu()">Home</a>
           <a href="#" onclick="switchTab('timeline');closeMobileMenu()">Timeline</a>
-          <a href="#" onclick="switchTab('qr');closeMobileMenu()">QR Tags</a>
-          <a href="#" onclick="switchTab('ai');closeMobileMenu()">AI Reports</a>
+
+          <div class="nav-section-label">HEALTH</div>
           <a href="#" onclick="switchTab('food');closeMobileMenu()">Food Log</a>
+          <a href="#" onclick="switchTab('symptoms');closeMobileMenu()">Symptoms</a>
+          <a href="#" onclick="switchTab('grooming');closeMobileMenu()">Grooming</a>
+          <a href="#" onclick="switchTab('ai');closeMobileMenu()">AI Reports</a>
+
+          <div class="nav-section-label">CARE TEAM</div>
           <a href="#" onclick="switchTab('sitter');closeMobileMenu()">Sitter Links</a>
           <a href="#" onclick="switchTab('coparent');closeMobileMenu()">Co-parents</a>
+          <a href="#" onclick="switchTab('qr');closeMobileMenu()">QR Tags</a>
+
+          <div class="nav-section-label">ACCOUNT</div>
           <a href="#" onclick="switchTab('pets');closeMobileMenu()">My Pets</a>
+          <a href="#" onclick="switchTab('support');closeMobileMenu()">Support</a>
           <a href="#" onclick="switchTab('settings');closeMobileMenu()">Settings</a>
           <a href="/admin" id="admin-mobile-link" style="display:none;color:#dc2626">Admin Panel</a>
           <div class="divider" style="margin:12px 0"></div>
@@ -1614,7 +1643,7 @@
       // Logs
       if (AppState.activePet) {
         try {
-          const logs = await getLogs(AppState.activePet.id);
+          const logs = await getLogs(AppState.activePet.id, 50, AppState.timelineDays());
           AppState.setLogs(logs);
           console.log('Logs loaded:', logs.length);
         } catch (e) { 
@@ -1683,14 +1712,14 @@
       html += `</div>`;
 
       // No pet? Show welcome
-      if (!hasPet) {
-        html += `
-          <div class="welcome-state">
-            <span class="welcome-emoji"><i data-lucide="paw-print" style="width:32px;height:32px"></i></span>
-            <h3>Add your first pet</h3>
-            <p>Once you add your dog, you'll see their daily summary, care timeline, and more right here.</p>
-            <button class="btn btn-primary" onclick="openModal('modal-add-pet')">Add Your Dog</button>
-          </div>`;
+if (!hasPet) {
+  html += `
+    <div class="welcome-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" style="stroke:var(--text-muted);margin-bottom:16px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      <h3>Add your first pet</h3>
+      <p>Once you add your dog, you'll see their daily summary, care timeline, and more right here.</p>
+      <button class="btn btn-primary" onclick="openModal('modal-add-pet')">Add Your Dog</button>
+    </div>`;
         el.innerHTML = html;
         lucide.createIcons();
         return;
@@ -1699,61 +1728,41 @@
       // Streak
       const streak = calcStreak(logs);
       if (streak > 0) {
-        html += `<div class="streak-card"><span class="streak-emoji"><i data-lucide="flame" style="width:18px;height:18px"></i></span><div class="streak-text"><span>${streak}-day streak!</span> Keep logging to stay on track.</div></div>`;
+        html += `<div class="streak-card"><span class="streak-emoji"><i data-lucide="flame" style="width:18px;height:18px"></i></span><div class="streak-text"><span class="streak-num">0</span>-day streak! Keep logging to stay on track.</div></div>`;
       }
 
-      // Quick log buttons
-      if (tier === 'pro') {
-        html += `
-          <div class="quick-log-row">
-            <button class="quick-log-btn" onclick="openLogModal('meal')"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i> Feed</button>
-            <button class="quick-log-btn" onclick="openLogModal('medication')"><i data-lucide="pill" style="width:16px;height:16px"></i> Meds</button>
-            <button class="quick-log-btn" onclick="openLogModal('bathroom')"><i data-lucide="footprints" style="width:16px;height:16px"></i> Walk</button>
-          </div>`;
-      } else if (tier === 'basic') {
-        html += `
-          <div class="quick-log-row">
-            <button class="quick-log-btn" onclick="openLogModal('meal')"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i> Feed</button>
-            <button class="quick-log-btn" onclick="openLogModal('medication')"><i data-lucide="pill" style="width:16px;height:16px"></i> Meds</button>
-            <button class="quick-log-btn" onclick="openLogModal('bathroom')"><i data-lucide="footprints" style="width:16px;height:16px"></i> Walk</button>
-          </div>`;
-      } else {
-        // Starter tier - notes only
-        html += `
-          <div class="quick-log-row">
-            <button class="quick-log-btn" onclick="openLogModal('custom')"><i data-lucide="file-text" style="width:16px;height:16px"></i> Add Note</button>
-          </div>`;
-      }
+      // Quick log buttons — all tiers can log
+      html += `
+        <div class="quick-log-row">
+          <button class="quick-log-btn" onclick="openLogModal('meal')"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i> Feed</button>
+          <button class="quick-log-btn" onclick="openLogModal('medication')"><i data-lucide="pill" style="width:16px;height:16px"></i> Meds</button>
+          <button class="quick-log-btn" onclick="openLogModal('bathroom')"><i data-lucide="paw-print" style="width:16px;height:16px"></i> Walk</button>
+        </div>`;
 
-      // Summary cards - show meal/med/bathroom for paid, notes for free
+      // Summary cards — show meal/med/bathroom for all tiers
       const today = new Date().toDateString();
       const lastMeal = logs.find(l => l.log_type === 'meal');
       const lastMed = logs.find(l => l.log_type === 'medication');
       const lastBath = logs.find(l => l.log_type === 'bathroom');
 
       html += `<div class="summary-grid">`;
-      if (tier === 'starter') {
-        const lastNote = logs.find(l => l.log_type === 'custom');
-        html += `<div class="summary-card" style="grid-column: span 3"><div class="sc-icon blue"><i data-lucide="file-text" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastNote ? escapeHtml(lastNote.title) : 'No notes yet'}</h4><p>${lastNote ? formatDateTime(lastNote.created_at) : 'Add notes about your dog'}</p></div></div>`;
-      } else {
-        html += `<div class="summary-card"><div class="sc-icon orange"><i data-lucide="utensils-crossed" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMeal ? escapeHtml(lastMeal.title) : 'No meal logged'}</h4><p>${lastMeal ? formatDateTime(lastMeal.created_at) : 'Log the first meal of the day'}</p></div></div>`;
-        html += `<div class="summary-card"><div class="sc-icon blue"><i data-lucide="pill" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMed ? escapeHtml(lastMed.title) : 'No medication'}</h4><p>${lastMed ? formatDateTime(lastMed.created_at) : 'No meds recorded yet'}</p></div></div>`;
-        html += `<div class="summary-card"><div class="sc-icon green"><i data-lucide="footprints" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastBath ? escapeHtml(lastBath.title) : 'No walk logged'}</h4><p>${lastBath ? formatDateTime(lastBath.created_at) : 'Log the last bathroom break'}</p></div></div>`;
-      }
+      html += `<div class="summary-card" onclick="openLogModal('meal')"><div class="sc-icon orange"><i data-lucide="utensils-crossed" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMeal ? escapeHtml(lastMeal.title) : 'No meal logged'}</h4><p>${lastMeal ? formatDateTime(lastMeal.created_at) : 'Log the first meal of the day'}</p></div></div>`;
+      html += `<div class="summary-card" onclick="openLogModal('medication')"><div class="sc-icon blue"><i data-lucide="pill" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMed ? escapeHtml(lastMed.title) : 'No medication'}</h4><p>${lastMed ? formatDateTime(lastMed.created_at) : 'No meds recorded yet'}</p></div></div>`;
+      html += `<div class="summary-card" onclick="openLogModal('bathroom')"><div class="sc-icon green"><i data-lucide="footprints" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastBath ? escapeHtml(lastBath.title) : 'No Walk logged'}</h4><p>${lastBath ? formatDateTime(lastBath.created_at) : 'Log your last Walk'}</p></div></div>`;
       html += `</div>`;
 
-      // Starter tier: log prompt
+      // Starter tier: history depth prompt
       if (tier === 'starter') {
         html += `
           <div class="locked-feature" style="margin-top:8px">
-            <h3>Start tracking ${escapeHtml(AppState.activePet.name)}'s day</h3>
-            <p>Log meals, medications, and bathroom breaks. See patterns your vet will thank you for.</p>
-            <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Timeline — from $4.99/mo</button>
+            <h3>Logs expire after 7 days</h3>
+            <p>Upgrade to keep your dog's full history, unlock AI reports, and see patterns your vet will thank you for.</p>
+            <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
           </div>`;
       }
 
       // Recent activity (last 5)
-      if (logs.length > 0 && tier !== 'starter') {
+      if (logs.length > 0) {
         html += `<div class="timeline-header" style="margin-top:20px"><h2>Recent Activity</h2></div>`;
         html += `<div class="timeline">`;
         logs.slice(0, 5).forEach(l => {
@@ -1761,9 +1770,11 @@
             <div class="timeline-item">
               <div class="timeline-icon ${getLogColor(l.log_type)}">${getLogIcon(l.log_type)}</div>
               <div class="timeline-body">
-                <div class="timeline-title">${escapeHtml(l.title)}</div>
+                <div class="timeline-title-row">
+                  <div class="timeline-title">${escapeHtml(l.title)}</div>
+                  <div class="timeline-time">${formatDateTime(l.created_at)}</div>
+                </div>
                 ${l.notes ? `<div class="timeline-notes">${escapeHtml(l.notes)}</div>` : ''}
-                <div class="timeline-time">${formatDateTime(l.created_at)}</div>
               </div>
             </div>`;
         });
@@ -1772,6 +1783,15 @@
       }
 
       el.innerHTML = html;
+      // Animate streak number counting up
+      if (streak > 0) {
+        const streakEl = el.querySelector('.streak-num');
+        if (streakEl) {
+          let current = 0;
+          const step = () => { current++; streakEl.textContent = current; if (current < streak) requestAnimationFrame(step); };
+          requestAnimationFrame(step);
+        }
+      }
       lucide.createIcons();
     }
 
@@ -1993,7 +2013,7 @@
       const pet = AppState.pets.find(p => p.id === petId);
       if (pet) {
         AppState.setActivePet(pet);
-        try { const logs = await getLogs(pet.id); AppState.setLogs(logs); renderTimeline(logs); } catch(e) { renderTimeline([]); }
+        try { const logs = await getLogs(pet.id, 50, AppState.timelineDays()); AppState.setLogs(logs); renderTimeline(logs); } catch(e) { renderTimeline([]); }
         try { foodLogs = await getFoodLogs(pet.id); } catch(e) { foodLogs = []; }
         // Load symptom logs
         try { giLogs = await getGiLogs(pet.id); } catch(e) { giLogs = []; }
@@ -2121,7 +2141,7 @@
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Track meals and portions</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Log medications & supplements</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Bathroom & walk tracking</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Bathroom & Walk tracking</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Daily streak & activity summary</li>
               </ul>
               <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Timeline — from $4.99/mo</button>
@@ -2506,10 +2526,10 @@
       }
 
       if (items.length === 0) {
-        c.innerHTML = `<div class="welcome-state">
-          <span class="welcome-emoji"><i data-lucide="stethoscope" style="width:32px;height:32px"></i></span>
-          <h3>No symptoms logged</h3>
-          <p>Track GI issues, respiratory rate, test results, and skin conditions.</p>
+        c.innerHTML = `<div class="empty-state" style="padding:60px 20px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="stroke:var(--text-muted);margin-bottom:16px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          <h4>Nothing flagged yet</h4>
+          <p>${escapeHtml(AppState.activePet.name)}'s feeling good — no symptoms to report.</p>
         </div>`;
         lucide.createIcons();
         return;

@@ -241,7 +241,7 @@ function getLogIcon(type) {
   const icons = {
     meal: '<i data-lucide="utensils-crossed" style="width:14px;height:14px;vertical-align:middle"></i>',
     medication: '<i data-lucide="pill" style="width:14px;height:14px;vertical-align:middle"></i>',
-    bathroom: '<i data-lucide="footprints" style="width:14px;height:14px;vertical-align:middle"></i>',
+    bathroom: '<i data-lucide="paw-print" style="width:14px;height:14px;vertical-align:middle"></i>',
     custom: '<i data-lucide="file-text" style="width:14px;height:14px;vertical-align:middle"></i>',
     food: '<i data-lucide="utensils-crossed" style="width:14px;height:14px;vertical-align:middle"></i>'
   };

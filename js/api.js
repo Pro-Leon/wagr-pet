@@ -143,13 +143,18 @@ async function deletePet(petId) {
 }
 
 /* --- Logs --- */
-async function getLogs(petId, limit = 50) {
-  const { data, error } = await db()
+async function getLogs(petId, limit = 50, lookbackDays = null) {
+  let query = db()
     .from('pet_logs')
     .select('*')
     .eq('pet_id', petId)
     .order('created_at', { ascending: false })
     .limit(limit);
+  if (lookbackDays) {
+    const since = new Date(Date.now() - lookbackDays * 24 * 60 * 60 * 1000).toISOString();
+    query = query.gte('created_at', since);
+  }
+  const { data, error } = await query;
   if (error) throw error;
   return data || [];
 }
