@@ -116,12 +116,12 @@ async function handlePaystackEvent(event) {
 
   if (!planType && planCode) {
     const codeToPlan = {
-      'PLN_basic_monthly': 'basic_monthly',
-      'PLN_basic_yearly': 'basic_yearly',
-      'PLN_family_monthly': 'family_monthly',
-      'PLN_family_yearly': 'family_yearly',
-      'PLN_eq0p1x8wigfj00t': 'pro_monthly',
-      'PLN_3rsutm4lknn9lik': 'pro_yearly',
+      'PLN_x7yn9h54irimq96': 'basic_monthly',
+      'PLN_omjluu4cllyzgyd': 'basic_yearly',
+      'PLN_38n01fa6kxbk9vn': 'family_monthly',
+      'PLN_3r0edwfqim3uixw': 'family_yearly',
+      'PLN_wlpu3bvnyl5x7di': 'pro_monthly',
+      'PLN_bdr7x2i4rkb4cod': 'pro_yearly',
     };
     planType = codeToPlan[planCode];
   }

@@ -634,12 +634,12 @@ async function openPaystackCheckout(email, plan, onSuccess) {
   }
 
   const planCodes = {
-    basic_monthly: 'PLN_basic_monthly',
-    basic_yearly: 'PLN_basic_yearly',
-    family_monthly: 'PLN_family_monthly',
-    family_yearly: 'PLN_family_yearly',
-    pro_monthly: 'PLN_eq0p1x8wigfj00t',
-    pro_yearly: 'PLN_3rsutm4lknn9lik'
+    basic_monthly: 'PLN_x7yn9h54irimq96',
+    basic_yearly: 'PLN_omjluu4cllyzgyd',
+    family_monthly: 'PLN_38n01fa6kxbk9vn',
+    family_yearly: 'PLN_3r0edwfqim3uixw',
+    pro_monthly: 'PLN_wlpu3bvnyl5x7di',
+    pro_yearly: 'PLN_bdr7x2i4rkb4cod'
   };
 
   const handler = PaystackPop.setup({

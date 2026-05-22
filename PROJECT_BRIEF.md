@@ -266,12 +266,12 @@ Both calculators have **no server dependency** — they work offline via localSt
 
 | Plan | Code |
 |---|---|
-| Basic Monthly | `PLN_basic_monthly` |
-| Basic Yearly | `PLN_basic_yearly` |
-| Family Monthly | `PLN_family_monthly` |
-| Family Yearly | `PLN_family_yearly` |
-| Pro Monthly | `PLN_eq0p1x8wigfj00t` |
-| Pro Yearly | `PLN_3rsutm4lknn9lik` |
+| Basic Monthly | `PLN_x7yn9h54irimq96` |
+| Basic Yearly | `PLN_omjluu4cllyzgyd` |
+| Family Monthly | `PLN_38n01fa6kxbk9vn` |
+| Family Yearly | `PLN_3r0edwfqim3uixw` |
+| Pro Monthly | `PLN_wlpu3bvnyl5x7di` |
+| Pro Yearly | `PLN_bdr7x2i4rkb4cod` |
 
 **Flow:**
 1. User clicks "Upgrade" on pricing modal
