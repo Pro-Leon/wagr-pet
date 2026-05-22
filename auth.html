@@ -673,17 +673,33 @@
       try {
         const data = await signUp(email, password);
 
+        // Always attempt server-side setup (profile + pet) regardless of session
+        const setupPayload = {
+          userId: data?.user?.id || null,
+          email,
+          displayName: name,
+          tier,
+          pet: petName ? { name: petName, breed, weight_kg: weight, birth_date: birthDate } : null,
+        };
+
+        if (setupPayload.userId) {
+          fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/signup-setup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(setupPayload),
+          }).catch(e => console.log('Setup API:', e.message));
+        }
+
         if (data.session && data.user) {
           // Email confirmation OFF — auto-logged in
           AppState.setUser(data.user);
 
-          // Create profile with display_name
+          // Client-side profile + pet as fallback
           try {
             await db().from('profiles')
               .insert({ id: data.user.id, email, display_name: name, tier })
               .select().single();
           } catch (e) {
-            // Profile may already exist from trigger — update it
             try {
               await db().from('profiles')
                 .update({ display_name: name, tier, updated_at: new Date().toISOString() })
@@ -691,14 +707,12 @@
             } catch (ie) { console.warn('Profile update:', ie.message); }
           }
 
-          // Create first pet
           try {
             const pet = await addPet({ user_id: data.user.id, name: petName, breed, weight_kg: weight, birth_date: birthDate });
             AppState.setPets([pet]);
             AppState.setActivePet(pet);
           } catch (e) { console.warn('Pet creation:', e.message); }
 
-          // Set display_name on user object for dashboard greeting
           data.user.display_name = name;
 
           showToast('Account created!', 'success');

@@ -1799,6 +1799,7 @@
       try {
         const profile = await getProfile(AppState.user.id);
         AppState.setProfile(profile);
+        if (profile?.display_name) AppState.user.display_name = profile.display_name;
         console.log('Profile loaded:', profile);
       } catch (e) {
         console.log('Profile not found, creating...');
