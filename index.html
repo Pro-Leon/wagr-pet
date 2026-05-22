@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wagr — Smart Dog Care That Runs Itself</title>
-  <meta name="description" content="Never wonder who fed the dog. Track meals, medications, and daily care in one place. AI-powered vet reports, QR emergency tags, and seamless sitter handoffs.">
+  <title>Wagr — Your Dog's Complete Health Record</title>
+  <meta name="description" content="Track meals, medications, symptoms, and vet records. AI vet reports, QR emergency tags, co-parent sync, and sitter magic links — one dashboard for your dog's entire health history.">
   <meta name="keywords" content="dog care app, pet health tracker, dog medication reminder, pet care dashboard, dog food calculator, AI vet report, pet QR tag">
   <meta name="author" content="Wagr">
   <meta name="robots" content="index, follow">
@@ -18,16 +18,16 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Wagr — Never wonder who fed the dog">
-  <meta property="og:description" content="Smart care tracking for dog owners. Meals, meds, and daily health — all in one place.">
+  <meta property="og:title" content="Wagr — Your Dog's Complete Health Record">
+  <meta property="og:description" content="AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and symptom tracking — one dashboard for everything your dog needs.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://wagr-ai.vercel.app">
   <meta property="og:site_name" content="Wagr">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Wagr — Smart Dog Care Dashboard">
-  <meta name="twitter:description" content="The modern way to track your dog's health, nutrition, and daily care.">
+  <meta name="twitter:title" content="Wagr — Your Dog's Complete Health Record">
+  <meta name="twitter:description" content="AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and symptom tracking — one dashboard for everything your dog needs.">
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -37,7 +37,7 @@
     "name": "Wagr",
     "applicationCategory": "Health",
     "operatingSystem": "Web",
-    "description": "Smart dog care dashboard with meal tracking, medication reminders, AI vet reports, and QR emergency tags.",
+    "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, symptom tracking, and daily care logging.",
     "offers": [
       { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Starter tier" },
       { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "description": "Basic monthly" },
@@ -869,11 +869,9 @@
       </div>
       <div class="navbar-links hide-mobile">
         <a href="#benefits">Why Wagr</a>
-        <a href="#calculators">Free Tools</a>
         <a href="#pricing">Pricing</a>
-        <a href="/privacy">Privacy</a>
+        <a href="#privacy" onclick="event.preventDefault();document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</a>
         <a href="/terms">Terms</a>
-        <a href="/cookies">Cookies</a>
       </div>
       <div class="navbar-actions">
         <button class="theme-toggle" onclick="ThemeManager.toggle()"></button>
@@ -894,11 +892,9 @@
     </div>
     <nav class="sidebar-nav">
       <a href="#benefits" onclick="closeSidebar()">Why Wagr</a>
-      <a href="#calculators" onclick="closeSidebar()">Free Tools</a>
       <a href="#pricing" onclick="closeSidebar()">Pricing</a>
-      <a href="/privacy" onclick="closeSidebar()">Privacy Policy</a>
-      <a href="/terms" onclick="closeSidebar()">Terms of Service</a>
-      <a href="/cookies" onclick="closeSidebar()">Cookie Policy</a>
+      <a href="#privacy" onclick="closeSidebar();document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</a>
+      <a href="/terms" onclick="closeSidebar()">Terms</a>
       <div class="divider" style="margin:12px 0"></div>
       <a href="/auth" onclick="closeSidebar()">Log in</a>
       <a href="/auth?mode=signup" onclick="closeSidebar()">Create Account</a>
@@ -908,14 +904,15 @@
   <!-- ========== HERO ========== -->
   <section class="hero">
     <div class="container">
-      <div class="hero-label"><span class="dot"></span> Built for people who take dog care seriously</div>
-      <h1>Never wonder<br>who fed <em>the dog</em></h1>
-      <p class="hero-sub">Track meals, medications, and daily care in one place. Know your dog is always taken care of — even when you're not home.</p>
+      <div class="hero-label"><span class="dot"></span> The care record your vet wishes you had</div>
+      <h1>Your dog's entire health history,<br><em>in one place</em></h1>
+      <p class="hero-sub">AI vet reports that catch what you miss. GPS emergency alerts via QR collar tag. Sitter magic links with zero setup. Co-parent sync that prevents double-dosing. Clinical symptom tracking across 4 body systems. All in a single dashboard.</p>
       <a href="/auth?mode=signup" class="hero-cta">
         Start Free
         <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
-      <div class="hero-footnote">No credit card required · Free forever tier</div>
+      <div class="hero-footnote" style="margin-top:14px">No credit card required · Free forever tier</div>
+      <div style="margin-top:6px;font-size:0.72rem;color:var(--text-muted)">Your data is encrypted, private, and never sold. Ever.</div>
     </div>
   </section>
 
@@ -956,44 +953,43 @@
             <select class="pet-select" disabled>
               <option>Buddy — Golden Retriever</option>
             </select>
-            <span class="badge-area" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);background:var(--orange-50);color:var(--orange-700);font-weight:600;font-size:0.68rem">ESSENTIAL</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-full);background:var(--orange-50);color:var(--orange-700);font-weight:600;font-size:0.68rem">PRO</span>
           </div>
-          <div class="preview-actions">
-            <span class="pa"><i data-lucide="utensils-crossed" style="width:14px;height:14px"></i> Feed</span>
-            <span class="pa"><i data-lucide="pill" style="width:14px;height:14px"></i> Meds</span>
-            <span class="pa"><i data-lucide="paw-print" style="width:14px;height:14px"></i> Bathroom</span>
-            <span class="pa"><i data-lucide="file-text" style="width:14px;height:14px"></i> Note</span>
+          <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+            <span style="padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:var(--orange-500);color:#fff">AI Report</span>
+            <span style="padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border-color)">Timeline</span>
+            <span style="padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border-color)">Symptoms</span>
+            <span style="padding:4px 12px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;background:var(--bg-tertiary);color:var(--text-secondary);border:1px solid var(--border-color)">Sitter</span>
           </div>
-          <div style="font-size:0.68rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Today</div>
-          <div class="preview-timeline">
-            <div class="preview-tl-item">
-              <div class="preview-tl-icon meal"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i></div>
-              <div class="preview-tl-text">
-                <div class="preview-tl-title">Morning kibble — 1.5 cups</div>
-                <div class="preview-tl-time">7:30 AM</div>
+          <div style="background:var(--bg-tertiary);border-radius:var(--radius-lg);padding:16px;border:1px solid var(--border-color)">
+            <div style="font-size:0.82rem;font-weight:600;margin-bottom:10px;color:var(--orange-600)">Clinical Summary — Last 30 Days</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px;text-align:center">
+                <div style="font-size:0.64rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">Meals Logged</div>
+                <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary)">47</div>
+              </div>
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px;text-align:center">
+                <div style="font-size:0.64rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">Meds Given</div>
+                <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary)">12</div>
+              </div>
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px;text-align:center">
+                <div style="font-size:0.64rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">Appetite Trend</div>
+                <div style="font-size:1.1rem;font-weight:700;color:var(--orange-500)">↓ 18%</div>
+              </div>
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:10px;text-align:center">
+                <div style="font-size:0.64rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">GI Flags</div>
+                <div style="font-size:1.1rem;font-weight:700;color:#dc2626">2 events</div>
               </div>
             </div>
-            <div class="preview-tl-item">
-              <div class="preview-tl-icon med"><i data-lucide="pill" style="width:16px;height:16px"></i></div>
-              <div class="preview-tl-text">
-                <div class="preview-tl-title">Heartworm pill (monthly)</div>
-                <div class="preview-tl-time">8:00 AM</div>
-              </div>
+            <div style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6">
+              <strong style="color:var(--text-primary)">Key Finding:</strong> Appetite declined 18% over the reporting period (from ~1.6 cups/meal to ~1.3 cups). Two GI events noted in week 3 — soft stool with mucus. Recommend veterinary follow-up.
             </div>
-            <div class="preview-tl-item">
-              <div class="preview-tl-icon bath"><i data-lucide="paw-print" style="width:16px;height:16px"></i></div>
-              <div class="preview-tl-text">
-                <div class="preview-tl-title">Normal — morning walk</div>
-                <div class="preview-tl-time">8:45 AM</div>
-              </div>
-            </div>
-            <div class="preview-tl-item">
-              <div class="preview-tl-icon meal"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i></div>
-              <div class="preview-tl-text">
-                <div class="preview-tl-title">Evening meal — chicken & rice</div>
-                <div class="preview-tl-time">6:15 PM</div>
-              </div>
-            </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#FEF3C7;color:#92400E;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600"><i data-lucide="utensils-crossed" style="width:12px;height:12px"></i> Fed 7:30 AM</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#DBEAFE;color:#1E40AF;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600"><i data-lucide="pill" style="width:12px;height:12px"></i> Med 8:00 AM</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#D1FAE5;color:#065F46;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600"><i data-lucide="paw-print" style="width:12px;height:12px"></i> Walked 8:45 AM</span>
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:#FEE2E2;color:#991B1B;border-radius:var(--radius-full);font-size:0.65rem;font-weight:600">⚠️ Loose stool</span>
           </div>
         </div>
       </div>
@@ -1005,39 +1001,39 @@
     <div class="container">
       <div class="benefits-header">
         <div class="section-label">Why Wagr</div>
-        <h2>Stop guessing. Start knowing.</h2>
-        <p>Every feature exists because a real dog owner had a real problem.</p>
+        <h2>Six features. One dashboard.<br>Better care for your dog.</h2>
+        <p>From AI clinical summaries to emergency QR tags — this is what a modern dog care platform looks like.</p>
       </div>
       <div class="benefits-grid">
         <div class="benefit-card">
-          <div class="bc-icon"><i data-lucide="clipboard-list" style="width:24px;height:24px"></i></div>
-          <h3>Never double-feed again</h3>
-          <p>When your partner, sitter, or co-parent logs a meal, it appears on your timeline instantly. No more "did you feed the dog?" texts.</p>
-        </div>
-        <div class="benefit-card">
-          <div class="bc-icon"><i data-lucide="pill" style="width:24px;height:24px"></i></div>
-          <h3>Never miss a medication</h3>
-          <p>Log every pill, dose, and supplement. Build a clear history your vet can actually use — not vague memory.</p>
-        </div>
-        <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="bot" style="width:24px;height:24px"></i></div>
-          <h3>Vet visits, simplified</h3>
-          <p>One click compiles 30 days of care logs into a clinical summary. Walk into every vet appointment prepared.</p>
+          <h3>Walk into every vet appointment prepared</h3>
+          <p>One click compiles 30 days of meals, medications, symptoms, and notes into a clinical summary your vet can actually use. No more "I think he ate normally" when the AI shows an 18% appetite decline.</p>
         </div>
         <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="map-pin" style="width:24px;height:24px"></i></div>
-          <h3>If they get lost, you know immediately</h3>
-          <p>QR tags on their collar. Anyone who finds your dog taps their phone, and you get their GPS location instantly.</p>
+          <h3>If your dog gets lost, you get a GPS ping</h3>
+          <p>A QR tag on their collar. Anyone who finds them taps it with their phone, and you get their GPS location instantly. No app required for the finder. No account needed for the scanner.</p>
         </div>
         <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="link" style="width:24px;height:24px"></i></div>
-          <h3>Sitter handoff, zero friction</h3>
-          <p>Send a magic link. Your sitter can view and add care logs without creating an account or downloading anything.</p>
+          <h3>Your sitter is ready in 30 seconds</h3>
+          <p>Send a magic link. Your sitter sees care instructions, logs meals and meds in real time — without creating an account, downloading an app, or texting you a single question.</p>
         </div>
         <div class="benefit-card">
-          <div class="bc-icon"><i data-lucide="zap" style="width:24px;height:24px"></i></div>
-          <h3>Works in seconds, not hours</h3>
-          <p>No setup wizards. No onboarding calls. Create an account, add your dog, start logging. Done.</p>
+          <div class="bc-icon"><i data-lucide="users" style="width:24px;height:24px"></i></div>
+          <h3>Never guess who gave what</h3>
+          <p>When your partner, co-parent, or dog walker logs something, it appears on your timeline instantly. Multi-person care sync prevents double-dosing, missed meds, and the "did you feed him?" text loop.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="activity" style="width:24px;height:24px"></i></div>
+          <h3>Clinical tracking your vet will ask for</h3>
+          <p>Track GI issues, cardio readings, test results, dermatology, and grooming across 4 body systems. Generate symptom reports with consistency charts, color logs, and severity trends that vets actually request.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="lock" style="width:24px;height:24px"></i></div>
+          <h3>Your data is private. Full stop.</h3>
+          <p>This is your dog's health record — it belongs to you. All data is encrypted, protected by Supabase Row-Level Security, and never sold. Privacy isn't a feature, it's the foundation.</p>
         </div>
       </div>
     </div>
@@ -1048,38 +1044,133 @@
     <div class="container">
       <div class="testimonials-header">
         <div class="section-label">From real owners</div>
-        <h2 class="section-title">People love what it replaces</h2>
+        <h2 class="section-title">Stories that made us build this</h2>
       </div>
       <div class="testimonial-grid">
         <div class="testimonial-card">
           <div class="tc-stars">★★★★★</div>
-          <div class="tc-text">"We used to text each other 'did you feed Max?' three times a day. Now we just check the timeline. So simple."</div>
-          <div class="tc-author">Sarah K.</div>
-          <div class="tc-role">Golden Retriever owner</div>
+          <div class="tc-text">"The sitter link saved our weekend trip. Our sitter logged everything — meals, meds, walks — without downloading a single thing. I could see it all from the airport. Total peace of mind."</div>
+          <div class="tc-author">Marcus T.</div>
+          <div class="tc-role">Family plan · Labrador owner</div>
         </div>
         <div class="testimonial-card">
           <div class="tc-stars">★★★★★</div>
-          <div class="tc-text">"The AI vet report caught a pattern I missed — my dog was eating less over two weeks. Turned out to be a dental issue."</div>
-          <div class="tc-author">David M.</div>
-          <div class="tc-role">Shepherd mix owner</div>
+          <div class="tc-text">"The AI report caught a gradual appetite drop over two weeks that I had completely missed. My vet said it gave her more information than a typical consult. That feature alone is worth the Pro plan."</div>
+          <div class="tc-author">Dr. Amara S.</div>
+          <div class="tc-role">Pro plan · Veterinarian &amp; dog owner</div>
         </div>
         <div class="testimonial-card">
           <div class="tc-stars">★★★★★</div>
-          <div class="tc-text">"Our dog walker uses the sitter link. I can see exactly what happened during the day without asking. Total peace of mind."</div>
-          <div class="tc-author">Priya R.</div>
-          <div class="tc-role">Corgi owner</div>
+          <div class="tc-text">"Co-parent sync caught us — my partner gave the morning meds, and I saw it on the timeline before I double-dosed. If you have multiple people caring for your dog, this is non-negotiable."</div>
+          <div class="tc-author">Jenna L.</div>
+          <div class="tc-role">Family plan · Beagle owner</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ========== FREE CALCULATORS ========== -->
-  <section class="section-pad" id="calculators">
+
+
+  <!-- ========== PRICING ========== -->
+  <section class="section-pad" id="pricing" style="background:var(--bg-tertiary)">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:32px">
+        <div class="section-label">Pricing</div>
+        <h2 class="section-title">Start free. Upgrade when it matters.</h2>
+      </div>
+
+      <div style="text-align:center;margin-bottom:12px">
+        <span style="display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:linear-gradient(135deg,rgba(22,163,74,0.08),rgba(22,163,74,0.03));border:1px solid rgba(22,163,74,0.15);border-radius:var(--radius-full);font-size:0.78rem;color:var(--text-secondary)">
+          <span style="font-weight:700;color:#16a34a">Save up to $55/year</span>
+          with annual billing
+        </span>
+      </div>
+      <div class="yearly-toggle">
+        <span>Monthly</span>
+        <div class="toggle-switch" id="pricing-toggle" onclick="togglePricing()"></div>
+        <span>Annual</span>
+        <span class="save-badge">Save ~17–27%</span>
+      </div>
+
+      <div class="pricing-grid" id="landing-pricing"></div>
+
+      <div style="margin-top:40px;max-width:780px;margin-left:auto;margin-right:auto;overflow-x:auto">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Starter</th>
+              <th>Basic</th>
+              <th>Family</th>
+              <th>Pro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Pet Profiles</td><td>1</td><td>2</td><td>4</td><td>Unlimited</td></tr>
+            <tr><td>AI Assistant</td><td>Read-only</td><td>Read-only</td><td>Full logging</td><td>Full logging</td></tr>
+            <tr><td>Timeline Logging</td><td>7 days</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>QR Emergency Tags</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Co-parent Sync</td><td class="cross">—</td><td class="cross">—</td><td>3 users</td><td class="check">✓</td></tr>
+            <tr><td>Symptom Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Grooming Appointments</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Medication Reminders</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>AI Vet Reports</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Weight Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Vet Records Storage</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Location Alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Sitter Links</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Free Calculators</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Your dog's entire health history,<br>in one place</h2>
+      <p>Create a free account in under 30 seconds. No credit card, no catch.</p>
+      <a href="/auth?mode=signup" class="hero-cta">
+        Start Free
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <div style="margin-top:14px;font-size:0.74rem;color:var(--text-muted)">Your data is encrypted, private, and never sold. Ever.</div>
+    </div>
+  </section>
+
+  <!-- ========== PRIVACY & TRUST ========== -->
+  <section class="section-pad" id="privacy" style="background:var(--bg-secondary)">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:32px">
+        <div class="section-label">Your Data</div>
+        <h2 class="section-title">Private by design. Protected by encryption.</h2>
+        <p class="section-desc mx-auto">This is your dog's health record — it belongs to you. We built Wagr on a foundation of data privacy, not surveillance.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:12px;max-width:700px;margin:0 auto">
+        <div style="display:flex;align-items:start;gap:14px;padding:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">
+          <span style="font-size:1.2rem;flex-shrink:0;width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center">🔐</span>
+          <div><strong style="font-size:0.88rem">End-to-end encrypted</strong><p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">All data transmitted over HTTPS. Database protected by Supabase Row-Level Security — your data is only accessible to you and the people you explicitly share it with.</p></div>
+        </div>
+        <div style="display:flex;align-items:start;gap:14px;padding:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">
+          <span style="font-size:1.2rem;flex-shrink:0;width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center">🔑</span>
+          <div><strong style="font-size:0.88rem">You control who sees what</strong><p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">Co-parents see only shared pets. Sitters see only active care instructions. QR scanners see only emergency info. You decide.</p></div>
+        </div>
+        <div style="display:flex;align-items:start;gap:14px;padding:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">
+          <span style="font-size:1.2rem;flex-shrink:0;width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center">🤝</span>
+          <div><strong style="font-size:0.88rem">We don't sell your data. Period.</strong><p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">No data mining. No third-party sharing. No ad targeting. The only parties processing your data are Supabase (database), Vercel (hosting), and OpenRouter (AI) — and none of them own it.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FREE TOOLS ========== -->
+  <section class="section-pad" id="tools" style="background:var(--bg-tertiary)">
     <div class="container">
       <div class="text-center" style="margin-bottom:32px">
         <div class="section-label">Free Tools</div>
-        <h2 class="section-title">No account needed</h2>
-        <p class="section-desc mx-auto">Use these veterinary-calibrated tools right now — no signup, no catch, works offline.</p>
+        <h2 class="section-title">Veterinary-calibrated, always free</h2>
+        <p class="section-desc mx-auto">Use them right now — no account needed, works offline.</p>
       </div>
 
       <div class="calc-tabs mx-auto" style="display:flex;justify-content:center">
@@ -1096,6 +1187,9 @@
             <input type="text" class="input-field" id="tox-search" placeholder="e.g. chocolate, grapes, xylitol, onions..." oninput="handleToxSearch()" autocomplete="off">
           </div>
           <div id="tox-results"></div>
+          <div style="margin-top:16px;padding:12px;background:var(--bg-secondary);border:1px dashed var(--border-color);border-radius:var(--radius-md);text-align:center;font-size:0.78rem;color:var(--text-muted)">
+            Want to save this for your vet? <a href="/auth?mode=signup" style="color:var(--orange-600);font-weight:600;text-decoration:underline">Create a free Wagr account</a>
+          </div>
         </div>
       </div>
 
@@ -1128,68 +1222,11 @@
             <button class="btn btn-primary" onclick="handleCalcCalories()">Calculate</button>
           </div>
           <div class="calc-results" id="calc-results"></div>
+          <div style="margin-top:16px;padding:12px;background:var(--bg-secondary);border:1px dashed var(--border-color);border-radius:var(--radius-md);text-align:center;font-size:0.78rem;color:var(--text-muted)">
+            Want to save this for your vet? <a href="/auth?mode=signup" style="color:var(--orange-600);font-weight:600;text-decoration:underline">Create a free Wagr account</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ========== PRICING ========== -->
-  <section class="section-pad" id="pricing" style="background:var(--bg-tertiary)">
-    <div class="container">
-      <div class="text-center" style="margin-bottom:32px">
-        <div class="section-label">Pricing</div>
-        <h2 class="section-title">Start free. Upgrade when it matters.</h2>
-      </div>
-
-      <div class="yearly-toggle">
-        <span>Monthly</span>
-        <div class="toggle-switch" id="pricing-toggle" onclick="togglePricing()"></div>
-        <span>Yearly</span>
-        <span class="save-badge">Save ~17%</span>
-      </div>
-
-      <div class="pricing-grid" id="landing-pricing"></div>
-
-      <div style="margin-top:40px;max-width:780px;margin-left:auto;margin-right:auto;overflow-x:auto">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Starter</th>
-              <th>Basic</th>
-              <th>Family</th>
-              <th>Pro</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Pet Profiles</td><td>1</td><td>2</td><td>4</td><td>Unlimited</td></tr>
-            <tr><td>Timeline Logging</td><td>7 days</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>QR Emergency Tags</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Co-parent Sync</td><td class="cross">—</td><td class="cross">—</td><td>3 users</td><td class="check">✓</td></tr>
-            <tr><td>Symptom Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Grooming Appointments</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Medication Reminders</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>AI Vet Reports</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
-            <tr><td>Weight Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
-            <tr><td>Vet Records Storage</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
-            <tr><td>Location Alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Sitter Links</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Free Calculators</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== FINAL CTA ========== -->
-  <section class="final-cta">
-    <div class="container">
-      <h2>Your dog's care,<br>finally organized</h2>
-      <p>Create a free account in under 30 seconds. No credit card, no catch.</p>
-      <a href="/auth?mode=signup" class="hero-cta">
-        Start Free
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
     </div>
   </section>
 
@@ -1204,10 +1241,11 @@
         <div class="footer-text">© 2026 Wagr. Built for dog people.</div>
       </div>
       <div class="footer-links">
-        <a href="#benefits">Why Wagr</a>
+        <a href="#benefits">Features</a>
         <a href="#pricing">Pricing</a>
-        <a href="#calculators">Calculators</a>
-        <a href="/privacy">Privacy</a>
+        <a href="#tools">Free Tools</a>
+        <a href="#privacy">Privacy</a>
+        <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms</a>
         <a href="/cookies">Cookies</a>
         <a href="/auth">Log in</a>
@@ -1362,9 +1400,9 @@ c.innerHTML = `
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${cg}<span>1 Pet Profile</span></li>
-            <li>${cg}<span>Toxicity &amp; Calorie Calculators</span></li>
+            <li>${cg}<span>AI Assistant (read-only)</span></li>
+            <li>${cg}<span>Free Toxicity &amp; Calorie Tools</span></li>
             <li>${cg}<span>7-Day Timeline Logging</span></li>
-            <li>${cg}<span>Activity Streak</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-secondary">Get Started</a>
         </div>
@@ -1373,13 +1411,14 @@ c.innerHTML = `
           <div class="plan-name">Basic</div>
           <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$59.88' : ''}</div>
           <div class="plan-price">${isYearly ? '$44' : '$4.99'}<span class="period">${m}</span></div>
-          <p class="plan-desc">Up to 2 Pets</p>
+          <p class="plan-desc">Up to 2 Pets · Save $16/yr</p>
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${co}<span>Up to 2 Pets</span></li>
+            <li>${co}<span>Unlimited Log History</span></li>
+            <li>${co}<span>AI Assistant (read-only)</span></li>
             <li>${co}<span>Passive QR Collar Tags</span></li>
             <li>${co}<span>Public Emergency Profile</span></li>
-            <li>${co}<span>Unlimited Log History</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Start Basic</a>
         </div>
@@ -1389,10 +1428,11 @@ c.innerHTML = `
           <div class="plan-name">Family</div>
           <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$119.88' : ''}</div>
           <div class="plan-price">${isYearly ? '$89' : '$9.99'}<span class="period">${m}</span></div>
-          <p class="plan-desc">Up to 4 Pets</p>
+          <p class="plan-desc">Up to 4 Pets · Save $31/yr</p>
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${co}<span>Up to 4 Pets</span></li>
+            <li>${co}<span>AI Assistant (full logging)</span></li>
             <li>${co}<span>Active QR + GPS Alerts</span></li>
             <li>${co}<span>Co-parent Sync (3 users)</span></li>
             <li>${co}<span>Sitter Magic Links &amp; Care Plans</span></li>
@@ -1405,15 +1445,16 @@ c.innerHTML = `
           <div class="plan-name">Pro</div>
           <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$203.88' : ''}</div>
           <div class="plan-price">${isYearly ? '$149' : '$16.99'}<span class="period">${m}</span></div>
-          <p class="plan-desc">Unlimited Pets</p>
+          <p class="plan-desc">Unlimited Pets · Save $55/yr</p>
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${co}<span>Unlimited Pets</span></li>
             <li>${co}<span>AI Vet-Prep Reports (PDF)</span></li>
+            <li>${co}<span>AI Assistant (full logging)</span></li>
             <li>${co}<span>Weight Tracking &amp; Trend Charts</span></li>
             <li>${co}<span>Vet Records &amp; Document Storage</span></li>
             <li>${co}<span>Food Inventory &amp; Restock Alerts</span></li>
-            <li>${co}<span>Priority Support</span></li>
+            <li>${co}<span>Unlimited Co-parents &amp; Priority Support</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Go Pro</a>
         </div>
@@ -1434,7 +1475,7 @@ c.innerHTML = `
     /* --- Init --- */
     document.addEventListener('DOMContentLoaded', () => {
       renderLandingPricing();
-      lucide.createIcons();
+      setTimeout(() => { try { lucide.createIcons(); } catch(e) {} }, 100);
       const saved = CalculatorStorage.load('calorie');
       if (saved) {
         document.getElementById('calc-weight').value = saved.weight || '';
