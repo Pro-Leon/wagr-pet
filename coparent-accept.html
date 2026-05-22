@@ -124,11 +124,13 @@
         `;
         document.getElementById('invite-accept-btn').style.display = 'block';
       } else {
-        // Not logged in — redirect to auth
+        // Not logged in — redirect to auth (with redirect back after signup)
         document.getElementById('invite-loading').style.display = 'none';
         document.getElementById('invite-title').textContent = 'Sign in to accept';
         document.getElementById('invite-text').textContent = 'You need a Wagr account to accept this co-parent invite.';
-        document.getElementById('invite-login-btn').style.display = 'block';
+        const loginBtn = document.getElementById('invite-login-btn');
+        loginBtn.href = '/auth?redirect=' + encodeURIComponent('/coparent?token=' + inviteToken);
+        loginBtn.style.display = 'block';
       }
     });
 

@@ -3121,31 +3121,35 @@ if (!hasPet) {
     /* --- Sitter Mode --- */
     async function handleSitterMode(token) {
       try {
-        const pet = await verifySitterToken(token);
+        const res = await fetch(window.location.origin + '/api/verify-sitter?token=' + encodeURIComponent(token));
+        if (!res.ok) { showToast('Invalid or expired sitter link.', 'error'); window.location.href = '/'; return; }
+        const data = await res.json();
+        const pet = data.pet;
         if (!pet) { showToast('Invalid or expired sitter link.', 'error'); window.location.href = '/'; return; }
-        
-        // Check if sitter name is already saved
+
         const savedName = localStorage.getItem('houndos_sitter_name');
-        
-        // Show name input if not set
+
         if (!savedName) {
-          document.body.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px"><div class="card" style="max-width:360px;width:100%;text-align:center"><h2 style="margin-bottom:8px">Welcome!</h2><p style="color:var(--text-secondary);margin-bottom:20px;font-size:0.9rem">What\'s your name? Your entries will be labeled with your name.</p><form onsubmit="event.preventDefault(); startSitterMode(\'' + pet.id + '\', \'' + pet.user_id + '\', this.sittername.value)"><input type="text" class="input-field" name="sittername" placeholder="Your name" required style="margin-bottom:16px"><button type="submit" class="btn btn-primary w-full">Continue</button></form></div></div>';
+          document.body.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px"><div class="card" style="max-width:360px;width:100%;text-align:center"><h2 style="margin-bottom:8px">Welcome!</h2><p style="color:var(--text-secondary);margin-bottom:20px;font-size:0.9rem">What\'s your name? Your entries will be labeled with your name.</p><form onsubmit="event.preventDefault(); startSitterMode(\'' + escapeHtml(pet.id) + '\', this.sittername.value, \'' + escapeHtml(pet.name) + '\', \'' + escapeHtml(pet.breed || '') + '\', \'' + escapeHtml(token) + '\')"><input type="text" class="input-field" name="sittername" placeholder="Your name" required style="margin-bottom:16px"><button type="submit" class="btn btn-primary w-full">Continue</button></form></div></div>';
           return;
         }
-        
-        startSitterMode(pet.id, pet.user_id, savedName);
+
+        startSitterMode(pet.id, savedName, pet.name, pet.breed, token);
       } catch (err) { showToast('Error loading sitter view.', 'error'); }
     }
 
-    async function startSitterMode(petId, userId, sitterName) {
+    async function startSitterMode(petId, sitterName, petName, petBreed, sitterToken) {
       try {
         localStorage.setItem('houndos_sitter_name', sitterName);
-        const pet = await db().from('pets').select('*').eq('id', petId).single();
-        AppState.isSitter = true; AppState.sitterPetId = petId; AppState.activePet = pet.data;
+        localStorage.setItem('houndos_sitter_token', sitterToken);
+        AppState.isSitter = true; AppState.sitterPetId = petId; AppState.activePet = { id: petId, name: petName, breed: petBreed };
         document.querySelector('.dash-sidebar')?.remove(); document.querySelector('.bottom-nav')?.remove(); document.querySelector('.mobile-header')?.remove();
         const main = document.querySelector('.dashboard-main');
-        main.innerHTML = '<div style="padding:16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)"><div class="flex items-center justify-between"><div><div style="font-size:0.85rem;font-weight:600">Sitting: ' + escapeHtml(pet.data.name) + '</div><div style="font-size:0.75rem;color:var(--text-secondary)">' + (pet.data.breed || '') + '</div></div><span class="badge badge-orange">' + escapeHtml(sitterName) + '</span></div></div><div class="dashboard-content"><div class="quick-log-row"><button class="quick-log-btn" onclick="sitterLog(\'meal\')">Feed</button><button class="quick-log-btn" onclick="sitterLog(\'medication\')">Meds</button><button class="quick-log-btn" onclick="sitterLog(\'bathroom\')">Walk</button></div><div class="timeline-header"><h2>Timeline</h2></div><div id="timeline-feed"></div></div>';
-        const logs = await getLogs(pet.id); AppState.setLogs(logs); renderTimeline(logs);
+        main.innerHTML = '<div style="padding:16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)"><div class="flex items-center justify-between"><div><div style="font-size:0.85rem;font-weight:600">Sitting: ' + escapeHtml(petName) + '</div><div style="font-size:0.75rem;color:var(--text-secondary)">' + (petBreed || '') + '</div></div><span class="badge badge-orange">' + escapeHtml(sitterName) + '</span></div></div><div class="dashboard-content"><div class="quick-log-row"><button class="quick-log-btn" onclick="sitterLog(\'meal\')">Feed</button><button class="quick-log-btn" onclick="sitterLog(\'medication\')">Meds</button><button class="quick-log-btn" onclick="sitterLog(\'bathroom\')">Walk</button></div><div class="timeline-header"><h2>Timeline</h2></div><div id="timeline-feed"></div></div>';
+        const logsRes = await fetch(window.location.origin + '/api/sitter-logs?petId=' + encodeURIComponent(petId) + '&token=' + encodeURIComponent(sitterToken));
+        const logsData = await logsRes.json();
+        const logs = logsData.logs || [];
+        AppState.setLogs(logs); renderTimeline(logs);
       } catch (err) { showToast('Error loading sitter view.', 'error'); }
     }
 

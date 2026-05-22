@@ -723,7 +723,7 @@
               body: JSON.stringify({ type: 'welcome', to: email, toName: name || email.split('@')[0] }),
             });
           } catch (e) { console.log('Welcome email not sent:', e.message); }
-          window.location.href = '/dashboard';
+          window.location.href = getRedirectUrl();
 
         } else if (data.user && !data.session) {
           // Email confirmation ON — needs verification
@@ -748,7 +748,7 @@
             const loginData = await signIn(email, password);
             AppState.setUser(loginData.user);
             showToast('Signed in!', 'success');
-            window.location.href = '/dashboard';
+            window.location.href = getRedirectUrl();
             return;
           } catch (loginErr) {
             showAlert('Email already registered. Try signing in with your password.');

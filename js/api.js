@@ -401,13 +401,23 @@ async function verifySitterToken(token) {
 }
 
 async function addSitterLog(log) {
-  const { data, error } = await db()
-    .from('pet_logs')
-    .insert(log)
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
+  const sitterToken = localStorage.getItem('houndos_sitter_token');
+  if (!sitterToken) throw new Error('No sitter token');
+  const res = await fetch(window.location.origin + '/api/sitter-log', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      petId: log.pet_id,
+      token: sitterToken,
+      log_type: log.log_type,
+      title: log.title,
+      notes: log.notes,
+      sitter_name: log.sitter_name,
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to create log');
+  return data.log;
 }
 
 /* --- AI Vet Report (Pro) --- */
