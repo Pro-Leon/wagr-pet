@@ -259,6 +259,64 @@
       border-radius: var(--radius-md);
       margin-top: 12px;
     }
+    .support-badge {
+      margin-left: 4px;
+      color: #dc2626;
+      font-size: 1rem;
+      line-height: 1;
+      vertical-align: middle;
+    }
+    .chat-bubble {
+      padding: 12px 14px;
+      border-radius: var(--radius-lg);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      max-width: 85%;
+      margin-bottom: 8px;
+    }
+    .chat-bubble.user {
+      background: var(--orange-50, #fff7ed);
+      color: var(--text-primary);
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-bubble.admin {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      border-left: 3px solid var(--orange-500);
+    }
+    .chat-bubble.closed-msg {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      text-align: center;
+      font-style: italic;
+      font-size: 0.78rem;
+      align-self: center;
+      max-width: 100%;
+    }
+    .ticket-conversation {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ticket-card-user .ticket-reply-input {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .ticket-card-user .ticket-reply-input textarea {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 0.82rem;
+      resize: none;
+      min-height: 36px;
+    }
     .quick-log-btn {
       flex: 1;
       display: flex;
@@ -555,7 +613,7 @@
         </a>
         <a href="#" data-tab="support" onclick="switchTab('support', this)">
           <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Support
+          Support<span class="support-badge" id="support-notif-badge" style="display:none">●</span>
         </a>
         <a href="#" data-tab="settings" onclick="switchTab('settings', this)">
           <svg viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -636,7 +694,7 @@
 
           <div class="nav-section-label">ACCOUNT</div>
           <a href="#" onclick="switchTab('pets');closeMobileMenu()">My Pets</a>
-          <a href="#" onclick="switchTab('support');closeMobileMenu()">Support</a>
+          <a href="#" onclick="switchTab('support');closeMobileMenu()">Support<span class="support-badge" id="mobile-support-notif-badge" style="display:none">●</span></a>
           <a href="#" onclick="switchTab('settings');closeMobileMenu()">Settings</a>
           <a href="/admin" id="admin-mobile-link" style="display:none;color:#dc2626">Admin Panel</a>
           <div class="divider" style="margin:12px 0"></div>
@@ -1052,7 +1110,7 @@
           </a>
           <a href="#" data-tab="support" onclick="switchTab('support', this)">
             <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Support
+            Support<span class="support-badge" id="mobile-support-notif-badge" style="display:none">●</span>
           </a>
           <a href="#" data-tab="settings" onclick="switchTab('settings', this)">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -1887,6 +1945,8 @@ if (!hasPet) {
 
       // Billing info
       loadBillingInfo();
+
+      updateSupportBadge();
 
       updateFeatureAccess();
     }
@@ -2899,20 +2959,12 @@ if (!hasPet) {
           });
         }
       } catch (err) {
-        const link = `${window.location.origin}/dashboard?sitter_token=${generateHash()}`;
-        document.getElementById('sitter-link-url').value = link;
-        document.getElementById('sitter-link-box').style.display = 'flex';
-        showToast('Link generated (local mode).', 'info');
-        const sitterEmail = document.getElementById('sitter-email-input').value.trim();
-        if (sitterEmail) {
-          sendEmailNotification('sitter_invite', sitterEmail, {
-            petName: AppState.activePet?.name || 'their pet',
-            ownerName: AppState.user?.email?.split('@')[0] || 'A Wagr user',
-            link: link,
-          });
-        }
+        console.error('Sitter link creation failed:', err);
+        showToast('Could not create sitter link. Check your connection and try again.', 'error');
+      } finally {
+        btn.classList.remove('btn-loading');
+        btn.textContent = 'Generate New Link';
       }
-      finally { btn.classList.remove('btn-loading'); btn.textContent = 'Generate New Link'; }
     }
 
     async function handleSendSitterEmail() {
@@ -3284,18 +3336,22 @@ if (!hasPet) {
     async function renderSupportTab() {
       const container = document.getElementById('support-tickets-list');
       if (!container) return;
-      
+
+      // Mark support as read
+      localStorage.setItem('support_last_read', Date.now().toString());
+      updateSupportBadge();
+
       const user = AppState.user;
       if (!user) {
         container.innerHTML = '<div class="empty-state"><p>Please sign in to view your tickets.</p></div>';
         return;
       }
-      
+
       container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
-      
+
       try {
         const tickets = await getUserTickets(user.id);
-        
+
         if (tickets.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
@@ -3306,7 +3362,7 @@ if (!hasPet) {
           `;
           return;
         }
-        
+
         container.innerHTML = tickets.map(t => `
           <div class="ticket-card-user" style="margin-bottom:16px">
             <div class="ticket-header">
@@ -3321,19 +3377,44 @@ if (!hasPet) {
                 <span class="ticket-priority-badge ${t.priority}">${t.priority}</span>
               </div>
             </div>
-            <div style="font-size:0.85rem;color:var(--text-secondary);margin:12px 0;line-height:1.5">${escapeHtml(t.message)}</div>
-            ${t.admin_response ? `
-              <div class="admin-response-box">
-                <div style="font-size:0.72rem;font-weight:600;color:var(--orange-600);margin-bottom:4px">Response from Wagr Team</div>
-                <div style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5">${escapeHtml(t.admin_response)}</div>
-                ${t.admin_responded_at ? `<div style="font-size:0.7rem;color:var(--text-muted);margin-top:4px">${new Date(t.admin_responded_at).toLocaleString()}</div>` : ''}
+            <div class="ticket-conversation" style="margin-top:12px">
+              <div class="chat-bubble user">
+                <div style="font-size:0.7rem;font-weight:600;color:var(--text-muted);margin-bottom:4px">You</div>
+                ${escapeHtml(t.message)}
               </div>
-            ` : '<div style="font-size:0.82rem;color:var(--text-muted);font-style:italic">Awaiting response...</div>'}
+              ${t.admin_response ? `
+                <div class="chat-bubble admin">
+                  <div style="font-size:0.7rem;font-weight:600;color:var(--orange-600);margin-bottom:4px">Wagr Team</div>
+                  ${escapeHtml(t.admin_response)}
+                  ${t.admin_responded_at ? `<div style="font-size:0.65rem;color:var(--text-muted);margin-top:6px">${new Date(t.admin_responded_at).toLocaleString()}</div>` : ''}
+                </div>
+              ` : ''}
+              ${t.status === 'closed' ? `
+                <div class="chat-bubble closed-msg">Ticket closed by Wagr Team</div>
+              ` : `
+                <div style="font-size:0.82rem;color:var(--text-muted);font-style:italic;text-align:center;padding:8px 0">${t.admin_response ? 'Any other questions? Submit a new ticket.' : 'Awaiting response...'}</div>
+              `}
+            </div>
           </div>
         `).join('');
       } catch (err) {
         container.innerHTML = '<div class="empty-state"><p style="color:#dc2626">Could not load tickets.</p></div>';
       }
+    }
+
+    /* --- Support Notification Badge --- */
+    async function updateSupportBadge() {
+      const badge = document.getElementById('support-notif-badge');
+      const mobileBadge = document.getElementById('mobile-support-notif-badge');
+      if (!badge && !mobileBadge) return;
+      try {
+        const tickets = await getUserTickets(AppState.user?.id);
+        const lastRead = parseInt(localStorage.getItem('support_last_read') || '0');
+        const hasUnread = tickets.some(t => t.admin_responded_at && new Date(t.admin_responded_at).getTime() > lastRead);
+        const display = hasUnread ? 'inline' : 'none';
+        if (badge) badge.style.display = display;
+        if (mobileBadge) mobileBadge.style.display = display;
+      } catch (e) {}
     }
 
     /* --- Update Name --- */
@@ -3343,7 +3424,7 @@ if (!hasPet) {
       const name = input.value.trim();
       if (!name) return;
       try {
-        const { error } = await supabase.from('profiles').update({ display_name: name, updated_at: new Date().toISOString() }).eq('id', AppState.user?.id);
+        const { error } = await db().from('profiles').update({ display_name: name, updated_at: new Date().toISOString() }).eq('id', AppState.user?.id);
         if (!error) {
           AppState.user.display_name = name;
           renderHomeTab();
@@ -3409,10 +3490,8 @@ if (!hasPet) {
     async function confirmDeleteAccount() {
       if (!confirm('Are you sure you want to delete your account? This will permanently remove all your data and cannot be undone.')) return;
       const petId = AppState.activePet?.id;
-      if (petId) await supabase.from('pets').delete().eq('id', petId);
-      await supabase.from('profiles').delete().eq('id', AppState.user?.id);
-      const { error } = await supabase.auth.admin.deleteUser(AppState.user?.id);
-      if (error) console.error(error);
+      if (petId) await db().from('pets').delete().eq('id', petId);
+      await db().from('profiles').delete().eq('id', AppState.user?.id);
       AppState.clear();
       window.location.href = '/';
     }

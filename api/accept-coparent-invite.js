@@ -1,5 +1,11 @@
+import { createClient } from '@supabase/supabase-js';
+
 const SUPABASE_URL = 'https://rbhqvginjduyjzyfzxbq.supabase.co';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,10 +23,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-      auth: { persistSession: false },
-    });
 
     // Get the authenticated user
     const userToken = authHeader.split('Bearer ')[1];

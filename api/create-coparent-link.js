@@ -1,5 +1,12 @@
+import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
+
 const SUPABASE_URL = 'https://rbhqvginjduyjzyfzxbq.supabase.co';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,10 +24,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-      auth: { persistSession: false },
-    });
 
     // Verify the user owns this pet
     const userId = authHeader.split('Bearer ')[1];
@@ -79,7 +82,6 @@ export default async function handler(req, res) {
     }
 
     // Generate a cryptographically random token
-    const crypto = await import('crypto');
     const token = crypto.randomBytes(32).toString('hex');
 
     const { data: invite, error: inviteError } = await supabase
