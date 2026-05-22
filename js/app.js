@@ -111,6 +111,7 @@ const AppState = {
       'grooming': 'family',
       'medication_reminders': 'family',
       'feeding_schedules': 'family',
+      'chat_assistant': 'basic',
       'ai_report': 'pro',
       'unlimited_coparent': 'pro',
       'sitter_handover_email': 'pro',
