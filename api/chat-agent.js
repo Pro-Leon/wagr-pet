@@ -7,7 +7,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
-const MODEL = 'alibaba/qwen-3.6-plus:free';
+const MODEL = 'z-ai/glm-4.5-air:free';
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {

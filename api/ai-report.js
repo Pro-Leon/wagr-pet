@@ -3,7 +3,7 @@
 
 const MODELS = [
   'deepseek/deepseek-v4-flash:free',
-  'alibaba/qwen-3.6-plus:free',
+  'z-ai/glm-4.5-air:free',
   'google/gemma-4-31b-it:free',
 ];
 
