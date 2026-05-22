@@ -403,10 +403,11 @@ async function verifySitterToken(token) {
 async function addSitterLog(log) {
   const sitterToken = localStorage.getItem('houndos_sitter_token');
   if (!sitterToken) throw new Error('No sitter token');
-  const res = await fetch(window.location.origin + '/api/sitter-log', {
+  const res = await fetch(window.location.origin + '/api/sitter', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
+      action: 'log',
       petId: log.pet_id,
       token: sitterToken,
       log_type: log.log_type,
@@ -1090,10 +1091,10 @@ async function closeTicket(ticketId) {
 async function createCoparentInvite(petId) {
   const accessToken = await getAccessToken();
   if (!accessToken) throw new Error('Not authenticated');
-  const res = await fetch(API_BASE + '/create-coparent-link', {
+  const res = await fetch(API_BASE + '/coparent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken },
-    body: JSON.stringify({ petId }),
+    body: JSON.stringify({ action: 'create', petId }),
   });
   const text = await res.text();
   let data;
@@ -1105,10 +1106,10 @@ async function createCoparentInvite(petId) {
 async function acceptCoparentInvite(token) {
   const accessToken = await getAccessToken();
   if (!accessToken) throw new Error('Not authenticated');
-  const res = await fetch(API_BASE + '/accept-coparent-invite', {
+  const res = await fetch(API_BASE + '/coparent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken },
-    body: JSON.stringify({ token }),
+    body: JSON.stringify({ action: 'accept', token }),
   });
   const text = await res.text();
   let data;
