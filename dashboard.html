@@ -2097,7 +2097,7 @@ if (!hasPet) {
               <div class="timeline-icon ${getLogColor(l.log_type)}">${getLogIcon(l.log_type)}</div>
               <div class="timeline-body">
                 <div class="timeline-title-row">
-                  <div class="timeline-title">${escapeHtml(l.title)}</div>
+                  <div class="timeline-title">${escapeHtml(l.title)}${l.sitter_name ? `<span class="sitter-badge">${escapeHtml(l.sitter_name)}</span>` : ''}</div>
                   <div class="timeline-time">${formatDateTime(l.created_at)}</div>
                 </div>
                 ${l.notes ? `<div class="timeline-notes">${escapeHtml(l.notes)}</div>` : ''}
@@ -3451,8 +3451,9 @@ if (!hasPet) {
         localStorage.setItem('houndos_sitter_token', sitterToken);
         AppState.isSitter = true; AppState.sitterPetId = petId; AppState.activePet = { id: petId, name: petName, breed: petBreed };
         document.querySelector('.dash-sidebar')?.remove(); document.querySelector('.bottom-nav')?.remove(); document.querySelector('.mobile-header')?.remove();
+        document.querySelector('.fab.support-fab')?.remove(); document.querySelector('.fab.ai-fab')?.remove();
         const main = document.querySelector('.dashboard-main');
-        main.innerHTML = '<div style="padding:16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)"><div class="flex items-center justify-between"><div><div style="font-size:0.85rem;font-weight:600">Sitting: ' + escapeHtml(petName) + '</div><div style="font-size:0.75rem;color:var(--text-secondary)">' + (petBreed || '') + '</div></div><span class="badge badge-orange">' + escapeHtml(sitterName) + '</span></div></div><div class="dashboard-content"><div class="quick-log-row"><button class="quick-log-btn" onclick="sitterLog(\'meal\')">Feed</button><button class="quick-log-btn" onclick="sitterLog(\'medication\')">Meds</button><button class="quick-log-btn" onclick="sitterLog(\'bathroom\')">Walk</button></div><div class="timeline-header"><h2>Timeline</h2></div><div id="timeline-feed"></div></div>';
+        main.innerHTML = '<div style="padding:16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)"><div class="flex items-center justify-between"><div><div style="font-size:0.85rem;font-weight:600">Sitting: ' + escapeHtml(petName) + '</div><div style="font-size:0.75rem;color:var(--text-secondary)">' + (petBreed || '') + '</div></div></div></div><div class="dashboard-content"><div class="quick-log-row"><button class="quick-log-btn" onclick="sitterLog(\'meal\')">Feed</button><button class="quick-log-btn" onclick="sitterLog(\'medication\')">Meds</button><button class="quick-log-btn" onclick="sitterLog(\'bathroom\')">Walk</button></div><div class="timeline-header"><h2>Timeline</h2></div><div id="timeline-feed"></div></div>';
         const logsRes = await fetch(window.location.origin + '/api/sitter?action=logs&petId=' + encodeURIComponent(petId) + '&token=' + encodeURIComponent(sitterToken));
         const logsData = await logsRes.json();
         const logs = logsData.logs || [];
