@@ -119,15 +119,15 @@
       min-width: 0;
     }
     .hero h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
-      letter-spacing: -0.035em;
-      line-height: 1.08;
-      margin-bottom: 14px;
-      max-width: 560px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      max-width: 520px;
     }
     @media (min-width: 769px) {
-      .hero h1 { font-size: 3.4rem; }
+      .hero h1 { font-size: 2.8rem; }
     }
     .hero h1 em {
       font-style: normal;
@@ -137,14 +137,14 @@
       background-clip: text;
     }
     .hero-sub {
-      font-size: 1rem;
+      font-size: 0.9rem;
       color: var(--text-secondary);
       max-width: 440px;
       line-height: 1.6;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     @media (min-width: 769px) {
-      .hero-sub { font-size: 1.1rem; }
+      .hero-sub { font-size: 0.95rem; }
     }
     .hero-cta {
       display: inline-flex;
@@ -173,35 +173,6 @@
       font-size: 0.74rem;
       color: var(--text-muted);
       margin-top: 12px;
-    }
-
-    /* --- Social Proof Bar --- */
-    .proof-bar {
-      margin-top: 48px;
-      padding: 24px 0;
-      border-top: 1px solid var(--border-subtle);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-    .proof-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-    .proof-item {
-      text-align: center;
-    }
-    .proof-item .proof-num {
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      color: var(--text-primary);
-    }
-    .proof-item .proof-label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 2px;
     }
 
     /* --- Dashboard Preview --- */
@@ -322,7 +293,7 @@
 
     /* --- Benefits --- */
     .benefits {
-      padding: 80px 0 64px;
+      padding: 60px 0 48px;
     }
     .benefits-header {
       text-align: center;
@@ -330,16 +301,16 @@
     }
     .benefits-header .section-label { margin-bottom: 8px; }
     .benefits-header h2 {
-      font-size: 1.8rem;
+      font-size: 1.55rem;
       font-weight: 700;
-      letter-spacing: -0.025em;
-      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
     }
     @media (min-width: 769px) {
-      .benefits-header h2 { font-size: 2.1rem; }
+      .benefits-header h2 { font-size: 1.8rem; }
     }
     .benefits-header p {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       color: var(--text-secondary);
       max-width: 460px;
       margin: 0 auto;
@@ -396,12 +367,12 @@
       background: rgba(249,115,22,0.12);
     }
     .benefit-card h3 {
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .benefit-card p {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-secondary);
       line-height: 1.55;
     }
@@ -448,7 +419,7 @@
       letter-spacing: 2px;
     }
     .testimonial-card .tc-text {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-secondary);
       line-height: 1.6;
       margin-bottom: 14px;
@@ -634,7 +605,7 @@
     }
 
     .pricing-card .plan-price {
-      font-size: 2.2rem;
+      font-size: 1.9rem;
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1;
@@ -800,16 +771,16 @@
       background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(249,115,22,0.1) 0%, transparent 70%);
     }
     .final-cta h2 {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 10px;
+      letter-spacing: -0.015em;
+      margin-bottom: 8px;
     }
     @media (min-width: 769px) {
-      .final-cta h2 { font-size: 2rem; }
+      .final-cta h2 { font-size: 1.7rem; }
     }
     .final-cta p {
-      font-size: 0.92rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
       margin-bottom: 24px;
       max-width: 400px;
@@ -916,7 +887,7 @@
       <div class="hero-split">
         <div class="hero-text">
           <h1>Your dog's entire health history,<br><em>in one place</em></h1>
-          <p class="hero-sub">AI vet reports that catch what you miss. GPS emergency alerts via QR collar tag. Sitter magic links with zero setup. Co-parent sync that prevents double-dosing. Clinical symptom tracking across 4 body systems. All in a single dashboard.</p>
+          <p class="hero-sub">The health record your vet actually wants — built around how you care for your dog.</p>
           <a href="/auth?mode=signup" class="hero-cta">
             Start Free
             <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -980,16 +951,24 @@
   </section>
 
   <!-- ========== BUILDER STORY ========== -->
-  <div class="proof-bar">
+  <section style="padding: 48px 0">
     <div class="container">
-      <div class="proof-inner" style="gap:0;flex-direction:column">
-        <div style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;text-align:center;max-width:520px">
+      <div style="max-width: 600px; margin: 0 auto; text-align: center">
+        <div style="font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange-600); margin-bottom: 12px; font-weight: 600">The story</div>
+        <p style="font-size: 1.05rem; color: var(--text-primary); line-height: 1.7; font-weight: 500">
           Built by a dog owner who couldn't find a decent health tracker — so he built one. No investors, no growth hacks. Just a guy who wanted a better way to care for his dog.
+        </p>
+        <div style="margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 10px">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--orange-100); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; color: var(--orange-700)">A</div>
+          <div style="text-align: left">
+            <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary)">Alex</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted)">Founder, Wagr</div>
+          </div>
         </div>
-        <div style="font-size:0.74rem;color:var(--text-muted);margin-top:8px">Trusted by dog owners in 12 countries</div>
+        <div style="margin-top: 16px; font-size: 0.78rem; color: var(--text-muted)">Trusted by dog owners in 12 countries and counting</div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- ========== BENEFITS ========== -->
   <section class="benefits" id="benefits">
@@ -1022,8 +1001,8 @@
         </div>
         <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="activity" style="width:24px;height:24px"></i></div>
-          <h3>Clinical tracking your vet will ask for</h3>
-          <p>Track GI issues, cardio readings, test results, dermatology, and grooming across 4 body systems. Generate symptom reports with consistency charts, color logs, and severity trends that vets actually request.</p>
+          <h3>Stop second-guessing what's normal</h3>
+          <p>Track GI issues, skin changes, energy levels, and more. The timeline correlates symptoms with meals and meds so you can spot patterns — and show your vet a complete picture instead of guessing when it started.</p>
         </div>
         <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="lock" style="width:24px;height:24px"></i></div>

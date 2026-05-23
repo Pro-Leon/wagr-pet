@@ -160,6 +160,18 @@
       padding-bottom: 20px;
     }
 
+    /* --- AI Report Actions --- */
+    .ai-report-actions .btn-secondary {
+      font-size: 0.78rem;
+      padding: 7px 14px;
+    }
+    .ai-report-actions .btn-secondary svg {
+      stroke: var(--text-secondary);
+    }
+    .ai-report-actions .btn-secondary:hover svg {
+      stroke: var(--text-primary);
+    }
+
     /* --- Upgrade nudge in sidebar --- */
     .sidebar-upgrade {
       margin: 8px;
@@ -1961,6 +1973,7 @@
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script src="https://js.paystack.co/v2/inline.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
       document.addEventListener('DOMContentLoaded', () => {
@@ -3380,10 +3393,71 @@ if (!hasPet) {
       output.style.display = 'none';
       try {
         const report = await generateVetReport(AppState.activePet.id, options);
-        output.innerHTML = `<div class="ai-report">${escapeHtml(report)}</div>`;
+        output.innerHTML = `<div class="ai-report" id="ai-report-content">${escapeHtml(report)}</div>
+          <div class="ai-report-actions" id="ai-report-actions" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="downloadReportPdf()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download PDF
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="emailReportToVet()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Email to Vet
+            </button>
+          </div>`;
         output.style.display = 'block';
       } catch (err) { showToast(err.message || 'Could not generate report.', 'error'); }
       finally { btn.classList.remove('btn-loading'); btn.textContent = 'Generate Report'; }
+    }
+
+    function downloadReportPdf() {
+      const el = document.getElementById('ai-report-content');
+      if (!el) { showToast('No report to download. Generate one first.', 'error'); return; }
+      const petName = AppState.activePet?.name || 'pet';
+      const opt = {
+        margin:        [10, 10, 10, 10],
+        filename:     `${petName.toLowerCase().replace(/\s+/g, '-')}-ai-report.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      showToast('Generating PDF...', 'info');
+      html2pdf().set(opt).from(el).save().then(() => {
+        showToast('PDF downloaded!', 'success');
+      }).catch(() => {
+        showToast('Could not generate PDF.', 'error');
+      });
+    }
+
+    async function emailReportToVet() {
+      const el = document.getElementById('ai-report-content');
+      if (!el) { showToast('No report to send. Generate one first.', 'error'); return; }
+      const vetEmail = prompt('Enter your vet\u2019s email address:');
+      if (!vetEmail || !vetEmail.includes('@')) { showToast('Please enter a valid email.', 'error'); return; }
+      const note = prompt('Add a note for the vet (optional):', '');
+      const reportText = el.textContent || el.innerText;
+      const emailBtn = document.querySelector('#ai-report-actions button[onclick*="emailReportToVet"]');
+      if (emailBtn) { emailBtn.textContent = 'Sending...'; emailBtn.disabled = true; }
+      try {
+        const body = {
+          type: 'ai_report',
+          to: vetEmail.trim(),
+          petName: AppState.activePet?.name || 'Pet',
+          report: reportText,
+          note: note || '',
+        };
+        if (AppState.user) body.toName = AppState.user.email?.split('@')[0] || '';
+        const res = await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        await res.json();
+        showToast('Report sent to vet!', 'success');
+      } catch (e) {
+        showToast('Could not send email. Try downloading the PDF instead.', 'error');
+      } finally {
+        if (emailBtn) { emailBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Email to Vet'; emailBtn.disabled = false; }
+      }
     }
 
     /* --- Email Notification --- */
