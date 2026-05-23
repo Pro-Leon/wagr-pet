@@ -1481,6 +1481,23 @@ c.innerHTML = `
       }
     });
   </script>
-  <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'activated') {
+              const el = document.createElement('div');
+              el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,0.3)';
+              el.innerHTML = 'Wagr just updated! <button onclick="location.reload()" style="background:var(--orange-600);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-weight:600">Refresh</button>';
+              document.body.appendChild(el);
+              setTimeout(() => el.remove(), 10000);
+            }
+          });
+        });
+      });
+    }
+  </script>
 </body>
 </html>

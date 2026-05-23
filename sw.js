@@ -2,9 +2,10 @@
    Wagr — Service Worker
    Cache-first for static assets,
    network-only for API calls.
+   Version auto-busts via activate handler.
    ======================================== */
 
-const CACHE = 'wagr-v1';
+const CACHE = 'wagr-cache-v2';
 
 const PRECACHE = [
   '/',
@@ -35,13 +36,11 @@ const PRECACHE = [
   '/icons/favicon.svg',
 ];
 
-// CDN origins to cache
 const CDN_ORIGINS = [
   'cdn.jsdelivr.net',
   'js.paystack.co',
 ];
 
-// API paths to never cache
 const API_PATHS = [
   '/api/',
   'supabase.co',
@@ -49,7 +48,6 @@ const API_PATHS = [
   'paystack.co',
 ];
 
-// Install: pre-cache core files
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) => {
@@ -61,31 +59,26 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
-    })
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => caches.delete(k)))
+    )
   );
   self.clients.claim();
 });
 
-// Fetch: cache-first for static, network-only for API
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Never cache API calls
   if (API_PATHS.some((p) => url.href.includes(p))) {
     return;
   }
 
-  // Cache-first for same-origin static assets
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
         if (cached) return cached;
-        // Try matching the .html version for clean URLs
         const htmlPath = url.pathname + '.html';
         return caches.match(htmlPath).then((htmlCached) => {
           if (htmlCached && event.request.mode === 'navigate') return htmlCached;
@@ -107,7 +100,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for CDN scripts
   if (CDN_ORIGINS.some((o) => url.hostname === o)) {
     event.respondWith(
       caches.match(event.request).then((cached) => {

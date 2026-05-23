@@ -1,4 +1,16 @@
 {
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/p/:petId", "destination": "/public-profile.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
