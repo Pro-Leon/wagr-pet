@@ -5,6 +5,8 @@
 // Events to subscribe to: charge.success, subscription.create, invoice.create,
 //                         subscription.disable, subscription.expiring
 
+import crypto from 'crypto';
+
 export const config = {
   api: {
     bodyParser: false,
@@ -40,7 +42,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Webhook secret not configured' });
   }
 
-  const crypto = require('crypto');
   const expected = crypto
     .createHmac('sha256', secret)
     .update(rawBody)
@@ -107,12 +108,22 @@ async function handlePaystackEvent(event) {
     return { status: 'ignored', event: event.event };
   }
 
-  // Extract info from event data
+  // Extract info from event data — try multiple paths since Paystack event structure varies
   const email = data.customer?.email;
-  const planCode = data.plan?.plan_code;
-  const userId = data.metadata?.user_id;
+
+  // User ID from metadata (our custom field)
+  let userId = data.metadata?.user_id;
+
+  // Plan code can be at data.plan.plan_code or data.plan_object.plan_code
+  let planCode = data.plan?.plan_code || data.plan_object?.plan_code;
+
+  // Plan type string from metadata or from mapping the plan code
   let planType = data.metadata?.plan_type;
-  const subscriptionCode = data.subscription?.subscription_code || data.metadata?.subscription_code;
+
+  // Subscription code — can be at multiple paths depending on event type
+  const subscriptionCode = data.subscription?.subscription_code
+    || data.subscription_code
+    || data.metadata?.subscription_code;
 
   if (!planType && planCode) {
     const codeToPlan = {

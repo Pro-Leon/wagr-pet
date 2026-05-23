@@ -61,6 +61,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         email: email,
         plan: planCode,
+        currency: 'USD',
+        callback_url: process.env.APP_URL || 'https://wagr-ai.vercel.app/dashboard',
         metadata: {
           user_id: userId,
           plan_type: plan

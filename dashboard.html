@@ -1880,6 +1880,10 @@
       updateUIForUser();
       renderPetSelector(AppState.pets, AppState.activePet?.id);
       renderHomeTab();
+
+      // Check if returning from Paystack redirect
+      checkPaymentReturn();
+
       console.log('Dashboard render complete');
     }
 
@@ -3454,7 +3458,7 @@ if (!hasPet) {
         attempts++;
         try {
           const profile = await getProfile(AppState.user.id);
-          if (profile.tier !== 'starter') {
+          if (profile.tier === expectedTier) {
             AppState.setProfile(profile); updateUIForUser(); clearInterval(poll); closeAllModals();
             showToast(`Upgraded to ${profile.tier}!`, 'success');
             // Send subscription confirmation email
@@ -3624,9 +3628,11 @@ if (!hasPet) {
         hideChatLoading();
         addChatMessage('assistant', data.reply);
         if (data.actions && data.actions.length > 0) {
+          const logs = await getLogs(AppState.activePet?.id, 50, AppState.timelineDays());
+          AppState.setLogs(logs);
           renderHomeTab();
           const timelineTab = document.querySelector('[data-tab="timeline"]');
-          if (timelineTab) { try { const logs = await getLogs(AppState.activePet?.id, 50, AppState.timelineDays()); AppState.setLogs(logs); renderTimeline(logs); } catch(e) {} }
+          if (timelineTab) { try { renderTimeline(logs); } catch(e) {} }
         }
       } catch (err) {
         hideChatLoading();

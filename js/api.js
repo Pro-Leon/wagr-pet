@@ -610,6 +610,10 @@ async function openPaystackCheckout(email, plan, onSuccess) {
 
   showToast('Initializing payment...', 'info');
 
+  // Persist pending upgrade info so we can detect return from redirect
+  const isYearly = plan.endsWith('_yearly');
+  localStorage.setItem('houndos_pending_upgrade', JSON.stringify({ plan, tier: plan.split('_')[0], email, isYearly }));
+
   // Try serverless function first
   try {
     const response = await fetch(`${API_BASE}/create-subscription`, {
@@ -646,12 +650,44 @@ async function openPaystackCheckout(email, plan, onSuccess) {
     key: PAYSTACK_PUBLIC_KEY,
     email: email,
     plan: planCodes[plan] || plan,
+    currency: 'USD',
     callback: function(response) {
       if (onSuccess) onSuccess(response);
     },
     onClose: function() {}
   });
   handler.openIframe();
+}
+
+/* --- Check for Paystack redirect return and poll for upgrade --- */
+function checkPaymentReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const trxref = params.get('trxref');
+  const reference = params.get('reference');
+  if (!trxref && !reference) return;
+
+  // Clean URL params
+  if (history.replaceState) {
+    const url = new URL(window.location);
+    url.searchParams.delete('trxref');
+    url.searchParams.delete('reference');
+    window.history.replaceState({}, '', url);
+  }
+
+  const pending = localStorage.getItem('houndos_pending_upgrade');
+  if (pending) {
+    try {
+      const { tier, isYearly } = JSON.parse(pending);
+      if (typeof isYearlyPricing !== 'undefined') {
+        isYearlyPricing = isYearly === true;
+      }
+      showToast('Payment submitted! Verifying upgrade...', 'info');
+      if (typeof pollForTierUpgrade === 'function') {
+        pollForTierUpgrade(tier);
+      }
+    } catch (e) {}
+    localStorage.removeItem('houndos_pending_upgrade');
+  }
 }
 
 /* --- GI Logs (Vomit/Feces) --- */
