@@ -295,7 +295,7 @@ async function analyzeNutrition(foodData) {
   
   return {
     ...foodData,
-    calories_per_cup,
+    caloriesPerCup,
     protein_percentage: adjustedProfile.protein,
     fat_percentage: adjustedProfile.fat,
     fiber_percentage: adjustedProfile.fiber,
@@ -535,9 +535,10 @@ async function generateVetReport(petId, options = {}) {
   const fullReport = `## Pet Health Report (Last ${days} days)\n\n${reportSections.join('\n\n')}`;
 
   // Serverless function call (keeps API key secure)
+  const token = await getAccessToken();
   const response = await fetch(`${API_BASE}/ai-report`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
     body: JSON.stringify({ logSummary: fullReport })
   });
 

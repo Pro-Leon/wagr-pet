@@ -2076,9 +2076,9 @@ if (!hasPet) {
         if (mobilePetBadge) mobilePetBadge.style.display = 'none';
       }
 
-      // Add pet button
+      // Add pet button (always visible, gated on submit)
       const addPetBtn = document.getElementById('add-pet-btn');
-      if (addPetBtn) addPetBtn.style.display = AppState.pets.length >= AppState.maxPets() ? 'none' : 'flex';
+      if (addPetBtn) addPetBtn.style.display = 'flex';
 
       // Admin links
       if (AppState.profile?.is_admin) {
@@ -2174,12 +2174,11 @@ if (!hasPet) {
       if (AppState.canAccess('ai_report')) { show(aiActive); hide(aiTeaser); }
       else { hide(aiActive); show(aiTeaser); }
 
-      // Assistant
+      // Assistant — always visible (gated in initChat/handleChatSend)
       const asLink = document.getElementById('assistant-sidebar-link');
       const asMLink = document.getElementById('assistant-mobile-link');
-      const hasAccess = AppState.canAccess('chat_assistant');
-      if (asLink) asLink.style.display = hasAccess ? 'flex' : 'none';
-      if (asMLink) asMLink.style.display = hasAccess ? 'block' : 'none';
+      if (asLink) asLink.style.display = 'flex';
+      if (asMLink) asMLink.style.display = 'block';
 
       // Sitter
       const sitterLocked = document.getElementById('sitter-locked');
@@ -2264,6 +2263,11 @@ if (!hasPet) {
       const birthDate = document.getElementById('pet-birth').value || null;
       const flags = document.getElementById('pet-flags').value.trim();
       if (!name) { showToast('Please enter a name.', 'error'); return; }
+      if (AppState.pets.length >= AppState.maxPets()) {
+        showToast('You\'ve reached the pet limit for your plan. Upgrade to add more.', 'error');
+        setTimeout(() => openModal('modal-pricing'), 300);
+        return;
+      }
       try {
         const pet = await addPet({ user_id: AppState.user.id, name, breed, weight_kg: weight, birth_date: birthDate, medical_flags: flags });
         AppState.pets.push(pet);
@@ -3106,6 +3110,10 @@ if (!hasPet) {
     /* --- Sitter --- */
     async function handleGenerateSitterLink() {
       if (!AppState.activePet) return;
+      if (!AppState.canAccess('sitter_link')) {
+        showToast('Sitter links are available on Family plan and above.', 'error');
+        return;
+      }
       const btn = document.getElementById('generate-sitter-btn');
       btn.classList.add('btn-loading'); btn.textContent = 'Generating...';
       try {
@@ -3593,18 +3601,31 @@ if (!hasPet) {
     function initChat() {
       if (chatInitialized) return;
       chatInitialized = true;
+      const inputArea = document.getElementById('chat-input-area');
       const container = document.getElementById('chat-messages');
       if (container && container.children.length === 0) {
         const name = AppState.activePet?.name || 'your pet';
+        if (AppState.tier === 'starter') {
+          addChatMessage('assistant', 'The AI Assistant is available from the Basic tier and above. <a href="#" onclick="switchTab(\'settings\', null);return false" style="color:var(--orange-500);font-weight:600">Upgrade your plan</a> to chat with your pet care assistant and get AI-powered insights about ' + escapeHtml(name) + '.', true);
+          if (inputArea) inputArea.style.display = 'none';
+          return;
+        }
         const canLog = ['family', 'pro'].includes(AppState.tier);
         const intro = canLog
           ? 'Hi! I\'m your pet care assistant. Tell me what\'s happening with ' + name + ' — I can log meals, medications, walks, and answer questions about their recent activity.'
           : 'Hi! I\'m your pet care assistant. I can answer questions about ' + name + '\'s recent activity. Upgrade to Family for the ability to log via chat too.';
         addChatMessage('assistant', intro);
+      } else {
+        if (inputArea) inputArea.style.display = '';
       }
     }
 
     async function handleChatSend() {
+      if (AppState.tier === 'starter') {
+        showToast('Upgrade to Basic or higher to use the AI Assistant.', 'info');
+        return;
+      }
+
       const input = document.getElementById('chat-input');
       const msg = input.value.trim();
       if (!msg) return;
@@ -3627,7 +3648,7 @@ if (!hasPet) {
         if (!res.ok) throw new Error(data.error || 'Request failed');
         hideChatLoading();
         addChatMessage('assistant', data.reply);
-        if (data.actions && data.actions.length > 0) {
+        if (AppState.tier !== 'basic' && data.actions && data.actions.length > 0) {
           const logs = await getLogs(AppState.activePet?.id, 50, AppState.timelineDays());
           AppState.setLogs(logs);
           renderHomeTab();
@@ -3642,11 +3663,11 @@ if (!hasPet) {
       }
     }
 
-    function addChatMessage(role, content) {
+    function addChatMessage(role, content, isHtml) {
       const container = document.getElementById('chat-messages');
       const div = document.createElement('div');
       div.className = 'chat-msg ' + role;
-      div.innerHTML = '<div class="chat-msg-content">' + escapeHtml(content) + '</div>';
+      div.innerHTML = '<div class="chat-msg-content">' + (isHtml ? content : escapeHtml(content)) + '</div>';
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
     }

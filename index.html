@@ -1288,6 +1288,7 @@
   </button>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/app.js"></script>
   <script src="js/api.js"></script>
   <script src="js/calculators.js"></script>
@@ -1305,6 +1306,7 @@
       
       try {
         // Create ticket without user_id (anonymous support)
+        initSupabase();
         const { data, error } = await supabaseClient.from('support_tickets').insert({
           user_email: email,
           user_name: email.split('@')[0],

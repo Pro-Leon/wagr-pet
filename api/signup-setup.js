@@ -36,19 +36,34 @@ export default async function handler(req, res) {
 
   if (profileError) errors.push('profile:' + profileError.message);
 
+  // Check tier limit before creating pet
+  const effectiveTier = tier || 'starter';
+  const maxPets = effectiveTier === 'pro' ? 999999 : effectiveTier === 'family' ? 4 : effectiveTier === 'basic' ? 2 : 1;
+
   // Create first pet if data provided
   if (pet && pet.name) {
-    const { error: petError } = await supabase
+    const { count, error: countError } = await supabase
       .from('pets')
-      .insert({
-        user_id: userId,
-        name: pet.name,
-        breed: pet.breed || null,
-        weight_kg: pet.weight_kg || null,
-        birth_date: pet.birth_date || null,
-      });
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId);
 
-    if (petError) errors.push('pet:' + petError.message);
+    if (countError) {
+      errors.push('pet_count:' + countError.message);
+    } else if (count >= maxPets) {
+      errors.push('pet:Pet limit reached for your plan.');
+    } else {
+      const { error: petError } = await supabase
+        .from('pets')
+        .insert({
+          user_id: userId,
+          name: pet.name,
+          breed: pet.breed || null,
+          weight_kg: pet.weight_kg || null,
+          birth_date: pet.birth_date || null,
+        });
+
+      if (petError) errors.push('pet:' + petError.message);
+    }
   }
 
   if (errors.length > 0) {

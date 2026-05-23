@@ -1,6 +1,14 @@
 // Vercel API route for AI Vet Reports
 // Hides OpenRouter API key from client
 
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_URL = 'https://rbhqvginjduyjzyfzxbq.supabase.co';
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
+
 const MODELS = [
   'deepseek/deepseek-v4-flash:free',
   'z-ai/glm-4.5-air:free',
@@ -20,7 +28,27 @@ export default async function handler(req, res) {
 
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing authorization' });
+  }
+
+  const token = authHeader.split('Bearer ')[1];
+  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+  if (userError || !user) return res.status(401).json({ error: 'Unauthorized' });
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('tier')
+    .eq('id', user.id)
+    .single();
+
+  const tier = profile?.tier || 'starter';
+  if (tier !== 'pro') {
+    return res.status(403).json({ error: 'AI Vet Reports are available on the Pro plan.' });
+  }
 
   const OPENROUTER_KEY = process.env.OPENROUTER_KEY;
 

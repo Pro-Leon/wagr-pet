@@ -49,6 +49,9 @@ export default async function handler(req, res) {
     .single();
 
   const tier = profile?.tier || 'starter';
+  if (tier === 'starter') {
+    return res.status(403).json({ error: 'Upgrade to Basic or higher to use the AI Assistant.' });
+  }
   const canLog = ['family', 'pro'].includes(tier);
 
   const now = new Date();
@@ -104,7 +107,7 @@ For logging actions, use:
 {
   "type": "log_timeline",
   "data": {
-    "log_type": "feed|medication|walk|bathroom|symptom|custom",
+    "log_type": "meal|medication|bathroom|custom",
     "title": "Brief title of the event",
     "notes": "Optional details the user provided"
   }
@@ -118,7 +121,7 @@ RULES:
 5. Use the current date/time unless the user specifies otherwise (e.g. "yesterday").
 6. Keep replies friendly and conversational.
 7. ${!canLog ? 'You are in READ-ONLY mode. Never include actions.' : 'You may include log_timeline actions when the user asks you to log something.'}
-8. For food queries, use the provided meal data. Don't log food entries — just timeline entries with log_type "feed".
+8. For food queries, use the provided meal data. Don't log food entries — just timeline entries with log_type "meal".
 9. For summary requests, describe the recent patterns in plain English.`;
 
   try {
@@ -166,7 +169,8 @@ RULES:
     if (canLog && parsed.actions && Array.isArray(parsed.actions)) {
       for (const action of parsed.actions) {
         if (action.type === 'log_timeline' && action.data) {
-          const logType = action.data.log_type || 'custom';
+          const LOG_TYPE_MAP = { feed: 'meal', walk: 'bathroom', symptom: 'custom' };
+          const logType = LOG_TYPE_MAP[action.data.log_type] || action.data.log_type || 'custom';
           const { data: log, error } = await supabase
             .from('pet_logs')
             .insert({
