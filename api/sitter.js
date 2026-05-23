@@ -115,26 +115,34 @@ export default async function handler(req, res) {
     if (!sitterToken) return res.status(400).json({ error: 'Missing token parameter' });
 
     // Check new-style sitter_links table first
-    const { data: link, error: linkError } = await supabase
-      .from('sitter_links')
-      .select('*, pets!inner(id, name, breed, medical_flags, user_id)')
-      .eq('token', sitterToken)
-      .eq('is_active', true)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+    let link = null;
+    try {
+      const { data, error: linkError } = await supabase
+        .from('sitter_links')
+        .select('*')
+        .eq('token', sitterToken)
+        .eq('is_active', true)
+        .gt('expires_at', new Date().toISOString())
+        .single();
+      if (!linkError && data) link = data;
+    } catch (e) { /* sitter_links table may not exist yet */ }
 
-    if (link && !linkError) {
-      return res.status(200).json({
-        pet: {
-          id: link.pets.id,
-          name: link.pets.name,
-          breed: link.pets.breed,
-          medical_flags: link.pets.medical_flags,
-          user_id: link.pets.user_id,
-          sitter_name: link.sitter_name,
-          care_plan_id: link.care_plan_id,
-        }
-      });
+    if (link) {
+      const { data: pet } = await supabase
+        .from('pets')
+        .select('id, name, breed, medical_flags, user_id')
+        .eq('id', link.pet_id)
+        .single();
+
+      if (pet) {
+        return res.status(200).json({
+          pet: {
+            ...pet,
+            sitter_name: link.sitter_name,
+            care_plan_id: link.care_plan_id,
+          }
+        });
+      }
     }
 
     // Fallback: old-style pets.sitter_token
@@ -148,17 +156,54 @@ export default async function handler(req, res) {
     return res.status(200).json({ pet });
   }
 
+  /* --- Helper: validate sitter token (new + old style) --- */
+  async function validateSitterToken(sitterToken, petId) {
+    // New-style: check sitter_links table
+    try {
+      const { data: link } = await supabase
+        .from('sitter_links')
+        .select('*')
+        .eq('token', sitterToken)
+        .eq('is_active', true)
+        .gt('expires_at', new Date().toISOString())
+        .single();
+      if (link && (!petId || link.pet_id === petId)) {
+        const { data: pet } = await supabase
+          .from('pets')
+          .select('id, user_id')
+          .eq('id', link.pet_id)
+          .single();
+        if (pet) return pet;
+      }
+    } catch (e) {}
+
+    // Old-style: check pets.sitter_token
+    if (petId) {
+      const { data: pet } = await supabase
+        .from('pets')
+        .select('id, user_id')
+        .eq('id', petId)
+        .eq('sitter_token', sitterToken)
+        .single();
+      if (pet) return pet;
+    } else {
+      const { data: pet } = await supabase
+        .from('pets')
+        .select('id, user_id')
+        .eq('sitter_token', sitterToken)
+        .single();
+      if (pet) return pet;
+    }
+
+    return null;
+  }
+
   /* --- Get logs (for sitter view) --- */
   if (req.method === 'GET' && action === 'logs') {
     const { petId, token: sitterToken } = req.query;
     if (!petId || !sitterToken) return res.status(400).json({ error: 'Missing petId or token' });
 
-    const { data: pet } = await supabase
-      .from('pets')
-      .select('id')
-      .eq('id', petId)
-      .eq('sitter_token', sitterToken)
-      .single();
+    const pet = await validateSitterToken(sitterToken, petId);
     if (!pet) return res.status(403).json({ error: 'Invalid sitter token' });
 
     const { data, error } = await supabase
@@ -176,12 +221,7 @@ export default async function handler(req, res) {
     const { petId, token: sitterToken, log_type, title, notes, sitter_name } = req.body || {};
     if (!petId || !sitterToken) return res.status(400).json({ error: 'Missing petId or token' });
 
-    const { data: pet } = await supabase
-      .from('pets')
-      .select('id, user_id')
-      .eq('id', petId)
-      .eq('sitter_token', sitterToken)
-      .single();
+    const pet = await validateSitterToken(sitterToken, petId);
     if (!pet) return res.status(403).json({ error: 'Invalid sitter token' });
 
     const { data, error } = await supabase
