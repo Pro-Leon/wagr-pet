@@ -1,5 +1,4 @@
 {
-  "cleanUrls": true,
   "headers": [
     {
       "source": "/sw.js",
@@ -17,6 +16,7 @@
     { "source": "/auth", "destination": "/auth.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/coparent", "destination": "/coparent-accept.html" },
+    { "source": "/coparent-accept", "destination": "/coparent-accept.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/cookies", "destination": "/cookies.html" }

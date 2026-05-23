@@ -6,6 +6,7 @@
   <title>Dashboard — Wagr</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="css/globals.css">
+  <link rel="stylesheet" href="css/tutorial.css">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
   <link rel="manifest" href="/manifest.json">
@@ -361,6 +362,113 @@
     }
     [data-theme="dark"] .quick-log-btn:hover {
       background: rgba(249,115,22,0.08);
+    }
+
+    /* --- Grooming Cards --- */
+    .grooming-card {
+      position: relative;
+    }
+    .grooming-card.grooming-upcoming {
+      border-left: 3px solid var(--orange-500);
+    }
+    .grooming-card.grooming-past {
+      border-left: 3px solid var(--border-color);
+    }
+    .grooming-card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .grooming-date-badge {
+      display: inline-flex;
+      padding: 3px 10px;
+      background: var(--orange-50);
+      color: var(--orange-700);
+      font-size: 0.72rem;
+      font-weight: 600;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .grooming-date-badge {
+      background: rgba(249,115,22,0.12);
+      color: var(--orange-400);
+    }
+    .grooming-status {
+      display: inline-flex;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .grooming-status.upcoming {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    [data-theme="dark"] .grooming-status.upcoming {
+      background: rgba(22,163,74,0.15);
+      color: #4ade80;
+    }
+    .grooming-status.past {
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+    }
+    .grooming-cost {
+      margin-left: auto;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .grooming-groomer {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      color: var(--text-primary);
+    }
+    .grooming-location {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .grooming-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .grooming-service-tag {
+      display: inline-flex;
+      padding: 3px 10px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .grooming-notes {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 8px;
+      padding: 8px 10px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+    }
+    .grooming-card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .grooming-rating {
+      display: flex;
+      gap: 2px;
+    }
+    .grooming-actions {
+      display: flex;
+      gap: 4px;
     }
 
     /* --- Chat Assistant --- */
@@ -1030,7 +1138,7 @@
         <div class="tab-content" id="tab-grooming">
           <div class="timeline-header">
             <h2>Grooming Appointments</h2>
-            <button class="btn btn-primary btn-sm" id="add-grooming-btn" onclick="openModal('modal-add-grooming')">
+            <button class="btn btn-primary btn-sm" id="add-grooming-btn">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Add Appointment
             </button>
@@ -1199,6 +1307,13 @@
                 <button class="btn btn-ghost btn-sm" onclick="handleLogout()" style="color:#dc2626">Sign Out</button>
               </div>
               <button class="btn btn-ghost btn-sm" onclick="confirmDeleteAccount()" style="color:#dc2626">Delete Account</button>
+            </div>
+
+            <!-- Tutorial -->
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:4px">Tutorial</h3>
+              <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:10px">Replay the guided tour to explore all features.</p>
+              <button class="btn btn-secondary btn-sm" onclick="Tutorial.retake()">👋 Retake the tour</button>
             </div>
           </div>
         </div>
@@ -1568,6 +1683,7 @@
         </button>
       </div>
       <form id="add-grooming-form" class="flex flex-col gap-4">
+        <input type="hidden" id="grooming-id" value="">
         <div class="input-group">
           <label>Date & Time</label>
           <input type="datetime-local" class="input-field" id="grooming-date" required>
@@ -1856,6 +1972,7 @@
   <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/analytics.js"></script>
+  <script src="js/tutorial.js"></script>
   <script>
     /* ========================================
        Wagr — Dashboard Controller
@@ -2029,7 +2146,7 @@
       const logs = AppState.logs || [];
 
       // Greeting
-      let html = `<div class="greeting"><h1>${getGreeting()}, ${escapeHtml(name)}</h1>`;
+      let html = `<div class="greeting" id="pet-card"><h1>${getGreeting()}, ${escapeHtml(name)}</h1>`;
       if (hasPet) {
         html += `<p>Here's what's happening with ${escapeHtml(AppState.activePet.name)} today.</p>`;
       } else {
@@ -2054,12 +2171,12 @@ if (!hasPet) {
       // Streak
       const streak = calcStreak(logs);
       if (streak > 0) {
-        html += `<div class="streak-card"><span class="streak-emoji"><i data-lucide="flame" style="width:18px;height:18px"></i></span><div class="streak-text"><span class="streak-num">0</span>-day streak! Keep logging to stay on track.</div></div>`;
+        html += `<div class="streak-card" id="streak-bar"><span class="streak-emoji"><i data-lucide="flame" style="width:18px;height:18px"></i></span><div class="streak-text"><span class="streak-num">0</span>-day streak! Keep logging to stay on track.</div></div>`;
       }
 
       // Quick log buttons — all tiers can log
       html += `
-        <div class="quick-log-row">
+        <div class="quick-log-row" id="quick-actions">
           <button class="quick-log-btn" onclick="openLogModal('meal')"><i data-lucide="utensils-crossed" style="width:16px;height:16px"></i> Feed</button>
           <button class="quick-log-btn" onclick="openLogModal('medication')"><i data-lucide="pill" style="width:16px;height:16px"></i> Meds</button>
           <button class="quick-log-btn" onclick="openLogModal('bathroom')"><i data-lucide="paw-print" style="width:16px;height:16px"></i> Walk</button>
@@ -2071,7 +2188,7 @@ if (!hasPet) {
       const lastMed = logs.find(l => l.log_type === 'medication');
       const lastBath = logs.find(l => l.log_type === 'bathroom');
 
-      html += `<div class="summary-grid">`;
+      html += `<div class="summary-grid" id="status-cards">`;
       html += `<div class="summary-card" onclick="openLogModal('meal')"><div class="sc-icon orange"><i data-lucide="utensils-crossed" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMeal ? escapeHtml(lastMeal.title) : 'No meal logged'}</h4><p>${lastMeal ? formatDateTime(lastMeal.created_at) : 'Log the first meal of the day'}</p></div></div>`;
       html += `<div class="summary-card" onclick="openLogModal('medication')"><div class="sc-icon blue"><i data-lucide="pill" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMed ? escapeHtml(lastMed.title) : 'No medication'}</h4><p>${lastMed ? formatDateTime(lastMed.created_at) : 'No meds recorded yet'}</p></div></div>`;
       html += `<div class="summary-card" onclick="openLogModal('bathroom')"><div class="sc-icon green"><i data-lucide="footprints" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastBath ? escapeHtml(lastBath.title) : 'No Walk logged'}</h4><p>${lastBath ? formatDateTime(lastBath.created_at) : 'Log your last Walk'}</p></div></div>`;
@@ -3032,46 +3149,102 @@ if (!hasPet) {
       if (!c) return;
 
       if (groomingAppointments.length === 0) {
-        c.innerHTML = `<div class="welcome-state">
-          <span class="welcome-emoji"><i data-lucide="scissors" style="width:32px;height:32px"></i></span>
-          <h3>No grooming appointments</h3>
-          <p>Track your pet's grooming history, products used, and results.</p>
-        </div>`;
+        c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="scissors" style="width:32px;height:32px"></i></span><h3>No grooming appointments</h3><p>Track your pet\'s grooming history, products used, and results.</p></div>';
         lucide.createIcons();
         return;
       }
 
-      c.innerHTML = groomingAppointments.map(apt => {
-        const date = new Date(apt.appointment_date);
-        const services = apt.services ? apt.services.join(', ') : '';
-        const products = apt.products_used ? apt.products_used.join(', ') : '';
-        const rating = apt.rating ? Array(apt.rating).fill('<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>').join('') : '';
+      var now = new Date();
+      var sorted = groomingAppointments.slice().sort(function (a, b) {
+        var aDate = new Date(a.appointment_date);
+        var bDate = new Date(b.appointment_date);
+        var aUpcoming = aDate >= now;
+        var bUpcoming = bDate >= now;
+        if (aUpcoming && !bUpcoming) return -1;
+        if (!aUpcoming && bUpcoming) return 1;
+        if (aUpcoming) return aDate - bDate;
+        return bDate - aDate;
+      });
 
-        return `
-          <div class="card" style="padding:16px">
-            <div class="flex items-center justify-between" style="margin-bottom:8px">
-              <div style="font-weight:600">${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</div>
-              <div style="font-size:0.85rem;display:flex;gap:2px">${rating}</div>
-            </div>
-            <div style="font-size:0.9rem;margin-bottom:4px">${apt.groomer_name || 'Grooming'}</div>
-            <div style="font-size:0.8rem;color:var(--text-secondary)">${apt.location || ''}</div>
-            ${services ? `<div style="font-size:0.75rem;margin-top:8px"><strong>Services:</strong> ${services}</div>` : ''}
-            ${products ? `<div style="font-size:0.75rem"><strong>Products:</strong> ${products}</div>` : ''}
-            ${apt.cost ? `<div style="font-size:0.8rem;margin-top:8px">Cost: $${apt.cost}</div>` : ''}
-            ${apt.notes ? `<div style="font-size:0.8rem;color:var(--text-muted);margin-top:8px">${apt.notes}</div>` : ''}
-            <div style="margin-top:12px;display:flex;justify-content:flex-end">
-              <button class="btn btn-ghost btn-sm" onclick="deleteGrooming('${apt.id}')" style="color:#dc2626">Delete</button>
-            </div>
-          </div>`;
+      c.innerHTML = sorted.map(function (apt) {
+        var date = new Date(apt.appointment_date);
+        var isUpcoming = date >= now;
+        var dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        var services = apt.services || [];
+        var rating = apt.rating ? Array(apt.rating).fill('<svg viewBox="0 0 24 24" width="14" height="14" fill="#eab308" stroke="#eab308" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>').join('') : '';
+        var escapedId = apt.id.replace(/'/g, "\\'");
+
+        return '<div class="card grooming-card' + (isUpcoming ? ' grooming-upcoming' : ' grooming-past') + '" style="padding:16px">' +
+          '<div class="grooming-card-top">' +
+            '<span class="grooming-date-badge">' + dateStr + '</span>' +
+            (isUpcoming ? '<span class="grooming-status upcoming">UPCOMING</span>' : '<span class="grooming-status past">PAST</span>') +
+            (apt.cost ? '<span class="grooming-cost">$' + parseFloat(apt.cost).toFixed(2) + '</span>' : '') +
+          '</div>' +
+          '<div class="grooming-groomer">' + (apt.groomer_name || 'Grooming') + '</div>' +
+          (apt.location ? '<div class="grooming-location">' + apt.location + '</div>' : '') +
+          (services.length ? '<div class="grooming-services">' + services.map(function (s) { return '<span class="grooming-service-tag">' + s + '</span>'; }).join('') + '</div>' : '') +
+          (apt.notes ? '<div class="grooming-notes">' + apt.notes + '</div>' : '') +
+          '<div class="grooming-card-bottom">' +
+            (rating ? '<div class="grooming-rating">' + rating + '</div>' : '<div></div>') +
+            '<div class="grooming-actions">' +
+              '<button class="btn btn-ghost btn-sm" onclick="openGroomingModal(\'' + escapedId + '\')">Edit</button>' +
+              '<button class="btn btn-ghost btn-sm" onclick="deleteGrooming(\'' + escapedId + '\')" style="color:#dc2626">Delete</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       }).join('');
       lucide.createIcons();
+    }
+
+    function openGroomingModal(id) {
+      var modalTitle = document.querySelector('#modal-add-grooming .modal-header h3');
+      var submitBtn = document.querySelector('#add-grooming-form button[type="submit"]');
+      document.getElementById('grooming-id').value = '';
+
+      if (!id) {
+        modalTitle.textContent = 'Add Grooming Appointment';
+        submitBtn.textContent = 'Save Appointment';
+        document.getElementById('add-grooming-form').reset();
+        openModal('modal-add-grooming');
+        return;
+      }
+
+      var apt = groomingAppointments.find(function (a) { return a.id === id; });
+      if (!apt) { showToast('Appointment not found.', 'error'); return; }
+
+      modalTitle.textContent = 'Edit Grooming Appointment';
+      submitBtn.textContent = 'Update Appointment';
+
+      if (apt.appointment_date) {
+        var d = new Date(apt.appointment_date);
+        var pad = function (n) { return String(n).padStart(2, '0'); };
+        document.getElementById('grooming-date').value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+      }
+      document.getElementById('grooming-groomer').value = apt.groomer_name || '';
+      document.getElementById('grooming-location').value = apt.location || '';
+
+      var services = apt.services || [];
+      document.getElementById('groom-service-bath').checked = services.indexOf('Bath') !== -1;
+      document.getElementById('groom-service-haircut').checked = services.indexOf('Haircut') !== -1;
+      document.getElementById('groom-service-nails').checked = services.indexOf('Nail Trim') !== -1;
+      document.getElementById('groom-service-teeth').checked = services.indexOf('Teeth Cleaning') !== -1;
+      document.getElementById('groom-service-ear').checked = services.indexOf('Ear Cleaning') !== -1;
+      document.getElementById('groom-service-deshed').checked = services.indexOf('De-shedding') !== -1;
+
+      document.getElementById('grooming-products').value = (apt.products_used || []).join('\n');
+      document.getElementById('grooming-cost').value = apt.cost || '';
+      document.getElementById('grooming-rating').value = apt.rating || '';
+      document.getElementById('grooming-notes').value = apt.notes || '';
+      document.getElementById('grooming-id').value = apt.id;
+
+      openModal('modal-add-grooming');
     }
 
     document.getElementById('add-grooming-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
 
-      const services = [];
+      var services = [];
       if (document.getElementById('groom-service-bath').checked) services.push('Bath');
       if (document.getElementById('groom-service-haircut').checked) services.push('Haircut');
       if (document.getElementById('groom-service-nails').checked) services.push('Nail Trim');
@@ -3079,27 +3252,40 @@ if (!hasPet) {
       if (document.getElementById('groom-service-ear').checked) services.push('Ear Cleaning');
       if (document.getElementById('groom-service-deshed').checked) services.push('De-shedding');
 
-      const productsText = document.getElementById('grooming-products').value.trim();
-      const products = productsText ? productsText.split('\n').filter(p => p.trim()) : [];
+      var productsText = document.getElementById('grooming-products').value.trim();
+      var products = productsText ? productsText.split('\n').filter(function (p) { return p.trim(); }) : [];
+
+      var payload = {
+        appointment_date: document.getElementById('grooming-date').value,
+        groomer_name: document.getElementById('grooming-groomer').value.trim(),
+        location: document.getElementById('grooming-location').value.trim(),
+        services: services.length > 0 ? services : null,
+        products_used: products.length > 0 ? products : null,
+        cost: parseFloat(document.getElementById('grooming-cost').value) || null,
+        rating: parseInt(document.getElementById('grooming-rating').value) || null,
+        notes: document.getElementById('grooming-notes').value.trim()
+      };
+
+      var editingId = document.getElementById('grooming-id').value;
 
       try {
-        await addGroomingAppointment({
-          pet_id: AppState.activePet.id,
-          user_id: AppState.user.id,
-          appointment_date: document.getElementById('grooming-date').value,
-          groomer_name: document.getElementById('grooming-groomer').value.trim(),
-          location: document.getElementById('grooming-location').value.trim(),
-          services: services.length > 0 ? services : null,
-          products_used: products.length > 0 ? products : null,
-          cost: parseFloat(document.getElementById('grooming-cost').value) || null,
-          rating: parseInt(document.getElementById('grooming-rating').value) || null,
-          notes: document.getElementById('grooming-notes').value.trim()
-        });
-        showToast('Appointment saved!', 'success');
+        if (editingId) {
+          await updateGroomingAppointment(editingId, payload);
+        } else {
+          payload.pet_id = AppState.activePet.id;
+          payload.user_id = AppState.user.id;
+          await addGroomingAppointment(payload);
+        }
+        showToast(editingId ? 'Appointment updated!' : 'Appointment saved!', 'success');
         closeModal('modal-add-grooming');
         document.getElementById('add-grooming-form').reset();
         renderGroomingTab();
       } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
+    });
+
+    // Wire the Add Appointment button to open in add mode
+    document.getElementById('add-grooming-btn').addEventListener('click', function () {
+      openGroomingModal();
     });
 
     async function deleteGrooming(id) {
