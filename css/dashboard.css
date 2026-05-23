@@ -646,3 +646,26 @@
 @media (min-width: 769px) {
   .mobile-header { display: none; }
 }
+
+/* --- Sitter Wizard Steps --- */
+.sitter-wizard-step { display:flex; flex-direction:column; gap:14px; }
+.sitter-wizard-step[style*="display:none"] { display:none !important; }
+#sitter-wizard-steps { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
+#sitter-wizard-steps .step-dot { width:8px; height:8px; border-radius:50%; background:var(--border-color); transition:background 0.2s; flex:none; }
+#sitter-wizard-steps .step-dot.active { background:var(--orange-500); }
+#sitter-wizard-steps .step-dot.done { background:var(--orange-300); }
+
+/* --- Sitter Notifications --- */
+.sitter-notif { display:flex; gap:10px; padding:12px; background:var(--bg-tertiary); border-radius:var(--radius-md); margin-bottom:8px; border-left:3px solid var(--orange-500); }
+.sitter-notif-icon { flex-shrink:0; width:20px; height:20px; color:var(--orange-500); }
+.sitter-notif-content { flex:1; }
+.sitter-notif-title { font-size:0.85rem; font-weight:600; }
+.sitter-notif-msg { font-size:0.78rem; color:var(--text-secondary); }
+
+/* --- Active Sitter Link Card --- */
+.sitter-link-card { background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:8px; }
+.sitter-link-card .slc-top { display:flex; justify-content:space-between; align-items:start; margin-bottom:6px; }
+.sitter-link-card .slc-name { font-weight:600; font-size:0.85rem; }
+.sitter-link-card .slc-label { font-size:0.78rem; color:var(--text-muted); }
+.sitter-link-card .slc-expiry { font-size:0.75rem; color:var(--text-muted); }
+.sitter-link-card .slc-actions { display:flex; gap:6px; margin-top:6px; }

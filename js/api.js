@@ -421,6 +421,118 @@ async function addSitterLog(log) {
   return data.log;
 }
 
+/* --- Sitter Links (new multi-step system) --- */
+async function createSitterLink(petId, sitterName, label, duration, durationUnit, carePlanId) {
+  const token = await getAccessToken();
+  const res = await fetch(API_BASE + '/sitter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({
+      action: 'create',
+      petId,
+      sitterName,
+      label,
+      duration,
+      durationUnit,
+      carePlanId: carePlanId || null,
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to create sitter link');
+  return data.link;
+}
+
+async function listSitterLinks(petId) {
+  const token = await getAccessToken();
+  const res = await fetch(API_BASE + '/sitter?action=list&petId=' + encodeURIComponent(petId), {
+    headers: { 'Authorization': 'Bearer ' + token },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to load sitter links');
+  return data.links || [];
+}
+
+async function revokeSitterLink(linkId) {
+  const token = await getAccessToken();
+  const res = await fetch(API_BASE + '/sitter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ action: 'revoke', linkId }),
+  });
+  if (!res.ok) throw new Error('Failed to revoke sitter link');
+}
+
+/* --- Care Plan Notifications --- */
+async function getCarePlanNotifications(petId) {
+  const plans = await getCarePlans(petId, true);
+  if (!plans.length) return [];
+
+  const now = new Date();
+  const activePlan = plans.find(p => {
+    const start = new Date(p.start_date);
+    const end = new Date(p.end_date);
+    return start <= now && end >= now;
+  }) || plans[0];
+  if (!activePlan) return [];
+
+  const notifications = [];
+
+  // Fetch recent logs
+  const thirtySixHoursAgo = new Date(now.getTime() - 36 * 60 * 60 * 1000).toISOString();
+  const { data: recentLogs } = await db()
+    .from('pet_logs')
+    .select('log_type, title, created_at')
+    .eq('pet_id', petId)
+    .gte('created_at', thirtySixHoursAgo)
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  const logs = recentLogs || [];
+  const todayStr = now.toISOString().split('T')[0];
+  const todayLogs = logs.filter(l => l.created_at.startsWith(todayStr));
+
+  // Check feeding instructions vs. meal logs
+  if (activePlan.feeding_instructions) {
+    const mealCount = todayLogs.filter(l => l.log_type === 'meal').length;
+    if (mealCount === 0 && activePlan.feeding_instructions.toLowerCase().includes('feed')) {
+      notifications.push({
+        type: 'feeding',
+        icon: 'utensils-crossed',
+        title: 'Feeding due',
+        message: 'No meals logged today. Care plan has feeding instructions.',
+      });
+    }
+  }
+
+  // Check medication schedule vs. medication logs
+  if (activePlan.medication_instructions) {
+    const medCount = todayLogs.filter(l => l.log_type === 'medication').length;
+    if (medCount === 0) {
+      notifications.push({
+        type: 'medication',
+        icon: 'pill',
+        title: 'Medication reminder',
+        message: 'No medications logged today. Check the care plan for instructions.',
+      });
+    }
+  }
+
+  // Check walking/exercise vs. bathroom logs (walks are logged as bathroom type)
+  if (activePlan.walking_exercise) {
+    const walkCount = todayLogs.filter(l => l.log_type === 'bathroom').length;
+    if (walkCount === 0) {
+      notifications.push({
+        type: 'exercise',
+        icon: 'footprints',
+        title: 'Exercise reminder',
+        message: 'No walks logged today. Care plan includes exercise instructions.',
+      });
+    }
+  }
+
+  return notifications;
+}
+
 /* --- AI Vet Report (Pro) --- */
 async function generateVetReport(petId, options = {}) {
   const {
