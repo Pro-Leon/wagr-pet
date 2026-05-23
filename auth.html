@@ -311,34 +311,42 @@
             <span class="step-dot active"></span>
           </div>
           <p class="step-label">Step 3 of 3 — How many dogs do you have?</p>
-          <div class="pet-count-options">
-            <div class="pet-count-card" data-count="1" onclick="selectPetCount(this,1)">
-              <span class="pcc-number">1–2</span>
-              <span class="pcc-label">dogs</span>
-              <span class="pcc-price">Free forever</span>
-            </div>
-            <div class="pet-count-card" data-count="3" onclick="selectPetCount(this,3)">
-              <span class="pcc-number">3+</span>
-              <span class="pcc-label">dogs</span>
-              <span class="pcc-price">Basic plan</span>
-            </div>
-          </div>
-          <div id="signup-tier-actions" style="display:none">
-            <div id="signup-tier-starter">
-              <p style="font-size:0.85rem;color:var(--text-secondary);text-align:center;margin-bottom:16px">
-                The Starter plan is free forever — start tracking your dog today.
-              </p>
-              <button type="submit" class="btn btn-primary w-full" id="signup-btn">Create Free Account</button>
-            </div>
-            <div id="signup-tier-basic" style="display:none">
-              <p style="font-size:0.85rem;color:var(--text-secondary);text-align:center;margin-bottom:12px">
-                With 3+ dogs, <strong>Basic plan ($4.99/month)</strong> gives you unlimited pets and full history.
-              </p>
-              <button type="submit" class="btn btn-primary w-full" id="signup-btn-basic">Start Basic — $4.99/mo</button>
-              <div style="text-align:center;margin-top:8px">
-                <a href="#" onclick="selectPetCount(document.querySelector('.pet-count-card[data-count=\"1\"]'),1);return false" style="font-size:0.8rem;color:var(--text-muted)">Start with 1 dog for free instead</a>
+          <div id="signup-tier-content">
+            <div class="pet-count-options">
+              <div class="pet-count-card" data-count="1" onclick="selectPetCount(this,1)">
+                <span class="pcc-number">1–2</span>
+                <span class="pcc-label">dogs</span>
+                <span class="pcc-price">Free forever</span>
+              </div>
+              <div class="pet-count-card" data-count="3" onclick="selectPetCount(this,3)">
+                <span class="pcc-number">3+</span>
+                <span class="pcc-label">dogs</span>
+                <span class="pcc-price">Basic plan</span>
               </div>
             </div>
+            <div id="signup-tier-actions" style="display:none">
+              <div id="signup-tier-starter">
+                <p style="font-size:0.85rem;color:var(--text-secondary);text-align:center;margin-bottom:16px">
+                  The Starter plan is free forever — start tracking your dog today.
+                </p>
+                <button type="submit" class="btn btn-primary w-full" id="signup-btn">Create Free Account</button>
+              </div>
+              <div id="signup-tier-basic" style="display:none">
+                <p style="font-size:0.85rem;color:var(--text-secondary);text-align:center;margin-bottom:12px">
+                  With 3+ dogs, <strong>Basic plan ($4.99/month)</strong> gives you unlimited pets and full history.
+                </p>
+                <button type="submit" class="btn btn-primary w-full" id="signup-btn-basic">Start Basic — $4.99/mo</button>
+                <div style="text-align:center;margin-top:8px">
+                  <a href="#" onclick="selectPetCount(document.querySelector('.pet-count-card[data-count=\"1\"]'),1);return false" style="font-size:0.8rem;color:var(--text-muted)">Start with 1 dog for free instead</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="signup-coparent-content" style="display:none">
+            <p style="font-size:0.95rem;color:var(--text-secondary);text-align:center;margin-bottom:16px">
+              You're joining as a co-parent — no pet details needed.
+            </p>
+            <button type="submit" class="btn btn-primary w-full" id="signup-btn-co">Create Account</button>
           </div>
           <div style="display:flex;gap:8px;margin-top:4px">
             <button type="button" class="btn btn-ghost w-full" onclick="prevStep(2)">Back</button>
@@ -407,6 +415,7 @@
     let isLogin = true;
     let redirectUrl = null;
     let isRecoveryFlow = false;
+    let isCoparentSignup = false;
     let signupTier = 'starter';
 
     function getRedirectUrl() { return redirectUrl || '/dashboard'; }
@@ -420,10 +429,18 @@
         if (!name) { showAlert('Please enter your name.'); return; }
         if (!email) { showAlert('Please enter your email.'); return; }
         if (pw.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
+        if (isCoparentSignup) {
+          document.querySelectorAll('.signup-step').forEach(s => s.style.display = 'none');
+          document.querySelector('.signup-step[data-step="3"]').style.display = 'flex';
+          hideAlert();
+          return;
+        }
       }
       if (step === 3) {
-        const petName = document.getElementById('signup-pet-name').value.trim();
-        if (!petName) { showAlert('Please enter your dog\'s name.'); return; }
+        if (!isCoparentSignup) {
+          const petName = document.getElementById('signup-pet-name').value.trim();
+          if (!petName) { showAlert('Please enter your dog\'s name.'); return; }
+        }
       }
       document.querySelectorAll('.signup-step').forEach(s => s.style.display = 'none');
       document.querySelector(`.signup-step[data-step="${step}"]`).style.display = 'flex';
@@ -431,6 +448,7 @@
     }
 
     function prevStep(step) {
+      if (isCoparentSignup && step === 2) step = 1;
       document.querySelectorAll('.signup-step').forEach(s => s.style.display = 'none');
       document.querySelector(`.signup-step[data-step="${step}"]`).style.display = 'flex';
       hideAlert();
@@ -453,6 +471,7 @@
         toggleAuthMode();
       }
       redirectUrl = params.get('redirect') || null;
+      isCoparentSignup = redirectUrl && redirectUrl.startsWith('/coparent');
 
       checkSession();
       lucide.createIcons();
@@ -510,14 +529,21 @@
       } else {
         loginForm.style.display = 'none';
         signupForm.style.display = 'flex';
-        title.textContent = 'Create your account';
-        subtitle.textContent = 'Start tracking your dog\'s health';
+        title.textContent = isCoparentSignup ? 'Join as co-parent' : 'Create your account';
+        subtitle.textContent = isCoparentSignup ? 'Create an account to accept the co-parent invitation' : 'Start tracking your dog\'s health';
         switchText.textContent = 'Already have an account?';
         switchLink.textContent = 'Sign in';
         // Reset multi-step to step 1
         signupTier = 'starter';
         document.querySelectorAll('.signup-step').forEach(s => s.style.display = 'none');
         document.querySelector('.signup-step[data-step="1"]').style.display = 'flex';
+        // Show/hide co-parent content in step 3
+        document.getElementById('signup-tier-content').style.display = isCoparentSignup ? 'none' : '';
+        document.getElementById('signup-coparent-content').style.display = isCoparentSignup ? 'block' : 'none';
+        document.querySelector('.signup-step[data-step="3"] .step-label').textContent = isCoparentSignup ? 'Step 3 of 3 — You\'re all set!' : 'Step 3 of 3 — How many dogs do you have?';
+        // Co-parent skips step 2 — button on step 1 goes straight to step 3
+        const step2NextBtn = document.querySelector('.signup-step[data-step="1"] .btn-primary');
+        if (step2NextBtn) step2NextBtn.textContent = isCoparentSignup ? 'Continue' : 'Next';
         document.getElementById('signup-tier-actions').style.display = 'none';
         document.querySelectorAll('.pet-count-card').forEach(c => c.classList.remove('selected'));
         document.getElementById('signup-form').reset();
@@ -664,7 +690,7 @@
 
       if (!email || !password) { showAlert('Please fill in all fields.'); return; }
       if (password.length < 8) { showAlert('Password must be at least 8 characters.'); return; }
-      if (!petName) { showAlert('Please enter your dog\'s name.'); return; }
+      if (!isCoparentSignup && !petName) { showAlert('Please enter your dog\'s name.'); return; }
 
       const origText = btn.textContent;
       btn.classList.add('btn-loading');
@@ -679,7 +705,7 @@
           email,
           displayName: name,
           tier,
-          pet: petName ? { name: petName, breed, weight_kg: weight, birth_date: birthDate } : null,
+          pet: petName && !isCoparentSignup ? { name: petName, breed, weight_kg: weight, birth_date: birthDate } : null,
         };
 
         if (setupPayload.userId) {
@@ -707,11 +733,13 @@
             } catch (ie) { console.warn('Profile update:', ie.message); }
           }
 
-          try {
-            const pet = await addPet({ user_id: data.user.id, name: petName, breed, weight_kg: weight, birth_date: birthDate });
-            AppState.setPets([pet]);
-            AppState.setActivePet(pet);
-          } catch (e) { console.warn('Pet creation:', e.message); }
+          if (!isCoparentSignup) {
+            try {
+              const pet = await addPet({ user_id: data.user.id, name: petName, breed, weight_kg: weight, birth_date: birthDate });
+              AppState.setPets([pet]);
+              AppState.setActivePet(pet);
+            } catch (e) { console.warn('Pet creation:', e.message); }
+          }
 
           data.user.display_name = name;
 
