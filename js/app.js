@@ -95,7 +95,7 @@ const AppState = {
   /* --- Check Feature Access --- */
   canAccess(feature) {
     const featureTiers = {
-      'timeline': 'basic',
+      'timeline': 'starter',
       'pet_notes': 'basic',
       'food_log': 'family',
       'qr_passive': 'basic',

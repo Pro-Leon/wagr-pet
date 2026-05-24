@@ -945,6 +945,7 @@
               <button class="quick-log-btn" onclick="openLogModal('custom')">Note</button>
             </div>
           </div>
+          <div id="timeline-starter-banner" style="display:none;margin-bottom:12px"></div>
           <div id="timeline-feed"></div>
         </div>
 
@@ -2695,7 +2696,6 @@ if (!hasPet) {
         AppState.setActivePet(pet);
         try { const logs = await getLogs(pet.id, 50, AppState.timelineDays()); AppState.setLogs(logs); renderTimeline(logs); } catch(e) { renderTimeline([]); }
         try { foodLogs = await getFoodLogs(pet.id); } catch(e) { foodLogs = []; }
-        // Load symptom logs
         try { giLogs = await getGiLogs(pet.id); } catch(e) { giLogs = []; }
         try { cardioLogs = await getCardioLogs(pet.id); } catch(e) { cardioLogs = []; }
         try { testResults = await getTestResults(pet.id); } catch(e) { testResults = []; }
@@ -2704,6 +2704,7 @@ if (!hasPet) {
         updateFeatureAccess();
         updateUIForUser();
         renderHomeTab();
+        if (AppState.tier === 'starter') renderStarterTimelineBanner(AppState.logs);
         if (AppState.activeTab === 'food') renderFoodTab();
         if (AppState.activeTab === 'symptoms') renderSymptomsTab();
       }
@@ -2815,38 +2816,70 @@ if (!hasPet) {
         return;
       }
 
+      renderTimeline(AppState.logs);
       if (tier === 'starter') {
-        const container = document.getElementById('timeline-feed');
-        if (container) {
-          container.innerHTML = `
-            <div class="locked-feature" style="margin-top:24px">
-              <span class="lock-emoji"><i data-lucide="clipboard-list" style="width:24px;height:24px"></i></span>
-              <h3>Timeline Logging</h3>
-              <p>Log meals, medications, bathroom breaks, and more. See a complete timeline of your dog's day.</p>
-              <ul class="perks">
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Track meals and portions</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Log medications & supplements</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Bathroom & Walk tracking</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Daily streak & activity summary</li>
-              </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Timeline — from $4.99/mo</button>
-            </div>`;
-          typeof lucide !== 'undefined' && lucide.createIcons();
+        renderStarterTimelineBanner(AppState.logs);
+      }
+    }
+
+    function renderStarterTimelineBanner(logs) {
+      var banner = document.getElementById('timeline-starter-banner');
+      if (!banner) return;
+
+      var daysUsed = 0;
+      if (logs && logs.length > 0) {
+        var uniqueDays = new Set();
+        logs.forEach(function (l) {
+          uniqueDays.add(new Date(l.created_at).toDateString());
+        });
+        daysUsed = uniqueDays.size;
+      }
+
+      var maxDays = 7;
+      var pct = Math.min(100, (daysUsed / maxDays) * 100);
+      var isFull = daysUsed >= maxDays;
+
+      banner.style.display = 'block';
+      var barColor = isFull ? '#dc2626' : (pct > 75 ? '#f59e0b' : '#22c55e');
+
+      banner.innerHTML =
+        '<div style="padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+            '<div style="font-size:0.82rem;font-weight:600">' + daysUsed + ' of ' + maxDays + ' days used</div>' +
+            (isFull ? '<span style="font-size:0.75rem;color:#dc2626;font-weight:600">At capacity</span>' : '<span style="font-size:0.75rem;color:var(--text-muted)">Unlimited with upgrade</span>') +
+          '</div>' +
+          '<div style="height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;margin-bottom:8px">' +
+            '<div style="height:100%;width:' + pct + '%;background:' + barColor + ';border-radius:3px;transition:width 0.4s ease"></div>' +
+          '</div>' +
+          (isFull
+            ? '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+                '<button class="btn btn-secondary btn-sm" onclick="clearStarterLogs()" style="font-size:0.78rem">Clear logs &amp; start fresh</button>' +
+                '<button class="btn btn-primary btn-sm" onclick="openModal(\'modal-pricing\')" style="font-size:0.78rem">Upgrade for unlimited history</button>' +
+              '</div>'
+            : '<div style="font-size:0.75rem;color:var(--text-muted)">Log more entries to build your pet\'s story. <button class="btn btn-ghost btn-sm" onclick="openModal(\'modal-pricing\')" style="font-size:0.75rem;padding:0;text-decoration:underline">Upgrade</button> for unlimited history.</div>'
+          ) +
+        '</div>';
+    }
+
+    async function clearStarterLogs() {
+      if (!AppState.activePet || !AppState.logs || AppState.logs.length === 0) return;
+      if (!confirm('This will delete all ' + AppState.logs.length + ' timeline entries for ' + AppState.activePet.name + '. This cannot be undone.')) return;
+      try {
+        for (var i = 0; i < AppState.logs.length; i++) {
+          await deleteLog(AppState.logs[i].id);
         }
-      } else {
-        renderTimeline(AppState.logs);
+        AppState.setLogs([]);
+        renderTimeline([]);
+        renderStarterTimelineBanner([]);
+        showToast('Logs cleared! You can start fresh.', 'success');
+      } catch (err) {
+        showToast('Error clearing logs: ' + err.message, 'error');
       }
     }
 
     /* --- Log Modal --- */
     function openLogModal(type) {
       if (!AppState.activePet) { showToast('Add a pet first.', 'error'); return; }
-      
-      // Only Family+ can log entries
-      if (!AppState.canWrite()) {
-        openModal('modal-pricing');
-        return;
-      }
       
       document.getElementById('log-type').value = type;
       const titles = { meal: 'Log Meal', medication: 'Log Medication', bathroom: 'Log Bathroom', custom: 'Add Note' };
@@ -2858,7 +2891,6 @@ if (!hasPet) {
 
     function handleQuickLogTap() {
       if (!AppState.activePet) { showToast('Add a pet first.', 'error'); return; }
-      if (!AppState.canWrite()) { openModal('modal-pricing'); return; }
       openLogModal('meal');
     }
 
@@ -3127,6 +3159,7 @@ if (!hasPet) {
         const log = await addLog({ pet_id: AppState.activePet.id, user_id: AppState.user.id, log_type: type, title, notes });
         AppState.logs.unshift(log);
         renderTimeline(AppState.logs);
+        if (AppState.tier === 'starter') renderStarterTimelineBanner(AppState.logs);
         renderHomeTab();
         closeModal('modal-add-log');
         showToast('Entry logged!', 'success');
@@ -3139,6 +3172,7 @@ if (!hasPet) {
         await deleteLog(logId);
         AppState.logs = AppState.logs.filter(l => l.id !== logId);
         renderTimeline(AppState.logs);
+        if (AppState.tier === 'starter') renderStarterTimelineBanner(AppState.logs);
         renderHomeTab();
         showToast('Entry deleted.', 'info');
       } catch (err) { showToast(err.message, 'error'); }
@@ -3529,10 +3563,14 @@ if (!hasPet) {
     var inventoryItems = [];
 
     function renderInventoryTab() {
+      var addBtn = document.getElementById('add-inventory-btn');
+      var list = document.getElementById('inventory-list');
       if (!AppState.activePet) { 
-        var list = document.getElementById('inventory-list'); if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (addBtn) addBtn.style.display = 'none';
         return; 
       }
+      if (addBtn) addBtn.style.display = AppState.canAccess('food_inventory') ? 'inline-flex' : 'none';
       loadInventory();
     }
 
@@ -3716,10 +3754,14 @@ if (!hasPet) {
     var weightLogs = [];
 
     function renderWeightTab() {
+      var addBtn = document.getElementById('add-weight-btn');
+      var list = document.getElementById('weight-list');
       if (!AppState.activePet) {
-        var list = document.getElementById('weight-list'); if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (addBtn) addBtn.style.display = 'none';
         return;
       }
+      if (addBtn) addBtn.style.display = AppState.canAccess('weight_tracking') ? 'inline-flex' : 'none';
       loadWeightLogs();
     }
 
@@ -3944,10 +3986,14 @@ if (!hasPet) {
     var vetRecords = [];
 
     function renderVetRecordsTab() {
+      var addBtn = document.getElementById('add-vetrecord-btn');
+      var list = document.getElementById('vetrecords-list');
       if (!AppState.activePet) {
-        var list = document.getElementById('vetrecords-list'); if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (addBtn) addBtn.style.display = 'none';
         return;
       }
+      if (addBtn) addBtn.style.display = AppState.canAccess('vet_records') ? 'inline-flex' : 'none';
       loadVetRecords();
     }
 
