@@ -36,10 +36,7 @@ const PRECACHE = [
   '/icons/favicon.svg',
 ];
 
-const CDN_ORIGINS = [
-  'cdn.jsdelivr.net',
-  'js.paystack.co',
-];
+const CDN_ORIGINS = [];
 
 const API_PATHS = [
   '/api/',
@@ -110,7 +107,11 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE).then((cache) => cache.put(event.request, clone));
           }
           return res;
-        }).catch(() => new Response('', { status: 200 }));
+        }).catch(function () {
+          return fetch(event.request).catch(function () {
+            return new Response('', { status: 503 });
+          });
+        });
       })
     );
     return;
