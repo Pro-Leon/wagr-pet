@@ -155,35 +155,51 @@ RETURNS BOOLEAN LANGUAGE sql SECURITY DEFINER STABLE AS $$
 $$;
 
 -- VACCINATIONS
+DROP POLICY IF EXISTS "Users CRUD own vaccinations" ON public.vaccinations;
 CREATE POLICY "Users CRUD own vaccinations" ON public.vaccinations FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin vaccinations" ON public.vaccinations;
 CREATE POLICY "Admin vaccinations" ON public.vaccinations FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- WEIGHT LOGS
+DROP POLICY IF EXISTS "Users CRUD own weight" ON public.weight_logs;
 CREATE POLICY "Users CRUD own weight" ON public.weight_logs FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin weight" ON public.weight_logs;
 CREATE POLICY "Admin weight" ON public.weight_logs FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- VET CONTACTS
+DROP POLICY IF EXISTS "Users CRUD own vet_contacts" ON public.vet_contacts;
 CREATE POLICY "Users CRUD own vet_contacts" ON public.vet_contacts FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin vet_contacts" ON public.vet_contacts;
 CREATE POLICY "Admin vet_contacts" ON public.vet_contacts FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- FEEDING SCHEDULES
+DROP POLICY IF EXISTS "Users CRUD own schedules" ON public.feeding_schedules;
 CREATE POLICY "Users CRUD own schedules" ON public.feeding_schedules FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin schedules" ON public.feeding_schedules;
 CREATE POLICY "Admin schedules" ON public.feeding_schedules FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- FOOD INVENTORY
+DROP POLICY IF EXISTS "Users CRUD own inventory" ON public.food_inventory;
 CREATE POLICY "Users CRUD own inventory" ON public.food_inventory FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin inventory" ON public.food_inventory;
 CREATE POLICY "Admin inventory" ON public.food_inventory FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- HEAT CYCLES
+DROP POLICY IF EXISTS "Users CRUD own heat_cycles" ON public.heat_cycles;
 CREATE POLICY "Users CRUD own heat_cycles" ON public.heat_cycles FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin heat_cycles" ON public.heat_cycles;
 CREATE POLICY "Admin heat_cycles" ON public.heat_cycles FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- VET RECORDS
+DROP POLICY IF EXISTS "Users CRUD own vet_records" ON public.vet_records;
 CREATE POLICY "Users CRUD own vet_records" ON public.vet_records FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin vet_records" ON public.vet_records;
 CREATE POLICY "Admin vet_records" ON public.vet_records FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 -- REMINDERS
+DROP POLICY IF EXISTS "Users CRUD own reminders" ON public.reminders;
 CREATE POLICY "Users CRUD own reminders" ON public.reminders FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin reminders" ON public.reminders;
 CREATE POLICY "Admin reminders" ON public.reminders FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
 

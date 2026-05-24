@@ -1416,3 +1416,116 @@ async function updateNotificationPreferences(userId, prefs) {
   if (error) throw error;
   return data;
 }
+
+/* ========== FOOD INVENTORY ========== */
+
+async function getFoodInventory(petId) {
+  const { data, error } = await db()
+    .from('food_inventory')
+    .select('*')
+    .eq('pet_id', petId)
+    .order('estimated_empty_date', { ascending: true });
+  if (error) throw error;
+  return data || [];
+}
+
+async function addFoodInventory(item) {
+  const { data, error } = await db()
+    .from('food_inventory')
+    .insert(item)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function updateFoodInventory(id, updates) {
+  const { data, error } = await db()
+    .from('food_inventory')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function deleteFoodInventory(id) {
+  const { error } = await db()
+    .from('food_inventory')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+/* ========== WEIGHT LOGS ========== */
+
+async function getWeightLogs(petId, limit = 100) {
+  const { data, error } = await db()
+    .from('weight_logs')
+    .select('*')
+    .eq('pet_id', petId)
+    .order('logged_at', { ascending: true })
+    .limit(limit);
+  if (error) throw error;
+  return data || [];
+}
+
+async function addWeightLog(log) {
+  const { data, error } = await db()
+    .from('weight_logs')
+    .insert(log)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function updateWeightLog(id, updates) {
+  const { data, error } = await db()
+    .from('weight_logs')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function deleteWeightLog(id) {
+  const { error } = await db()
+    .from('weight_logs')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+/* ========== VET RECORDS ========== */
+
+async function getVetRecords(petId) {
+  const { data, error } = await db()
+    .from('vet_records')
+    .select('*')
+    .eq('pet_id', petId)
+    .order('uploaded_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+async function addVetRecord(record) {
+  const { data, error } = await db()
+    .from('vet_records')
+    .insert(record)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function deleteVetRecord(id) {
+  const { error } = await db()
+    .from('vet_records')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}

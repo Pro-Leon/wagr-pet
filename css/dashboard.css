@@ -669,3 +669,32 @@
 .sitter-link-card .slc-label { font-size:0.78rem; color:var(--text-muted); }
 .sitter-link-card .slc-expiry { font-size:0.75rem; color:var(--text-muted); }
 .sitter-link-card .slc-actions { display:flex; gap:6px; margin-top:6px; }
+
+/* --- Food Inventory --- */
+.inventory-card { border:1px solid var(--border-color); }
+.inventory-card:hover { border-color: var(--orange-200); }
+.inv-category-badge { text-transform:capitalize; }
+.inv-low-badge { animation: pulse-badge 2s infinite; }
+@keyframes pulse-badge { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+.inv-progress-bar { width:100%; }
+.inv-card-bottom { font-size:0.78rem; }
+.inv-actions { display:flex; gap:4px; }
+#inventory-low-stock-warning { animation: slideDown 0.3s ease; }
+@keyframes slideDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
+/* --- Weight Tracking --- */
+.weight-card { border:1px solid var(--border-color); }
+.weight-card:hover { border-color: var(--orange-200); }
+.weight-value-badge { box-shadow:0 2px 6px rgba(249,115,22,0.15); }
+.weight-card-left { display:flex; align-items:center; gap:16px; }
+#weight-chart-container { overflow:hidden; }
+
+/* --- Vet Records --- */
+.vetrecord-card { border:1px solid var(--border-color); }
+.vetrecord-card:hover { border-color: var(--orange-200); }
+.vr-type-badge { text-transform:capitalize; }
+.vr-actions { display:flex; gap:4px; }
+
+/* --- Stat Cards (shared) --- */
+.stat-card { background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-lg); }
+.stat-card:hover { border-color: var(--orange-200); }

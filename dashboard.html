@@ -819,6 +819,8 @@
 
         <div class="nav-section-label">HEALTH</div>
         <a href="#" data-tab="food" onclick="switchTab('food', this)"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Food Log</a>
+        <a href="#" data-tab="inventory" onclick="switchTab('inventory', this)"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Food Inventory</a>
+        <a href="#" data-tab="weight" onclick="switchTab('weight', this)"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9v0a9 9 0 0 0 9 9v0a9 9 0 0 0 9-9v0a9 9 0 0 0-9-9z"/><path d="M12 7v5l3 3"/></svg> Weight</a>
         <a href="#" data-tab="symptoms" onclick="switchTab('symptoms', this)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> Symptoms</a>
         <a href="#" data-tab="grooming" onclick="switchTab('grooming', this)"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Grooming</a>
         <a href="#" data-tab="ai" onclick="switchTab('ai', this)"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/></svg> AI Reports</a>
@@ -826,6 +828,7 @@
         <div class="nav-section-label">CARE TEAM</div>
         <a href="#" data-tab="sitter" onclick="switchTab('sitter', this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Sitter Links</a>
         <a href="#" data-tab="coparent" onclick="switchTab('coparent', this)"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Co-parents</a>
+        <a href="#" data-tab="vetrecords" onclick="switchTab('vetrecords', this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Vet Records</a>
         <a href="#" data-tab="qr" onclick="switchTab('qr', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><line x1="3" y1="14" x2="7" y2="14"/></svg> QR Tags</a>
         <a href="#" id="assistant-sidebar-link" onclick="switchTab('assistant', this)" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/></svg> Assistant</a>
 
@@ -878,11 +881,14 @@
 
           <div class="nav-section-label">HEALTH</div>
           <a href="#" onclick="switchTab('food');closeMobileMenu()">Food Log</a>
+          <a href="#" onclick="switchTab('inventory');closeMobileMenu()">Food Inventory</a>
+          <a href="#" onclick="switchTab('weight');closeMobileMenu()">Weight</a>
           <a href="#" onclick="switchTab('symptoms');closeMobileMenu()">Symptoms</a>
           <a href="#" onclick="switchTab('grooming');closeMobileMenu()">Grooming</a>
           <a href="#" onclick="switchTab('ai');closeMobileMenu()">AI Reports</a>
 
           <div class="nav-section-label">CARE TEAM</div>
+          <a href="#" onclick="switchTab('vetrecords');closeMobileMenu()">Vet Records</a>
           <a href="#" onclick="switchTab('sitter');closeMobileMenu()">Sitter Links</a>
           <a href="#" onclick="switchTab('coparent');closeMobileMenu()">Co-parents</a>
           <a href="#" onclick="switchTab('qr');closeMobileMenu()">QR Tags</a>
@@ -1044,6 +1050,68 @@
               <button class="btn btn-primary" onclick="openModal('modal-add-pet')">Add Pet</button>
             </div>
             <div id="food-list" class="flex flex-col gap-3"></div>
+          </div>
+        </div>
+
+        <!-- ===== FOOD INVENTORY TAB (PRO) ===== -->
+        <div class="tab-content" id="tab-inventory">
+          <div class="timeline-header">
+            <h2>Food Inventory</h2>
+            <button class="btn btn-primary btn-sm" id="add-inventory-btn" onclick="openInventoryModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Item
+            </button>
+          </div>
+          <div id="inventory-section">
+            <div id="inventory-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="package" style="width:24px;height:24px"></i></span>
+              <h3>Food Inventory &amp; Restock Alerts</h3>
+              <p>Track your pet food stock, get restock alerts when supplies run low, and estimate when you'll need to reorder.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Track quantities by brand &amp; category</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Auto-calculated restock dates</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Low stock warnings &amp; alerts</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Quick-log meals from inventory</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+            </div>
+            <div id="inventory-active" style="display:none">
+              <div id="inventory-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap"></div>
+              <div id="inventory-low-stock-warning" style="display:none;padding:12px 16px;background:var(--orange-50);border:1px solid var(--orange-200);border-radius:var(--radius-lg);margin-bottom:16px"></div>
+              <div id="inventory-list" class="flex flex-col gap-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== WEIGHT TRACKING TAB (PRO) ===== -->
+        <div class="tab-content" id="tab-weight">
+          <div class="timeline-header">
+            <h2>Weight Tracking</h2>
+            <button class="btn btn-primary btn-sm" id="add-weight-btn" onclick="openWeightModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Log Weight
+            </button>
+          </div>
+          <div id="weight-section">
+            <div id="weight-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="trending-up" style="width:24px;height:24px"></i></span>
+              <h3>Weight Tracking &amp; Trend Charts</h3>
+              <p>Monitor your pet's weight over time with beautiful trend charts. Track growth, detect changes early, and share reports with your vet.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Interactive weight trend chart</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Growth rate tracking</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Stats: min, max, average, trend</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weight change alerts</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+            </div>
+            <div id="weight-active" style="display:none">
+              <div id="weight-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap"></div>
+              <div id="weight-chart-container" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-xl);padding:20px;margin-bottom:16px;overflow:hidden">
+                <div id="weight-chart" style="width:100%;height:240px;position:relative"></div>
+              </div>
+              <div id="weight-list" class="flex flex-col gap-3"></div>
+            </div>
           </div>
         </div>
 
@@ -1263,6 +1331,34 @@
               <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:4px">Tutorial</h3>
               <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:10px">Replay the guided tour to explore all features.</p>
               <button class="btn btn-secondary btn-sm" onclick="Tutorial.retake()">👋 Retake the tour</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== VET RECORDS TAB (PRO) ===== -->
+        <div class="tab-content" id="tab-vetrecords">
+          <div class="timeline-header">
+            <h2>Vet Records</h2>
+            <button class="btn btn-primary btn-sm" id="add-vetrecord-btn" onclick="openModal('modal-add-vetrecord')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Record
+            </button>
+          </div>
+          <div id="vetrecords-section">
+            <div id="vetrecords-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="folder-medical" style="width:24px;height:24px"></i></span>
+              <h3>Vet Records &amp; Document Storage</h3>
+              <p>Store and organize all your pet's medical documents, vaccination records, lab results, and prescriptions in one secure place.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Upload &amp; store medical documents</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Organize by type (lab, prescription, vaccine, etc.)</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Add notes &amp; search records</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Share with your vet instantly</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+            </div>
+            <div id="vetrecords-active" style="display:none">
+              <div id="vetrecords-list" class="flex flex-col gap-3"></div>
             </div>
           </div>
         </div>
@@ -1894,6 +1990,157 @@
     </div>
   </div>
 
+  <!-- Food Inventory Modal -->
+  <div class="modal-overlay" id="modal-add-inventory">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="inventory-modal-title">Add Inventory Item</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-inventory')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-inventory-form" class="flex flex-col gap-4">
+        <input type="hidden" id="inventory-edit-id">
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Item Name</label>
+            <input type="text" class="input-field" id="inv-item-name" placeholder="e.g. Chicken Kibble" required>
+          </div>
+          <div class="input-group">
+            <label>Category</label>
+            <select class="input-field" id="inv-category">
+              <option value="food">Food</option>
+              <option value="treats">Treats</option>
+              <option value="supplements">Supplements</option>
+              <option value="medication">Medication</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Quantity</label>
+            <input type="number" class="input-field" id="inv-quantity" placeholder="5" step="0.1" min="0" required>
+          </div>
+          <div class="input-group">
+            <label>Unit</label>
+            <select class="input-field" id="inv-unit">
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="lb">lb</option>
+              <option value="oz">oz</option>
+              <option value="cups">cups</option>
+              <option value="bags">bags</option>
+              <option value="cans">cans</option>
+              <option value="boxes">boxes</option>
+              <option value="pieces">pieces</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Purchase Date</label>
+            <input type="date" class="input-field" id="inv-purchase-date">
+          </div>
+          <div class="input-group">
+            <label>Est. Empty Date</label>
+            <input type="date" class="input-field" id="inv-empty-date">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Restock Threshold</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" class="input-field" id="inv-restock-threshold" placeholder="1" step="0.1" min="0" value="1" style="flex:1">
+            <span style="font-size:0.8rem;color:var(--text-muted)">Alert when below this amount</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Notes</label>
+          <textarea class="input-field" id="inv-notes" placeholder="Brand, flavor, any special notes..." rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" id="inventory-submit-btn">Save Item</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Weight Tracking Modal -->
+  <div class="modal-overlay" id="modal-add-weight">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="weight-modal-title">Log Weight</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-weight')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-weight-form" class="flex flex-col gap-4">
+        <input type="hidden" id="weight-edit-id">
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Weight (kg)</label>
+            <input type="number" class="input-field" id="weight-value" placeholder="12.5" step="0.01" min="0.01" required>
+          </div>
+          <div class="input-group">
+            <label>Date</label>
+            <input type="date" class="input-field" id="weight-date">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Notes</label>
+          <textarea class="input-field" id="weight-notes" placeholder="Any context about this weight measurement..." rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" id="weight-submit-btn">Save Weight</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Vet Records Modal -->
+  <div class="modal-overlay" id="modal-add-vetrecord">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="vetrecord-modal-title">Add Vet Record</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-vetrecord')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-vetrecord-form" class="flex flex-col gap-4">
+        <input type="hidden" id="vetrecord-edit-id">
+        <div class="input-group">
+          <label>Record Name</label>
+          <input type="text" class="input-field" id="vr-file-name" placeholder="e.g. Vaccination Record 2026" required>
+        </div>
+        <div class="input-group">
+          <label>Document URL</label>
+          <input type="url" class="input-field" id="vr-file-url" placeholder="https://example.com/document.pdf">
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Paste a link to your document, or leave blank to add notes only.</p>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Record Type</label>
+            <select class="input-field" id="vr-record-type">
+              <option value="lab">Lab Results</option>
+              <option value="prescription">Prescription</option>
+              <option value="vaccine">Vaccination</option>
+              <option value="xray">X-Ray / Imaging</option>
+              <option value="surgery">Surgery</option>
+              <option value="exam">Exam Notes</option>
+              <option value="referral">Referral</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Date</label>
+            <input type="date" class="input-field" id="vr-date">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Notes</label>
+          <textarea class="input-field" id="vr-notes" placeholder="Any additional details about this record..." rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" id="vetrecord-submit-btn">Save Record</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Floating AI Assistant Button -->
   <button class="fab ai-fab" onclick="switchTab('assistant', null)" title="AI Assistant">
     <svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/><path d="M8 15h8"/></svg>
@@ -2382,10 +2629,29 @@ if (!hasPet) {
       const groomingActive = document.getElementById('grooming-active');
       if (AppState.canAccess('grooming')) { show(groomingActive); hide(groomingLocked); }
       else { hide(groomingActive); show(groomingLocked); }
+
+      // Food Inventory
+      const invLocked = document.getElementById('inventory-locked');
+      const invActive = document.getElementById('inventory-active');
+      if (AppState.canAccess('food_inventory')) { show(invActive); hide(invLocked); }
+      else { hide(invActive); show(invLocked); }
+
+      // Weight Tracking
+      const wtLocked = document.getElementById('weight-locked');
+      const wtActive = document.getElementById('weight-active');
+      if (AppState.canAccess('weight_tracking')) { show(wtActive); hide(wtLocked); }
+      else { hide(wtActive); show(wtLocked); }
+
+      // Vet Records
+      const vrLocked = document.getElementById('vetrecords-locked');
+      const vrActive = document.getElementById('vetrecords-active');
+      if (AppState.canAccess('vet_records')) { show(vrActive); hide(vrLocked); }
+      else { hide(vrActive); show(vrLocked); }
     }
 
     function show(el) { if (el) el.style.display = 'block'; }
     function hide(el) { if (el) el.style.display = 'none'; }
+    function escHtml(str) { if (!str) return ''; return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
     /* --- Tab Switching --- */
     function switchTab(tab, el) {
@@ -2397,19 +2663,22 @@ if (!hasPet) {
       document.querySelectorAll('.tab-content').forEach(t => { t.classList.remove('active'); t.style.display = ''; });
       const te = document.getElementById('tab-' + tab); if (te) te.classList.add('active');
       if (tab === 'home') renderHomeTab();
-      if (['qr','ai','sitter','symptoms','grooming'].includes(tab)) updateFeatureAccess();
+      if (['qr','ai','sitter','symptoms','grooming','inventory','weight','vetrecords'].includes(tab)) updateFeatureAccess();
       if (tab === 'settings') { refreshProfile().then(() => { updateUIForUser(); loadBillingInfo(); }); }
       if (tab === 'pets') renderPetsList();
       if (tab === 'timeline') handleTimelineTab();
       if (tab === 'food') { renderFoodTab(); }
+      if (tab === 'inventory') { renderInventoryTab(); }
+      if (tab === 'weight') { renderWeightTab(); }
       if (tab === 'symptoms') { renderSymptomsTab(); }
       if (tab === 'grooming') { renderGroomingTab(); }
+      if (tab === 'vetrecords') { renderVetRecordsTab(); }
       if (tab === 'sitter') { loadCarePlans(); loadActiveSitterLinks(); loadSitterNotifications(); }
       if (tab === 'coparent') { renderCoparentsTab(); }
       if (tab === 'support') { renderSupportTab(); }
       if (tab === 'assistant') { initChat(); document.querySelectorAll('.fab').forEach(b => b.style.display = 'none'); }
       else { document.querySelectorAll('.fab').forEach(b => b.style.display = ''); }
-      if (['qr','ai','sitter','coparent','symptoms','grooming','support','assistant'].includes(tab)) updateFeatureAccess();
+      if (['qr','ai','sitter','coparent','symptoms','grooming','support','assistant','inventory','weight','vetrecords'].includes(tab)) updateFeatureAccess();
       // Track feature usage for analytics
       if (typeof trackFeature === 'function') trackFeature('tab_' + tab);
     }
@@ -3256,7 +3525,516 @@ if (!hasPet) {
       } catch (err) { showToast(err.message, 'error'); }
     }
 
-    /* --- QR --- */
+    /* ===== FOOD INVENTORY ===== */
+    var inventoryItems = [];
+
+    function renderInventoryTab() {
+      if (!AppState.activePet) { 
+        var list = document.getElementById('inventory-list'); if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        return; 
+      }
+      loadInventory();
+    }
+
+    async function loadInventory() {
+      try {
+        inventoryItems = await getFoodInventory(AppState.activePet.id);
+      } catch (e) { inventoryItems = []; }
+      renderInventoryList();
+    }
+
+    function renderInventoryList() {
+      var c = document.getElementById('inventory-list'); if (!c) return;
+      var statsEl = document.getElementById('inventory-stats');
+      var warnEl = document.getElementById('inventory-low-stock-warning');
+
+      var totalItems = inventoryItems.length;
+      var totalQty = 0;
+      var lowStockItems = [];
+
+      inventoryItems.forEach(function (item) {
+        totalQty += parseFloat(item.quantity) || 0;
+        if (parseFloat(item.quantity) <= parseFloat(item.restock_threshold || 1)) {
+          lowStockItems.push(item);
+        }
+      });
+
+      if (statsEl) {
+        statsEl.innerHTML = 
+          '<div class="stat-card" style="padding:12px 16px;min-width:100px"><div style="font-size:1.3rem;font-weight:700">' + totalItems + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Total Items</div></div>' +
+          '<div class="stat-card" style="padding:12px 16px;min-width:100px"><div style="font-size:1.3rem;font-weight:700">' + totalQty.toFixed(1) + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Total Quantity</div></div>' +
+          '<div class="stat-card" style="padding:12px 16px;min-width:100px"><div style="font-size:1.3rem;font-weight:700;' + (lowStockItems.length > 0 ? 'color:#dc2626' : 'color:var(--green-500)') + '">' + lowStockItems.length + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Need Restock</div></div>';
+      }
+
+      if (warnEl && lowStockItems.length > 0) {
+        warnEl.style.display = 'block';
+        warnEl.innerHTML = 
+          '<div style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:0.85rem;color:var(--orange-600);margin-bottom:4px">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+            'Low Stock Alert' +
+          '</div>' +
+          '<div style="font-size:0.82rem">' + lowStockItems.map(function (i) { return i.item_name + ' (' + i.quantity + ' ' + i.unit + ')'; }).join(', ') + '</div>';
+      } else if (warnEl) {
+        warnEl.style.display = 'none';
+      }
+
+      if (inventoryItems.length === 0) {
+        c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="package" style="width:32px;height:32px"></i></span><h3>No inventory items</h3><p>Add your pet\'s food and supplies to track stock levels.</p><button class="btn btn-primary" onclick="openModal(\'modal-add-inventory\')">Add Your First Item</button></div>';
+        typeof lucide !== 'undefined' && lucide.createIcons();
+        return;
+      }
+
+      c.innerHTML = inventoryItems.map(function (item) {
+        var isLow = parseFloat(item.quantity) <= parseFloat(item.restock_threshold || 1);
+        var pct = parseFloat(item.restock_threshold) > 0 ? Math.min(100, (parseFloat(item.quantity) / parseFloat(item.restock_threshold)) * 100) : 100;
+        var barColor = isLow ? '#dc2626' : (pct < 200 ? '#f59e0b' : '#22c55e');
+        var emptyDate = item.estimated_empty_date ? new Date(item.estimated_empty_date + 'T00:00:00') : null;
+        var daysLeft = emptyDate ? Math.ceil((emptyDate - new Date()) / (1000 * 60 * 60 * 24)) : null;
+        var escapedId = item.id.replace(/'/g, "\\'");
+
+        var categoryIcon = '';
+        if (item.category === 'food') categoryIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>';
+        else if (item.category === 'treats') categoryIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m8 8 8 8"/><path d="m16 8-8 8"/></svg>';
+        else if (item.category === 'supplements') categoryIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 4.5 3 12l7.5 7.5"/><path d="m13.5 4.5 7.5 7.5-7.5 7.5"/></svg>';
+        else categoryIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+
+        return '<div class="card inventory-card" style="padding:16px">' +
+          '<div class="inventory-card-top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">' +
+                '<span class="inv-category-badge" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--bg-tertiary);border-radius:var(--radius-full);font-size:0.7rem;color:var(--text-muted)">' + categoryIcon + ' ' + item.category + '</span>' +
+                (isLow ? '<span class="inv-low-badge" style="font-size:0.65rem;background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:var(--radius-full);font-weight:600">LOW</span>' : '') +
+              '</div>' +
+              '<div style="font-weight:600;font-size:0.95rem">' + escHtml(item.item_name) + '</div>' +
+              (item.notes ? '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px">' + escHtml(item.notes) + '</div>' : '') +
+            '</div>' +
+            '<div style="text-align:right;flex-shrink:0">' +
+              '<div style="font-size:1.1rem;font-weight:700;' + (isLow ? 'color:#dc2626' : '') + '">' + item.quantity + '</div>' +
+              '<div style="font-size:0.7rem;color:var(--text-muted)">' + item.unit + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="inv-progress-bar" style="margin-top:10px;height:4px;background:var(--bg-tertiary);border-radius:2px;overflow:hidden">' +
+            '<div style="height:100%;width:' + Math.min(100, pct) + '%;background:' + barColor + ';border-radius:2px;transition:width 0.3s"></div>' +
+          '</div>' +
+          '<div class="inv-card-bottom" style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">' +
+            '<div style="font-size:0.78rem;color:var(--text-muted)">' +
+              (item.purchase_date ? 'Bought: ' + item.purchase_date : '') +
+              (daysLeft !== null ? (item.purchase_date ? ' &middot; ' : '') + (daysLeft <= 0 ? '<span style="color:#dc2626">Expired</span>' : daysLeft + ' days left') : '') +
+            '</div>' +
+            '<div class="inv-actions" style="display:flex;gap:4px">' +
+              '<button class="btn btn-ghost btn-sm" onclick="logMealFromInventory(\'' + escapedId + '\')" title="Log meal from this item"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></button>' +
+              '<button class="btn btn-ghost btn-sm" onclick="openInventoryModal(\'' + escapedId + '\')">Edit</button>' +
+              '<button class="btn btn-ghost btn-sm" onclick="deleteInventoryItem(\'' + escapedId + '\')" style="color:#dc2626">Delete</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      typeof lucide !== 'undefined' && lucide.createIcons();
+    }
+
+    function openInventoryModal(id) {
+      var modalTitle = document.querySelector('#modal-add-inventory .modal-header h3');
+      var submitBtn = document.getElementById('inventory-submit-btn');
+      document.getElementById('inventory-edit-id').value = '';
+
+      if (!id) {
+        modalTitle.textContent = 'Add Inventory Item';
+        submitBtn.textContent = 'Save Item';
+        document.getElementById('add-inventory-form').reset();
+        openModal('modal-add-inventory');
+        return;
+      }
+
+      var item = inventoryItems.find(function (i) { return i.id === id; });
+      if (!item) return;
+      modalTitle.textContent = 'Edit Inventory Item';
+      submitBtn.textContent = 'Update Item';
+      document.getElementById('inventory-edit-id').value = item.id;
+      document.getElementById('inv-item-name').value = item.item_name || '';
+      document.getElementById('inv-category').value = item.category || 'food';
+      document.getElementById('inv-quantity').value = item.quantity || '';
+      document.getElementById('inv-unit').value = item.unit || 'kg';
+      document.getElementById('inv-purchase-date').value = item.purchase_date || '';
+      document.getElementById('inv-empty-date').value = item.estimated_empty_date || '';
+      document.getElementById('inv-restock-threshold').value = item.restock_threshold || 1;
+      document.getElementById('inv-notes').value = item.notes || '';
+      openModal('modal-add-inventory');
+    }
+
+    function logMealFromInventory(id) {
+      var item = inventoryItems.find(function (i) { return i.id === id; });
+      if (!item) return;
+      // Pre-fill the food log modal with inventory item details
+      document.getElementById('food-product').value = item.item_name || '';
+      if (item.category === 'treats') document.getElementById('food-type').value = 'treat';
+      else if (item.category === 'supplements') document.getElementById('food-type').value = 'supplement';
+      closeModal('modal-add-inventory');
+      openModal('modal-add-food');
+      showToast('Pre-filled from inventory. Adjust portion and save.', 'info');
+    }
+
+    async function deleteInventoryItem(id) {
+      if (!confirm('Delete this inventory item?')) return;
+      try {
+        await deleteFoodInventory(id);
+        showToast('Item deleted.', 'info');
+        loadInventory();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    document.getElementById('add-inventory-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var editingId = document.getElementById('inventory-edit-id').value;
+      var payload = {
+        item_name: document.getElementById('inv-item-name').value.trim(),
+        category: document.getElementById('inv-category').value,
+        quantity: parseFloat(document.getElementById('inv-quantity').value) || 0,
+        unit: document.getElementById('inv-unit').value,
+        purchase_date: document.getElementById('inv-purchase-date').value || null,
+        estimated_empty_date: document.getElementById('inv-empty-date').value || null,
+        restock_threshold: parseFloat(document.getElementById('inv-restock-threshold').value) || 1,
+        notes: document.getElementById('inv-notes').value.trim()
+      };
+      try {
+        if (editingId) {
+          await updateFoodInventory(editingId, payload);
+          showToast('Item updated!', 'success');
+        } else {
+          payload.pet_id = AppState.activePet.id;
+          payload.user_id = AppState.user.id;
+          await addFoodInventory(payload);
+          showToast('Item added!', 'success');
+        }
+        closeModal('modal-add-inventory');
+        document.getElementById('add-inventory-form').reset();
+        loadInventory();
+      } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
+    });
+
+    /* ===== WEIGHT TRACKING ===== */
+    var weightLogs = [];
+
+    function renderWeightTab() {
+      if (!AppState.activePet) {
+        var list = document.getElementById('weight-list'); if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        return;
+      }
+      loadWeightLogs();
+    }
+
+    async function loadWeightLogs() {
+      try {
+        weightLogs = await getWeightLogs(AppState.activePet.id);
+      } catch (e) { weightLogs = []; }
+      renderWeightChart();
+      renderWeightList();
+    }
+
+    function renderWeightStats() {
+      var statsEl = document.getElementById('weight-stats');
+      if (!statsEl) return;
+      if (weightLogs.length === 0) {
+        statsEl.innerHTML = '';
+        return;
+      }
+      var values = weightLogs.map(function (l) { return parseFloat(l.weight_kg); });
+      var current = values[values.length - 1];
+      var min = Math.min.apply(null, values);
+      var max = Math.max.apply(null, values);
+      var avg = values.reduce(function (a, b) { return a + b; }, 0) / values.length;
+      var change = values.length >= 2 ? (current - values[values.length - 2]) : 0;
+      var changeStr = change >= 0 ? '+' + change.toFixed(2) : change.toFixed(2);
+
+      statsEl.innerHTML =
+        '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700">' + current.toFixed(2) + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Current (kg)</div></div>' +
+        '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700;color:var(--green-500)">' + min.toFixed(2) + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Min (kg)</div></div>' +
+        '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700;color:#dc2626">' + max.toFixed(2) + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Max (kg)</div></div>' +
+        '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700">' + avg.toFixed(2) + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Avg (kg)</div></div>' +
+        '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700;' + (change > 0 ? 'color:#dc2626' : change < 0 ? 'color:var(--green-500)' : '') + '">' + changeStr + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Last Change</div></div>';
+    }
+
+    function renderWeightChart() {
+      var chartEl = document.getElementById('weight-chart');
+      if (!chartEl) return;
+      renderWeightStats();
+
+      if (weightLogs.length < 2) {
+        chartEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:0.85rem">Add at least 2 weight entries to see the trend chart.</div>';
+        return;
+      }
+
+      var padding = { top: 20, right: 20, bottom: 30, left: 50 };
+      var w = chartEl.clientWidth || 600;
+      var h = 240;
+      var plotW = w - padding.left - padding.right;
+      var plotH = h - padding.top - padding.bottom;
+
+      var values = weightLogs.map(function (l) { return parseFloat(l.weight_kg); });
+      var minVal = Math.min.apply(null, values);
+      var maxVal = Math.max.apply(null, values);
+      var range = maxVal - minVal || 1;
+      var padding_range = range * 0.15;
+      var yMin = Math.max(0, minVal - padding_range);
+      var yMax = maxVal + padding_range;
+
+      function xPos(i) { return padding.left + (i / (weightLogs.length - 1)) * plotW; }
+      function yPos(v) { return padding.top + plotH - ((v - yMin) / (yMax - yMin)) * plotH; }
+
+      var points = weightLogs.map(function (l, i) { return xPos(i) + ',' + yPos(parseFloat(l.weight_kg)); }).join(' ');
+
+      var yTicks = [];
+      var tickStep = (yMax - yMin) / 4;
+      for (var t = 0; t <= 4; t++) {
+        var val = yMin + t * tickStep;
+        yTicks.push({ val: val, y: yPos(val) });
+      }
+
+      var xLabels = weightLogs.map(function (l) { 
+        var d = new Date(l.logged_at);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      });
+      var xTickStep = Math.max(1, Math.floor(weightLogs.length / 6));
+
+      var svg = '<svg width="100%" height="100%" viewBox="0 0 ' + w + ' ' + h + '" style="overflow:visible" xmlns="http://www.w3.org/2000/svg">' +
+        '<defs>' +
+          '<linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0%" stop-color="var(--orange-500)" stop-opacity="0.15"/>' +
+            '<stop offset="100%" stop-color="var(--orange-500)" stop-opacity="0.01"/>' +
+          '</linearGradient>' +
+        '</defs>';
+
+      // Grid lines (horizontal)
+      yTicks.forEach(function (tick) {
+        svg += '<line x1="' + padding.left + '" y1="' + tick.y + '" x2="' + (w - padding.right) + '" y2="' + tick.y + '" stroke="var(--border-color)" stroke-width="1" stroke-dasharray="4,4"/>';
+        svg += '<text x="' + (padding.left - 8) + '" y="' + (tick.y + 4) + '" text-anchor="end" fill="var(--text-muted)" font-size="11">' + tick.val.toFixed(1) + '</text>';
+      });
+
+      // Area fill
+      var fillPoints = [];
+      fillPoints.push(padding.left + ',' + (padding.top + plotH));
+      weightLogs.forEach(function (l, i) { fillPoints.push(xPos(i) + ',' + yPos(parseFloat(l.weight_kg))); });
+      fillPoints.push(xPos(weightLogs.length - 1) + ',' + (padding.top + plotH));
+      svg += '<polygon points="' + fillPoints.join(' ') + '" fill="url(#chartGrad)"/>';
+
+      // Line
+      svg += '<polyline points="' + points + '" fill="none" stroke="var(--orange-500)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+
+      // Data points
+      weightLogs.forEach(function (l, i) {
+        var cx = xPos(i), cy = yPos(parseFloat(l.weight_kg));
+        svg += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="var(--orange-500)" stroke="var(--bg-secondary)" stroke-width="2"/>';
+        // Value label on first, last, and every Nth point
+        if (i === 0 || i === weightLogs.length - 1 || i % Math.max(1, Math.floor(weightLogs.length / 5)) === 0) {
+          svg += '<text x="' + cx + '" y="' + (cy - 10) + '" text-anchor="middle" fill="var(--text-secondary)" font-size="10" font-weight="600">' + parseFloat(l.weight_kg).toFixed(1) + '</text>';
+        }
+      });
+
+      // X-axis labels
+      weightLogs.forEach(function (l, i) {
+        if (i % xTickStep === 0) {
+          svg += '<text x="' + xPos(i) + '" y="' + (h - 6) + '" text-anchor="middle" fill="var(--text-muted)" font-size="10">' + xLabels[i] + '</text>';
+        }
+      });
+
+      svg += '</svg>';
+      chartEl.innerHTML = svg;
+    }
+
+    function renderWeightList() {
+      var c = document.getElementById('weight-list'); if (!c) return;
+
+      if (weightLogs.length === 0) {
+        c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="scale" style="width:32px;height:32px"></i></span><h3>No weight entries</h3><p>Start tracking your pet\'s weight to see trends and patterns.</p><button class="btn btn-primary" onclick="openModal(\'modal-add-weight\')">Log First Weight</button></div>';
+        typeof lucide !== 'undefined' && lucide.createIcons();
+        return;
+      }
+
+      var sorted = [].concat(weightLogs).sort(function (a, b) { return new Date(b.logged_at) - new Date(a.logged_at); });
+
+      c.innerHTML = sorted.map(function (log) {
+        var d = new Date(log.logged_at);
+        var dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        var timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        var escapedId = log.id.replace(/'/g, "\\'");
+        return '<div class="card weight-card" style="padding:16px">' +
+          '<div class="weight-card-left" style="display:flex;align-items:center;gap:16px">' +
+            '<div class="weight-value-badge" style="width:56px;height:56px;border-radius:50%;background:var(--orange-50);color:var(--orange-600);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0">' +
+              '<span style="font-weight:700;font-size:1rem">' + parseFloat(log.weight_kg).toFixed(1) + '</span>' +
+              '<span style="font-size:0.55rem;text-transform:uppercase">kg</span>' +
+            '</div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="font-weight:600;font-size:0.9rem">' + dateStr + '</div>' +
+              '<div style="font-size:0.78rem;color:var(--text-muted)">' + timeStr + '</div>' +
+              (log.notes ? '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:4px">' + escHtml(log.notes) + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="weight-card-actions" style="display:flex;gap:4px;margin-top:12px;justify-content:flex-end">' +
+            '<button class="btn btn-ghost btn-sm" onclick="openWeightModal(\'' + escapedId + '\')">Edit</button>' +
+            '<button class="btn btn-ghost btn-sm" onclick="deleteWeightEntry(\'' + escapedId + '\')" style="color:#dc2626">Delete</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      typeof lucide !== 'undefined' && lucide.createIcons();
+    }
+
+    function openWeightModal(id) {
+      var modalTitle = document.querySelector('#modal-add-weight .modal-header h3');
+      var submitBtn = document.getElementById('weight-submit-btn');
+      document.getElementById('weight-edit-id').value = '';
+
+      if (!id) {
+        modalTitle.textContent = 'Log Weight';
+        submitBtn.textContent = 'Save Weight';
+        document.getElementById('add-weight-form').reset();
+        document.getElementById('weight-date').value = new Date().toISOString().split('T')[0];
+        openModal('modal-add-weight');
+        return;
+      }
+
+      var log = weightLogs.find(function (l) { return l.id === id; });
+      if (!log) return;
+      modalTitle.textContent = 'Edit Weight Entry';
+      submitBtn.textContent = 'Update Weight';
+      document.getElementById('weight-edit-id').value = log.id;
+      document.getElementById('weight-value').value = log.weight_kg || '';
+      document.getElementById('weight-date').value = log.logged_at ? log.logged_at.split('T')[0] : '';
+      document.getElementById('weight-notes').value = log.notes || '';
+      openModal('modal-add-weight');
+    }
+
+    async function deleteWeightEntry(id) {
+      if (!confirm('Delete this weight entry?')) return;
+      try {
+        await deleteWeightLog(id);
+        showToast('Entry deleted.', 'info');
+        loadWeightLogs();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    document.getElementById('add-weight-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var editingId = document.getElementById('weight-edit-id').value;
+      var dateVal = document.getElementById('weight-date').value;
+      var payload = {
+        weight_kg: parseFloat(document.getElementById('weight-value').value),
+        notes: document.getElementById('weight-notes').value.trim()
+      };
+      if (dateVal) {
+        payload.logged_at = new Date(dateVal + 'T12:00:00').toISOString();
+      }
+      try {
+        if (editingId) {
+          await updateWeightLog(editingId, payload);
+          showToast('Weight updated!', 'success');
+        } else {
+          payload.pet_id = AppState.activePet.id;
+          payload.user_id = AppState.user.id;
+          await addWeightLog(payload);
+          showToast('Weight logged!', 'success');
+        }
+        closeModal('modal-add-weight');
+        document.getElementById('add-weight-form').reset();
+        loadWeightLogs();
+      } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
+    });
+
+    /* ===== VET RECORDS ===== */
+    var vetRecords = [];
+
+    function renderVetRecordsTab() {
+      if (!AppState.activePet) {
+        var list = document.getElementById('vetrecords-list'); if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        return;
+      }
+      loadVetRecords();
+    }
+
+    async function loadVetRecords() {
+      try {
+        vetRecords = await getVetRecords(AppState.activePet.id);
+      } catch (e) { vetRecords = []; }
+      renderVetRecordsList();
+    }
+
+    function renderVetRecordsList() {
+      var c = document.getElementById('vetrecords-list'); if (!c) return;
+
+      if (vetRecords.length === 0) {
+        c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="folder-medical" style="width:32px;height:32px"></i></span><h3>No vet records yet</h3><p>Store your pet\'s medical documents, lab results, prescriptions, and more.</p><button class="btn btn-primary" onclick="openModal(\'modal-add-vetrecord\')">Add Your First Record</button></div>';
+        typeof lucide !== 'undefined' && lucide.createIcons();
+        return;
+      }
+
+      var typeLabels = { lab: 'Lab Results', prescription: 'Prescription', vaccine: 'Vaccination', xray: 'X-Ray / Imaging', surgery: 'Surgery', exam: 'Exam Notes', referral: 'Referral', other: 'Other' };
+      var typeColors = { lab: '#6366f1', prescription: '#f59e0b', vaccine: '#22c55e', xray: '#3b82f6', surgery: '#ef4444', exam: '#8b5cf6', referral: '#06b6d4', other: '#6b7280' };
+
+      c.innerHTML = vetRecords.map(function (rec) {
+        var d = new Date(rec.uploaded_at);
+        var dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        var color = typeColors[rec.record_type] || '#6b7280';
+        var label = typeLabels[rec.record_type] || rec.record_type;
+        var hasFile = rec.file_url && rec.file_url.trim() !== '';
+        var escapedId = rec.id.replace(/'/g, "\\'");
+
+        return '<div class="card vetrecord-card" style="padding:16px">' +
+          '<div class="vetrecord-top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+                '<span class="vr-type-badge" style="display:inline-block;padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;color:#fff;background:' + color + '">' + label + '</span>' +
+                '<span style="font-size:0.75rem;color:var(--text-muted)">' + dateStr + '</span>' +
+              '</div>' +
+              '<div style="font-weight:600;font-size:0.92rem">' + escHtml(rec.file_name) + '</div>' +
+              (rec.notes ? '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:4px">' + escHtml(rec.notes) + '</div>' : '') +
+            '</div>' +
+            '<div class="vr-actions" style="display:flex;gap:4px;flex-shrink:0">' +
+              (hasFile ? '<a href="' + rec.file_url + '" target="_blank" class="btn btn-secondary btn-sm" style="text-decoration:none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Open</a>' : '') +
+              '<button class="btn btn-ghost btn-sm" onclick="deleteVetRecordItem(\'' + escapedId + '\')" style="color:#dc2626">Delete</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      typeof lucide !== 'undefined' && lucide.createIcons();
+    }
+
+    async function deleteVetRecordItem(id) {
+      if (!confirm('Delete this record?')) return;
+      try {
+        await deleteVetRecord(id);
+        showToast('Record deleted.', 'info');
+        loadVetRecords();
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    document.getElementById('add-vetrecord-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var payload = {
+        file_name: document.getElementById('vr-file-name').value.trim(),
+        file_url: document.getElementById('vr-file-url').value.trim() || '',
+        record_type: document.getElementById('vr-record-type').value,
+        notes: document.getElementById('vr-notes').value.trim()
+      };
+      if (!payload.file_name) { showToast('Record name is required.', 'error'); return; }
+      try {
+        payload.pet_id = AppState.activePet.id;
+        payload.user_id = AppState.user.id;
+        await addVetRecord(payload);
+        showToast('Record saved!', 'success');
+        closeModal('modal-add-vetrecord');
+        document.getElementById('add-vetrecord-form').reset();
+        loadVetRecords();
+      } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
+    });
+
+    // Wire the Add button to open in add mode
+    document.getElementById('add-vetrecord-btn').addEventListener('click', function () {
+      document.querySelector('#modal-add-vetrecord .modal-header h3').textContent = 'Add Vet Record';
+      document.getElementById('vetrecord-submit-btn').textContent = 'Save Record';
+      document.getElementById('add-vetrecord-form').reset();
+    });
+
     function generateQR() {
       if (!AppState.activePet) return;
       const canvas = document.getElementById('qr-canvas');
