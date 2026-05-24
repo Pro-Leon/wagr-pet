@@ -1003,18 +1003,11 @@
           <div class="timeline-header"><h2>QR Emergency Tag</h2></div>
           <div id="qr-section">
             <div id="qr-active" style="display:none">
-              <div class="card" style="padding:32px">
-                <div class="qr-container">
-                  <div class="qr-canvas-wrap" id="qr-canvas"></div>
-                  <button class="btn btn-primary" onclick="downloadQR()">Download Tag for Print</button>
-                  <div class="qr-url" id="qr-url"></div>
-                </div>
-              </div>
-              <div class="card" style="margin-top:16px">
-                <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Scan Another Pet's Tag</h3>
-                <div id="qr-reader" style="width:100%;max-width:280px;margin:0 auto 12px"></div>
-                <button class="btn btn-secondary btn-sm" id="scan-qr-btn" onclick="startQRScan()">Start Scanner</button>
-                <button class="btn btn-ghost btn-sm" id="stop-qr-btn" onclick="stopQRScan()" style="display:none">Stop Scanner</button>
+              <div class="card" style="padding:40px;text-align:center">
+                <div style="font-size:2rem;margin-bottom:12px">🔧</div>
+                <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:6px">QR tags — upgrades in progress</h3>
+                <p style="font-size:0.82rem;color:var(--text-secondary);max-width:320px;margin:0 auto">We're rebuilding the QR emergency tag system. It will be back soon with better scan reliability, printable collar tags, and instant GPS location alerts.</p>
+                <div style="margin-top:16px;font-size:0.74rem;color:var(--text-muted)">No action needed — your existing tags will keep working.</div>
               </div>
             </div>
             <div id="qr-no-pet" class="locked-feature" style="display:none">

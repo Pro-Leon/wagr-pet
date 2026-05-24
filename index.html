@@ -175,16 +175,174 @@
       margin-top: 12px;
     }
 
-    /* --- Hero Image --- */
-    .hero-visual img {
-      width: 100%;
-      height: auto;
+    /* --- Hero Dashboard Mockup --- */
+    .hero-dash {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
-      box-shadow: 0 12px 48px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
-      display: block;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      overflow: hidden;
+      font-size: 0.78rem;
     }
-    [data-theme="dark"] .hero-visual img {
-      box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+    [data-theme="dark"] .hero-dash {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .hero-dash-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-tertiary);
+    }
+    .hero-dash-top .dd-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--orange-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--orange-700);
+      flex-shrink: 0;
+    }
+    .hero-dash-top .dd-pet-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-left: 8px;
+      flex: 1;
+    }
+    .hero-dash-top .dd-badge {
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      background: var(--orange-50);
+      color: var(--orange-700);
+      border: 1px solid var(--orange-200);
+    }
+    .hero-dash-body {
+      padding: 16px 18px 18px;
+    }
+    .hero-dash-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 400px) {
+      .hero-dash-row { gap: 6px; }
+      .dd-card { padding: 8px; }
+      .dd-card-value { font-size: 0.95rem; }
+    }
+    .hero-dash-row:last-child {
+      margin-bottom: 0;
+    }
+    .dd-card {
+      flex: 1;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+    .dd-card-label {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .dd-card-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .dd-card-value.orange { color: var(--orange-600); }
+    .dd-card-value.green { color: #16a34a; }
+    .dd-entry {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--border-subtle);
+    }
+    .dd-entry:last-child {
+      border-bottom: none;
+    }
+    .dd-entry-icon {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      flex-shrink: 0;
+    }
+    .dd-entry-icon.meal { background: #FEF3C7; }
+    .dd-entry-icon.med { background: #DBEAFE; }
+    .dd-entry-icon.walk { background: #D1FAE5; }
+    [data-theme="dark"] .dd-entry-icon.meal { background: rgba(251,191,36,0.15); }
+    [data-theme="dark"] .dd-entry-icon.med { background: rgba(59,130,246,0.15); }
+    [data-theme="dark"] .dd-entry-icon.walk { background: rgba(16,185,129,0.15); }
+    .dd-entry-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .dd-entry-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .dd-entry-time {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .dd-entry-status {
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .dd-entry-status.ok {
+      background: #DCFCE7;
+      color: #166534;
+    }
+    .dd-entry-status.warn {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    [data-theme="dark"] .dd-entry-status.ok {
+      background: rgba(22,163,74,0.15);
+      color: #4ade80;
+    }
+    [data-theme="dark"] .dd-entry-status.warn {
+      background: rgba(251,191,36,0.15);
+      color: #fbbf24;
+    }
+    .dd-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.62rem;
+      font-weight: 600;
+    }
+    .dd-tag.ai {
+      background: var(--orange-500);
+      color: #fff;
+    }
+    .dd-tag.ghost {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+    .hero-dash-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 10px 18px;
+      display: flex;
+      gap: 8px;
+      background: var(--bg-tertiary);
     }
 
     /* --- Benefits --- */
@@ -791,7 +949,69 @@
           <div class="hero-footnote">No credit card required · Free forever tier</div>
         </div>
         <div class="hero-visual">
-          <img src="/images/hero-corgi.jpg" alt="Corgi lying on a couch — happy, comfortable, cared for" width="1280" height="853" loading="eager">
+          <div class="hero-dash">
+            <div class="hero-dash-top">
+              <div style="display:flex;align-items:center">
+                <div class="dd-avatar">B</div>
+                <span class="dd-pet-name">Bailey · Beagle</span>
+              </div>
+              <span class="dd-badge">Family</span>
+            </div>
+            <div class="hero-dash-body">
+              <div class="hero-dash-row">
+                <div class="dd-card">
+                  <div class="dd-card-label">Meals Today</div>
+                  <div class="dd-card-value">2</div>
+                </div>
+                <div class="dd-card">
+                  <div class="dd-card-label">Meds Given</div>
+                  <div class="dd-card-value green">1</div>
+                </div>
+                <div class="dd-card">
+                  <div class="dd-card-label">Poop Score</div>
+                  <div class="dd-card-value orange">Good</div>
+                </div>
+              </div>
+              <div style="font-size:0.72rem;font-weight:600;color:var(--text-secondary);margin:12px 0 6px">Today's Log</div>
+              <div class="dd-entry">
+                <div class="dd-entry-icon meal">🍗</div>
+                <div class="dd-entry-text">
+                  <div class="dd-entry-title">Breakfast</div>
+                  <div class="dd-entry-time">7:42 AM · 1.5 cups kibble</div>
+                </div>
+                <span class="dd-entry-status ok">Done</span>
+              </div>
+              <div class="dd-entry">
+                <div class="dd-entry-icon walk">🐾</div>
+                <div class="dd-entry-text">
+                  <div class="dd-entry-title">Morning Walk</div>
+                  <div class="dd-entry-time">8:15 AM · 22 min</div>
+                </div>
+                <span class="dd-entry-status ok">Done</span>
+              </div>
+              <div class="dd-entry">
+                <div class="dd-entry-icon med">💊</div>
+                <div class="dd-entry-text">
+                  <div class="dd-entry-title">Heartworm Pill</div>
+                  <div class="dd-entry-time">8:20 AM · Monthly dose</div>
+                </div>
+                <span class="dd-entry-status ok">Given</span>
+              </div>
+              <div class="dd-entry">
+                <div class="dd-entry-icon" style="background:#FEE2E2">⚠️</div>
+                <div class="dd-entry-text">
+                  <div class="dd-entry-title">Stool Note</div>
+                  <div class="dd-entry-time">Soft — keep an eye on it</div>
+                </div>
+                <span class="dd-entry-status warn">Flagged</span>
+              </div>
+            </div>
+            <div class="hero-dash-footer">
+              <span class="dd-tag ai">AI Report</span>
+              <span class="dd-tag ghost">Timeline</span>
+              <span class="dd-tag ghost">Sitter</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
