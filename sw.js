@@ -5,7 +5,7 @@
    Version auto-busts via activate handler.
    ======================================== */
 
-const CACHE = 'pupfile-cache-v1';
+const CACHE = 'pupfile-cache-v2';
 
 const PRECACHE = [
   '/',
