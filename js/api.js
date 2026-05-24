@@ -19,7 +19,7 @@ function initSupabase() {
   if (supabaseClient) return supabaseClient;
 
   try {
-    if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+    if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       console.log('Supabase client initialized successfully');
     } else {
@@ -39,22 +39,64 @@ function db() {
   return supabaseClient;
 }
 
+/* Wait for SDK to become available (polls up to ~6s) */
+function waitForSupabase() {
+  return new Promise(function (resolve) {
+    (function poll(attempt) {
+      if (supabaseClient) return resolve(supabaseClient);
+      try {
+        if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          if (supabaseClient) return resolve(supabaseClient);
+        }
+      } catch (e) {}
+      if (attempt >= 30) return resolve(null);
+      setTimeout(function () { poll(attempt + 1); }, 200);
+    })(0);
+  });
+}
+
+/* Auto-initialize when script loads (retries in background if CDN is slow) */
+(function autoInit(retries) {
+  if (retries === void 0) retries = 0;
+  try {
+    if (!supabaseClient && typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log('Supabase client initialized successfully via autoInit');
+      return;
+    }
+  } catch (err) {
+    console.warn('autoInit attempt ' + (retries + 1) + ' failed:', err);
+  }
+  if (!supabaseClient && retries < 30) {
+    setTimeout(function () { autoInit(retries + 1); }, 200);
+  } else if (!supabaseClient) {
+    console.log('autoInit will keep retrying via waitForSupabase calls');
+  }
+})();
+
 /* --- Auth --- */
 async function signUp(email, password) {
-  const { data, error } = await db().auth.signUp({ email, password });
-  if (error) throw error;
-  return data;
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.signUp({ email: email, password: password });
+  if (result.error) throw result.error;
+  return result.data;
 }
 
 async function signIn(email, password) {
-  const { data, error } = await db().auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.signInWithPassword({ email: email, password: password });
+  if (result.error) throw result.error;
+  return result.data;
 }
 
 async function signOut() {
-  const { error } = await db().auth.signOut();
-  if (error) throw error;
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.signOut();
+  if (result.error) throw result.error;
   localStorage.removeItem('pupfile_user');
   localStorage.removeItem('pupfile_pets');
   localStorage.removeItem('pupfile_logs');
@@ -62,13 +104,15 @@ async function signOut() {
 
 async function getCurrentUser() {
   try {
-    const { data: { session }, error } = await db().auth.getSession();
-    if (error) {
-      console.error('Session error:', error);
+    var client = await waitForSupabase();
+    if (!client) return null;
+    var sessionResult = await client.auth.getSession();
+    if (sessionResult.error) {
+      console.error('Session error:', sessionResult.error);
       return null;
     }
-    if (!session) return null;
-    return session.user;
+    if (!sessionResult.data.session) return null;
+    return sessionResult.data.session.user;
   } catch (e) {
     console.error('getCurrentUser error:', e);
     return null;
@@ -76,8 +120,10 @@ async function getCurrentUser() {
 }
 
 async function getSession() {
-  const { data: { session } } = await db().auth.getSession();
-  return session;
+  var client = await waitForSupabase();
+  if (!client) return null;
+  var sessionResult = await client.auth.getSession();
+  return sessionResult.data.session || null;
 }
 
 /* --- Profiles --- */
@@ -1305,8 +1351,10 @@ async function getCoparentPets(userId) {
 /* --- Helper: get current access token --- */
 async function getAccessToken() {
   try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    return session?.access_token || '';
+    var client = await waitForSupabase();
+    if (!client) return '';
+    var sessionResult = await client.auth.getSession();
+    return sessionResult.data.session?.access_token || '';
   } catch {
     return '';
   }
@@ -1315,28 +1363,36 @@ async function getAccessToken() {
 /* --- Account Management --- */
 
 async function sendPasswordResetEmail(email) {
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + '/auth',
   });
-  if (error) throw error;
+  if (result.error) throw result.error;
 }
 
 async function updateEmail(newEmail) {
-  const { data, error } = await supabaseClient.auth.updateUser({ email: newEmail });
-  if (error) throw error;
-  return data;
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.updateUser({ email: newEmail });
+  if (result.error) throw result.error;
+  return result.data;
 }
 
 async function updatePassword(newPassword) {
-  const { data, error } = await supabaseClient.auth.updateUser({ password: newPassword });
-  if (error) throw error;
-  return data;
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.updateUser({ password: newPassword });
+  if (result.error) throw result.error;
+  return result.data;
 }
 
 async function reauthenticateUser(email, password) {
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
+  var client = await waitForSupabase();
+  if (!client) throw new Error('Supabase client not initialized.');
+  var result = await client.auth.signInWithPassword({ email: email, password: password });
+  if (result.error) throw result.error;
+  return result.data;
 }
 
 async function getPaymentHistory(userId) {
