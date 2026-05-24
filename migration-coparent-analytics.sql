@@ -1,5 +1,5 @@
 -- ========================================
--- Wagr Migration: Co-parents + Analytics
+-- Pup File Migration: Co-parents + Analytics
 -- Safe to run on an existing database.
 -- Uses IF NOT EXISTS / OR REPLACE / DO blocks
 -- to avoid errors on re-run.

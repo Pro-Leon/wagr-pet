@@ -1,5 +1,5 @@
 -- ========================================
--- Wagr — Admin Setup
+-- Pup File — Admin Setup
 -- Run this in Supabase SQL Editor AFTER the main schema
 -- ========================================
 
@@ -125,8 +125,9 @@ BEGIN
     'total_users', (SELECT count(*) FROM public.profiles),
     'total_pets', (SELECT count(*) FROM public.pets),
     'total_logs', (SELECT count(*) FROM public.pet_logs),
-    'free_users', (SELECT count(*) FROM public.profiles WHERE tier = 'free'),
-    'essential_users', (SELECT count(*) FROM public.profiles WHERE tier = 'essential'),
+    'starter_users', (SELECT count(*) FROM public.profiles WHERE tier = 'starter'),
+    'basic_users', (SELECT count(*) FROM public.profiles WHERE tier = 'basic'),
+    'family_users', (SELECT count(*) FROM public.profiles WHERE tier = 'family'),
     'pro_users', (SELECT count(*) FROM public.profiles WHERE tier = 'pro'),
     'logs_today', (SELECT count(*) FROM public.pet_logs WHERE created_at >= CURRENT_DATE),
     'logs_7d', (SELECT count(*) FROM public.pet_logs WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'),

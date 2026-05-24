@@ -7,15 +7,19 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
-function cors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+function cors(res, req) {
+  const origin = req?.headers?.origin;
+  const allowedOrigins = ['https://pupfile.com', 'http://localhost:3000', 'http://localhost:5173'];
+  if (origin && !allowedOrigins.includes(origin)) return false;
+  res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  return true;
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') { cors(res); return res.status(200).end(); }
-  cors(res);
+  if (req.method === 'OPTIONS') { if (!cors(res, req)) return res.status(403).json({ error: 'Origin not allowed' }); return res.status(200).end(); }
+  if (!cors(res, req)) return res.status(403).json({ error: 'Origin not allowed' });
 
   const action = req.method === 'GET' ? req.query.action : (req.body?.action || 'log');
 
@@ -40,6 +44,17 @@ export default async function handler(req, res) {
       .eq('id', petId)
       .single();
     if (!pet || pet.user_id !== user.id) return res.status(403).json({ error: 'Pet not found' });
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('tier')
+      .eq('id', user.id)
+      .single();
+
+    const tier = profile?.tier || 'starter';
+    if (!['family', 'pro'].includes(tier)) {
+      return res.status(403).json({ error: 'Sitter links require the Family plan or higher.' });
+    }
 
     const multipliers = { hours: 1, days: 24, weeks: 168, months: 720 };
     const hours = multipliers[durationUnit] || 24;

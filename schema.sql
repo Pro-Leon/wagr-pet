@@ -1,5 +1,5 @@
 -- ========================================
--- Wagr Database Schema
+-- Pup File Database Schema
 -- ========================================
 
 -- Enable UUID extension
@@ -31,9 +31,15 @@ ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own profile" ON profiles
     FOR SELECT USING (auth.uid() = id);
 
--- Policy: Users can update their own profile
+-- Policy: Users can update their own profile (but NOT tier — that's set via webhook only)
 CREATE POLICY "Users can update own profile" ON profiles
-    FOR UPDATE USING (auth.uid() = id);
+    FOR UPDATE USING (auth.uid() = id)
+    WITH CHECK (
+        auth.uid() = id AND (
+            (SELECT p.tier FROM profiles p WHERE p.id = auth.uid()) = profiles.tier
+            OR (SELECT p.is_admin FROM profiles p WHERE p.id = auth.uid()) = true
+        )
+    );
 
 -- Policy: Enable insert for authenticated users
 CREATE POLICY "Users can insert own profile" ON profiles
@@ -172,9 +178,8 @@ SELECT
     p.name,
     p.breed,
     p.medical_flags,
-    u.email AS owner_contact
-FROM pets p
-JOIN auth.users u ON p.user_id = u.id;
+    'Contact owner via Pup File'::text AS owner_contact
+FROM pets p;
 
 -- ========================================
 -- FUNCTIONS
@@ -192,9 +197,8 @@ RETURNS TABLE (
 LANGUAGE SQL SECURITY DEFINER
 STABLE
 AS $$
-    SELECT p.id, p.name, p.breed, p.medical_flags, u.email
+    SELECT p.id, p.name, p.breed, p.medical_flags, 'Contact owner via Pup File'::text
     FROM pets p
-    JOIN auth.users u ON p.user_id = u.id
     WHERE p.id = pet_id;
 $$;
 

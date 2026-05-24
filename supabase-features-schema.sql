@@ -1,5 +1,5 @@
 -- ========================================
--- Wagr — Expanded Feature Schema
+-- Pup File — Expanded Feature Schema
 -- Run this ENTIRE script in Supabase SQL Editor
 -- Safe to re-run (uses IF NOT EXISTS)
 --

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -66,8 +66,8 @@ export default async function handler(req, res) {
         headers: {
           'Authorization': `Bearer ${OPENROUTER_KEY}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://wagr-ai.vercel.app',
-          'X-Title': 'Wagr',
+          'HTTP-Referer': 'https://pupfile.com',
+          'X-Title': 'Pup File',
         },
         body: JSON.stringify({
           model,

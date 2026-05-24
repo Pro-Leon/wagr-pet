@@ -3,6 +3,8 @@
 // to cancel, pause, or update their payment method.
 // POST /api/manage-subscription
 
+import { createClient } from '@supabase/supabase-js';
+
 export const config = {
   api: {
     bodyParser: false,
@@ -13,6 +15,10 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://rbhqvginjduyjzyfzxbq.s
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+  auth: { persistSession: false },
+});
+
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -21,17 +27,26 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing authorization' });
+  }
+  const token = authHeader.split('Bearer ')[1];
+  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+  if (userError || !user) return res.status(401).json({ error: 'Unauthorized' });
 
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
   const rawBody = Buffer.concat(chunks).toString('utf8');
-  const { userId, action, newPlan } = JSON.parse(rawBody);
+  const { action, newPlan } = JSON.parse(rawBody);
+  const userId = user.id;
 
-  if (!userId || !action) {
-    return res.status(400).json({ error: 'Missing userId or action' });
+  if (!action) {
+    return res.status(400).json({ error: 'Missing action' });
   }
 
   if (!PAYSTACK_SECRET || !SERVICE_ROLE_KEY) {

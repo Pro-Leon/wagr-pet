@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Wagr</title>
+  <title>Admin — Pup File</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="css/globals.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
@@ -514,8 +514,8 @@
     <!-- Topbar -->
     <div class="admin-topbar">
       <div class="logo">
-        <div class="mark">A</div>
-        Wagr Admin
+        <div class="mark" style="font-size:0"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>
+        Pup File Admin
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <span style="font-size:0.78rem;color:var(--text-muted)" id="admin-email"></span>
@@ -826,7 +826,7 @@
   <script>
     if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
       document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('.admin-body').innerHTML = '<div style="text-align:center;padding:48px"><h3>Could not load Supabase SDK</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
+        document.querySelector('.admin-body').innerHTML = '<div style="text-align:center;padding:48px"><h3>Could not load required libraries</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
       });
     }
   </script>
@@ -836,7 +836,7 @@
   <script src="js/analytics.js"></script>
   <script>
     /* ========================================
-       Wagr — Admin Dashboard
+       Pup File — Admin Dashboard
        ======================================== */
 
     const ADMIN_PAGE_SIZE = 50;
@@ -866,7 +866,7 @@
               <div style="margin-bottom:16px"><i data-lucide="lock" style="width:32px;height:32px"></i></div>
               <h3 style="margin-bottom:8px">Not an Admin</h3>
               <p style="color:var(--text-secondary);font-size:0.85rem;max-width:400px;margin:0 auto">Your account (${escapeHtml(user.email)}) does not have admin access.</p>
-              <p style="color:var(--text-muted);font-size:0.78rem;margin-top:12px">Run this SQL in Supabase SQL Editor to gain access:<br><code style="background:var(--bg-tertiary);padding:4px 8px;border-radius:4px;font-size:0.72rem">UPDATE profiles SET is_admin = true WHERE email = '${escapeHtml(user.email)}';</code></p>
+              <p style="color:var(--text-muted);font-size:0.78rem;margin-top:12px">Run this SQL in the database SQL Editor to gain access:<br><code style="background:var(--bg-tertiary);padding:4px 8px;border-radius:4px;font-size:0.72rem">UPDATE profiles SET is_admin = true WHERE email = '${escapeHtml(user.email)}';</code></p>
               <a href="/dashboard" class="btn btn-primary btn-sm" style="margin-top:16px">Back to Dashboard</a>
             </div>`;
           lucide.createIcons();
@@ -885,7 +885,7 @@
             <h3 style="margin-bottom:8px">Setup Required</h3>
             <p style="color:var(--text-secondary);font-size:0.85rem;max-width:420px;margin:0 auto">Your profile exists but the admin setup SQL may not have been run yet.</p>
             <div style="background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:8px;padding:16px;margin:20px auto;max-width:500px;text-align:left">
-              <p style="font-size:0.78rem;font-weight:600;margin-bottom:8px">Run this in Supabase → SQL Editor:</p>
+              <p style="font-size:0.78rem;font-weight:600;margin-bottom:8px">Run this in the SQL Editor:</p>
               <code style="font-size:0.72rem;color:var(--orange-600);word-break:break-all">UPDATE profiles SET is_admin = true, tier = 'pro' WHERE email = '${escapeHtml(user.email)}';</code>
             </div>
             <button class="btn btn-secondary btn-sm" onclick="location.reload()" style="margin-top:8px">Retry After Running SQL</button>
@@ -939,12 +939,16 @@
             <div class="stat-label">Total Logs</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value">${s.free_users}</div>
-            <div class="stat-label">Free Users</div>
+            <div class="stat-value">${s.starter_users}</div>
+            <div class="stat-label">Starter Users</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" style="color:#d97706">${s.essential_users}</div>
-            <div class="stat-label">Essential Users</div>
+            <div class="stat-value" style="color:#3b82f6">${s.basic_users}</div>
+            <div class="stat-label">Basic Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color:#8b5cf6">${s.family_users}</div>
+            <div class="stat-label">Family Users</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" style="color:#16a34a">${s.pro_users}</div>
@@ -1290,15 +1294,18 @@
       }
 
       try {
-        const { data, error } = await db().rpc('admin_get_stats');
-        // We can't run raw SQL via the client SDK safely.
-        // Use the REST API with PostgREST filter syntax as a workaround
-        // For a real SQL console, you'd need an Edge Function
-
-        // Let's try using the PostgREST endpoint directly
-        const url = `${SUPABASE_URL}/rest/v1/rpc/admin_get_stats`;
-        resultEl.textContent = 'Note: Raw SQL execution requires a Supabase Edge Function.\n\nFor now, use the Users, Pets, and Logs tabs to manage data.\n\nTo run raw SQL, go to Supabase Dashboard → SQL Editor.';
-
+        const token = await getAccessToken();
+        const res = await fetch(window.location.origin + '/api/sql-console', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({ query: input }),
+        });
+        const result = await res.json();
+        if (!res.ok) {
+          resultEl.textContent = 'Error: ' + (result.error || 'Request failed') + (result.hint ? '\n\n' + result.hint : '');
+          return;
+        }
+        resultEl.textContent = JSON.stringify(result.data || result.rows, null, 2);
       } catch (err) {
         resultEl.textContent = `Error: ${err.message}`;
 }
@@ -1399,7 +1406,7 @@
         // Send email notification to ticket creator
         if (data?.user_email) {
           try {
-            await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/send-email', {
+            await fetch((window.location.origin || 'https://pupfile.com') + '/api/send-email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ type: 'support_reply', to: data.user_email, toName: data.user_name, message: text }),

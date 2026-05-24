@@ -1,5 +1,5 @@
 -- ========================================
--- Wagr Migration: Account & Billing Features
+-- Pup File Migration: Account & Billing Features
 -- Safe to re-run (uses IF NOT EXISTS / OR REPLACE)
 -- ========================================
 

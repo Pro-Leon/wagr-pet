@@ -1,7 +1,7 @@
 // Vercel API route for Paystack Webhook
 // Automatically upgrades profiles.tier on successful subscription payments
 // Receives POST from Paystack Dashboard -> Settings -> Webhooks -> Add URL
-// Webhook URL: https://wagr-ai.vercel.app/api/paystack-webhook
+// Webhook URL: https://pupfile.com/api/paystack-webhook
 // Events to subscribe to: charge.success, subscription.create, invoice.create,
 //                         subscription.disable, subscription.expiring
 
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

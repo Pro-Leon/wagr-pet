@@ -1,11 +1,11 @@
 /* ========================================
-   Wagr — In-App Tutorial Overlay
+   Pup File — In-App Tutorial Overlay
    Vanilla JS, no dependencies.
    ======================================== */
 
 const Tutorial = (() => {
   const STEPS = [
-    { id: 'pet-card', title: 'Meet your pet profile', body: 'Everything in Wagr is organized around your pet. View their name, breed, and access all their health data from here.', tab: 'home' },
+    { id: 'pet-card', title: 'Meet your pet profile', body: 'Everything in Pup File is organized around your pet. View their name, breed, and access all their health data from here.', tab: 'home' },
     { id: 'streak-bar', title: 'Build your streak \ud83d\udd25', body: 'Log daily to track health patterns over time. The longer your streak, the more data your vet has to work with.', tab: 'home' },
     { id: 'quick-actions', title: 'Log in two taps', body: 'Feed, Meds, Walk, and Note buttons for instant logging. Tap any button to quickly record what happened.', tab: 'home' },
     { id: 'status-cards', title: 'Today at a glance', body: 'See last meal, meds, and walk at a glance. Tap any card to log a new entry of that type.', tab: 'home' },
@@ -187,7 +187,7 @@ const Tutorial = (() => {
       state.tooltip.classList.add('tutorial-tooltip-visible');
     });
 
-    try { localStorage.setItem('wagr_tutorial_step', String(state.currentStep)); } catch (e) {}
+    try { localStorage.setItem('pupfile_tutorial_step', String(state.currentStep)); } catch (e) {}
   }
 
   function nextStep() {
@@ -227,7 +227,7 @@ const Tutorial = (() => {
   }
 
   function showCompletion() {
-    try { localStorage.setItem('wagr_tutorial_done', 'completed'); localStorage.removeItem('wagr_tutorial_step'); } catch (e) {}
+    try { localStorage.setItem('pupfile_tutorial_done', 'completed'); localStorage.removeItem('pupfile_tutorial_step'); } catch (e) {}
 
     state.tooltip.classList.add('tutorial-tooltip-enter');
     state.tooltip.classList.remove('tutorial-tooltip-visible');
@@ -267,7 +267,7 @@ const Tutorial = (() => {
   }
 
   function skip() {
-    try { localStorage.setItem('wagr_tutorial_done', 'skipped'); localStorage.removeItem('wagr_tutorial_step'); } catch (e) {}
+    try { localStorage.setItem('pupfile_tutorial_done', 'skipped'); localStorage.removeItem('pupfile_tutorial_step'); } catch (e) {}
     close();
   }
 
@@ -361,17 +361,17 @@ const Tutorial = (() => {
 
   function retake() {
     try {
-      localStorage.removeItem('wagr_tutorial_done');
-      localStorage.removeItem('wagr_tutorial_step');
+      localStorage.removeItem('pupfile_tutorial_done');
+      localStorage.removeItem('pupfile_tutorial_step');
     } catch (e) {}
     start();
   }
 
   function init() {
     var done;
-    try { done = localStorage.getItem('wagr_tutorial_done'); } catch (e) { done = null; }
+    try { done = localStorage.getItem('pupfile_tutorial_done'); } catch (e) { done = null; }
     var savedStep;
-    try { savedStep = localStorage.getItem('wagr_tutorial_step'); } catch (e) { savedStep = null; }
+    try { savedStep = localStorage.getItem('pupfile_tutorial_step'); } catch (e) { savedStep = null; }
 
     if (done && done !== '') return;
 

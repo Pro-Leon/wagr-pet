@@ -1,5 +1,5 @@
 -- ========================================
--- Wagr — Supabase Database Schema
+-- Pup File — Supabase Database Schema
 -- Run this in: Supabase Dashboard → SQL Editor → New Query
 -- ========================================
 

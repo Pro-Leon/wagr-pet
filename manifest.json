@@ -1,6 +1,6 @@
 {
-  "name": "Wagr",
-  "short_name": "Wagr",
+  "name": "Pup File",
+  "short_name": "PupFile",
   "description": "Smart dog care dashboard. Track meals, medications, and daily health for your pup.",
   "start_url": "/",
   "display": "standalone",

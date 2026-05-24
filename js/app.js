@@ -1,5 +1,5 @@
 /* ========================================
-   Wagr — AppState Engine
+   Pup File — AppState Engine
    ======================================== */
 
 const AppState = {
@@ -30,7 +30,7 @@ const AppState = {
   /* --- Set User --- */
   setUser(user) {
     this.user = user;
-    localStorage.setItem('houndos_user', JSON.stringify(user));
+    localStorage.setItem('pupfile_user', JSON.stringify(user));
     this.emit('user:changed', user);
   },
 
@@ -44,7 +44,7 @@ const AppState = {
   /* --- Set Pets --- */
   setPets(pets) {
     this.pets = pets;
-    localStorage.setItem('houndos_pets', JSON.stringify(pets));
+    localStorage.setItem('pupfile_pets', JSON.stringify(pets));
     if (!this.activePet && pets.length > 0) {
       this.activePet = pets[0];
     }
@@ -83,9 +83,9 @@ const AppState = {
     this.tier = 'starter';
     this.isSitter = false;
     this.sitterPetId = null;
-    localStorage.removeItem('houndos_user');
-    localStorage.removeItem('houndos_pets');
-    localStorage.removeItem('houndos_logs');
+    localStorage.removeItem('pupfile_user');
+    localStorage.removeItem('pupfile_pets');
+    localStorage.removeItem('pupfile_logs');
     this.emit('state:cleared');
   },
 
@@ -95,9 +95,9 @@ const AppState = {
   /* --- Check Feature Access --- */
   canAccess(feature) {
     const featureTiers = {
-      'timeline': 'starter',
-      'pet_notes': 'starter',
-      'food_log': 'basic',
+      'timeline': 'basic',
+      'pet_notes': 'basic',
+      'food_log': 'family',
       'qr_passive': 'basic',
       'public_emergency_profile': 'basic',
       'support_tickets': 'basic',
@@ -125,6 +125,10 @@ const AppState = {
     };
     const required = featureTiers[feature] || 'starter';
     return (this._tierLevels[this.tier] || 0) >= (this._tierLevels[required] || 0);
+  },
+
+  canWrite() {
+    return ['family', 'pro'].includes(this.tier);
   },
 
   canAccessTimeline() {
@@ -156,7 +160,7 @@ const AppState = {
 /* --- Dark Mode Manager --- */
 const ThemeManager = {
   init() {
-    const saved = localStorage.getItem('houndos_theme');
+    const saved = localStorage.getItem('pupfile_theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const theme = saved || (prefersDark ? 'dark' : 'light');
     this.set(theme);
@@ -164,7 +168,7 @@ const ThemeManager = {
 
   set(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('houndos_theme', theme);
+    localStorage.setItem('pupfile_theme', theme);
     this.updateToggle(theme);
   },
 

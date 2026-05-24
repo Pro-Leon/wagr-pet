@@ -1,5 +1,5 @@
 /* ========================================
-   Wagr — API Layer (Supabase SDK)
+   Pup File — API Layer (Supabase SDK)
    ======================================== */
 
 const SUPABASE_URL = 'https://rbhqvginjduyjzyfzxbq.supabase.co';
@@ -55,9 +55,9 @@ async function signIn(email, password) {
 async function signOut() {
   const { error } = await db().auth.signOut();
   if (error) throw error;
-  localStorage.removeItem('houndos_user');
-  localStorage.removeItem('houndos_pets');
-  localStorage.removeItem('houndos_logs');
+  localStorage.removeItem('pupfile_user');
+  localStorage.removeItem('pupfile_pets');
+  localStorage.removeItem('pupfile_logs');
 }
 
 async function getCurrentUser() {
@@ -371,9 +371,11 @@ async function getPublicPetProfile(petId) {
 /* --- Sitter Token (Custom Hash) --- */
 function generateHash() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
   let hash = '';
   for (let i = 0; i < 32; i++) {
-    hash += chars.charAt(Math.floor(Math.random() * chars.length));
+    hash += chars.charAt(array[i] % chars.length);
   }
   return hash;
 }
@@ -401,7 +403,7 @@ async function verifySitterToken(token) {
 }
 
 async function addSitterLog(log) {
-  const sitterToken = localStorage.getItem('houndos_sitter_token');
+  const sitterToken = localStorage.getItem('pupfile_sitter_token');
   if (!sitterToken) throw new Error('No sitter token');
   const res = await fetch(window.location.origin + '/api/sitter', {
     method: 'POST',
@@ -725,7 +727,7 @@ async function openPaystackCheckout(email, plan, onSuccess) {
 
   // Persist pending upgrade info so we can detect return from redirect
   const isYearly = plan.endsWith('_yearly');
-  localStorage.setItem('houndos_pending_upgrade', JSON.stringify({ plan, tier: plan.split('_')[0], email, isYearly }));
+  localStorage.setItem('pupfile_pending_upgrade', JSON.stringify({ plan, tier: plan.split('_')[0], email, isYearly }));
 
   // Try serverless function first
   try {
@@ -787,19 +789,17 @@ function checkPaymentReturn() {
     window.history.replaceState({}, '', url);
   }
 
-  const pending = localStorage.getItem('houndos_pending_upgrade');
+  const pending = localStorage.getItem('pupfile_pending_upgrade');
   if (pending) {
     try {
       const { tier, isYearly } = JSON.parse(pending);
-      if (typeof isYearlyPricing !== 'undefined') {
-        isYearlyPricing = isYearly === true;
-      }
+      window.isYearlyPricing = isYearly === true;
       showToast('Payment submitted! Verifying upgrade...', 'info');
       if (typeof pollForTierUpgrade === 'function') {
         pollForTierUpgrade(tier);
       }
     } catch (e) {}
-    localStorage.removeItem('houndos_pending_upgrade');
+    localStorage.removeItem('pupfile_pending_upgrade');
   }
 }
 

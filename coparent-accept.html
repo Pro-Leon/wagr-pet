@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accept Co-parent Invite — Wagr</title>
+  <title>Accept Co-parent Invite — Pup File</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="css/globals.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
@@ -127,7 +127,7 @@
         // Not logged in — redirect to auth (with redirect back after signup)
         document.getElementById('invite-loading').style.display = 'none';
         document.getElementById('invite-title').textContent = 'Sign in to accept';
-        document.getElementById('invite-text').textContent = 'You need a Wagr account to accept this co-parent invite.';
+        document.getElementById('invite-text').textContent = 'You need a Pup File account to accept this co-parent invite.';
         const loginBtn = document.getElementById('invite-login-btn');
         loginBtn.href = '/auth?redirect=' + encodeURIComponent('/coparent?token=' + inviteToken);
         loginBtn.style.display = 'block';

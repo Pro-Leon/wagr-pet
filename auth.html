@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — Wagr</title>
-  <meta name="description" content="Log in or create your Wagr account to start tracking your dog's health, meals, and medications.">
+  <title>Sign In — Pup File</title>
+  <meta name="description" content="Log in or create your Pup File account to start tracking your dog's health, meals, and medications.">
   <link rel="stylesheet" href="css/globals.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
   <link rel="manifest" href="/manifest.json">
@@ -217,8 +217,8 @@
 
       <div class="auth-header">
         <div class="logo">
-          <div class="logo-mark">H</div>
-          Wagr
+          <div class="logo-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>
+          Pup File
         </div>
         <h1 id="auth-title">Welcome back</h1>
         <p id="auth-subtitle">Sign in to your dashboard</p>
@@ -403,7 +403,7 @@
   <script>
     if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
       document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('.auth-card').innerHTML = '<div style="text-align:center;padding:32px"><h3 style="margin-bottom:8px">Could not load Supabase SDK</h3><p style="color:#666;font-size:14px">Check your connection and reload. If testing locally, use <code>npx serve</code> or <code>python3 -m http.server</code>.</p></div>';
+        document.querySelector('.auth-card').innerHTML = '<div style="text-align:center;padding:32px"><h3 style="margin-bottom:8px">Could not load required libraries</h3><p style="color:#666;font-size:14px">Check your connection and reload.</p></div>';
       });
     }
   </script>
@@ -709,7 +709,7 @@
         };
 
         if (setupPayload.userId) {
-          fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/signup-setup', {
+          fetch((window.location.origin || 'https://pupfile.com') + '/api/signup-setup', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(setupPayload),
@@ -745,7 +745,7 @@
 
           showToast('Account created!', 'success');
           try {
-            await fetch((window.location.origin || 'https://wagr-ai.vercel.app') + '/api/send-email', {
+            await fetch((window.location.origin || 'https://pupfile.com') + '/api/send-email', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ type: 'welcome', to: email, toName: name || email.split('@')[0] }),
@@ -807,7 +807,7 @@
             if (newWorker.state === 'activated') {
               const el = document.createElement('div');
               el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,0.3)';
-              el.innerHTML = 'Wagr just updated! <button onclick="location.reload()" style="background:var(--orange-600);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-weight:600">Refresh</button>';
+              el.innerHTML = 'Pup File just updated! <button onclick="location.reload()" style="background:var(--orange-600);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-weight:600">Refresh</button>';
               document.body.appendChild(el);
               setTimeout(() => el.remove(), 10000);
             }

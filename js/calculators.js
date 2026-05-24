@@ -1,5 +1,5 @@
 /* ========================================
-   Wagr — Free Tier Calculators
+   Pup File — Free Tier Calculators
    ======================================== */
 
 /* --- Toxicity Database --- */
@@ -119,13 +119,13 @@ function severityLabel(severity) {
 const CalculatorStorage = {
   save(key, data) {
     try {
-      localStorage.setItem(`houndos_calc_${key}`, JSON.stringify(data));
+      localStorage.setItem(`pupfile_calc_${key}`, JSON.stringify(data));
     } catch (e) { /* ignore */ }
   },
 
   load(key) {
     try {
-      return JSON.parse(localStorage.getItem(`houndos_calc_${key}`));
+      return JSON.parse(localStorage.getItem(`pupfile_calc_${key}`));
     } catch (e) { return null; }
   }
 };

@@ -1,11 +1,11 @@
 /* ========================================
-   Wagr — Service Worker
+   Pup File — Service Worker
    Cache-first for static assets,
    network-only for API calls.
    Version auto-busts via activate handler.
    ======================================== */
 
-const CACHE = 'wagr-cache-v2';
+const CACHE = 'pupfile-cache-v1';
 
 const PRECACHE = [
   '/',

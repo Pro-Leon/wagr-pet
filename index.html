@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wagr — Your Dog's Complete Health Record</title>
+  <title>Pup File — Your Dog's Complete Health Record</title>
   <meta name="description" content="Track meals, medications, symptoms, and vet records. AI vet reports, QR emergency tags, co-parent sync, and sitter magic links — one dashboard for your dog's entire health history.">
   <meta name="keywords" content="dog care app, pet health tracker, dog medication reminder, pet care dashboard, dog food calculator, AI vet report, pet QR tag">
-  <meta name="author" content="Wagr">
+  <meta name="author" content="Pup File">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://wagr-ai.vercel.app">
+  <link rel="canonical" href="https://pupfile.com">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#ea580c">
@@ -18,15 +18,15 @@
   <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Wagr — Your Dog's Complete Health Record">
+  <meta property="og:title" content="Pup File — Your Dog's Complete Health Record">
   <meta property="og:description" content="AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and symptom tracking — one dashboard for everything your dog needs.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://wagr-ai.vercel.app">
-  <meta property="og:site_name" content="Wagr">
+  <meta property="og:url" content="https://pupfile.com">
+  <meta property="og:site_name" content="Pup File">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Wagr — Your Dog's Complete Health Record">
+  <meta name="twitter:title" content="Pup File — Your Dog's Complete Health Record">
   <meta name="twitter:description" content="AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and symptom tracking — one dashboard for everything your dog needs.">
 
   <!-- Structured Data -->
@@ -34,7 +34,7 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Wagr",
+    "name": "Pup File",
     "applicationCategory": "Health",
     "operatingSystem": "Web",
     "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, symptom tracking, and daily care logging.",
@@ -896,21 +896,18 @@
         <button class="menu-toggle hide-desktop" onclick="toggleSidebar()">
           <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <a href="/" class="navbar-logo">
-          <div class="logo-icon">H</div>
-          Wagr
-        </a>
-      </div>
+        <a href="/" class="navbar-logo">\n          <div class="logo-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>\n          Pup File\n        </a>\n      </div>
       <div class="navbar-links hide-mobile">
-        <a href="#benefits">Why Wagr</a>
+        <a href="#benefits">Why Pup File</a>
         <a href="#pricing">Pricing</a>
         <a href="#privacy" onclick="event.preventDefault();document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</a>
         <a href="/terms">Terms</a>
       </div>
       <div class="navbar-actions">
         <button class="theme-toggle" onclick="ThemeManager.toggle()"></button>
-        <a href="/auth" class="btn btn-ghost btn-sm hide-mobile">Log in</a>
-        <a href="/auth?mode=signup" class="btn btn-primary btn-sm">Start Free</a>
+        <a href="/dashboard" id="nav-dashboard" class="btn btn-primary btn-sm" style="display:none">Dashboard</a>
+        <a href="/auth" id="nav-login" class="btn btn-ghost btn-sm hide-mobile">Log in</a>
+        <a href="/auth?mode=signup" id="nav-signup" class="btn btn-primary btn-sm">Start Free</a>
       </div>
     </div>
   </nav>
@@ -919,13 +916,9 @@
   <div class="sidebar-overlay" onclick="closeSidebar()"></div>
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="navbar-logo">
-        <div class="logo-icon">H</div>
-        Wagr
-      </div>
-    </div>
+      <div class="navbar-logo">\n        <div class="logo-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>\n        Pup File\n      </div>\n    </div>
     <nav class="sidebar-nav">
-      <a href="#benefits" onclick="closeSidebar()">Why Wagr</a>
+      <a href="#benefits" onclick="closeSidebar()">Why Pup File</a>
       <a href="#pricing" onclick="closeSidebar()">Pricing</a>
       <a href="#privacy" onclick="closeSidebar();document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</a>
       <a href="/terms" onclick="closeSidebar()">Terms</a>
@@ -1029,7 +1022,7 @@
           <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--orange-100); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 600; color: var(--orange-700)">A</div>
           <div style="text-align: left">
             <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-primary)">Alex</div>
-            <div style="font-size: 0.7rem; color: var(--text-muted)">Founder, Wagr</div>
+            <div style="font-size: 0.7rem; color: var(--text-muted)">Founder, Pup File</div>
           </div>
         </div>
         <div style="margin-top: 16px; font-size: 0.78rem; color: var(--text-muted)">Trusted by dog owners in 12 countries and counting</div>
@@ -1041,7 +1034,7 @@
   <section class="benefits" id="benefits">
     <div class="container">
       <div class="benefits-header">
-        <div class="section-label">Why Wagr</div>
+        <div class="section-label">Why Pup File</div>
         <h2>Everything your vet wishes you tracked</h2>
         <p>From AI clinical summaries to emergency QR tags — this is what a modern dog care platform looks like.</p>
       </div>
@@ -1074,7 +1067,7 @@
         <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="lock" style="width:24px;height:24px"></i></div>
           <h3>Your data is private. Full stop.</h3>
-          <p>This is your dog's health record — it belongs to you. All data is encrypted, protected by Supabase Row-Level Security, and never sold. Privacy isn't a feature, it's the foundation.</p>
+          <p>This is your dog's health record — it belongs to you. All data is encrypted and never sold. Privacy isn't a feature, it's the foundation.</p>
         </div>
       </div>
     </div>
@@ -1186,12 +1179,12 @@
       <div class="text-center" style="margin-bottom:32px">
         <div class="section-label">Your Data</div>
         <h2 class="section-title">Private by design. Protected by encryption.</h2>
-        <p class="section-desc mx-auto">This is your dog's health record — it belongs to you. We built Wagr on a foundation of data privacy, not surveillance.</p>
+        <p class="section-desc mx-auto">This is your dog's health record — it belongs to you. We built Pup File on a foundation of data privacy, not surveillance.</p>
       </div>
       <div style="display:grid;grid-template-columns:1fr;gap:12px;max-width:700px;margin:0 auto">
         <div style="display:flex;align-items:start;gap:14px;padding:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">
           <span style="font-size:1.2rem;flex-shrink:0;width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center">🧠</span>
-          <div><strong style="font-size:0.88rem">Your vet data never trains our AI</strong><p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">When you generate an AI report, we send only the logs you select to OpenRouter — no personal info, no pet names, no identifiable data. We never train on your data. Ever.</p></div>
+          <div><strong style="font-size:0.88rem">Your vet data never trains our AI</strong><p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">When you generate an AI report, we send only the logs you select to be processed — no personal info, no pet names, no identifiable data. We never train on your data. Ever.</p></div>
         </div>
         <div style="display:flex;align-items:start;gap:14px;padding:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">
           <span style="font-size:1.2rem;flex-shrink:0;width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center">🛡️</span>
@@ -1229,7 +1222,7 @@
           </div>
           <div id="tox-results"></div>
           <div style="margin-top:16px;padding:12px;background:var(--bg-secondary);border:1px dashed var(--border-color);border-radius:var(--radius-md);text-align:center;font-size:0.78rem;color:var(--text-muted)">
-            Want to save this for your vet? <a href="/auth?mode=signup" style="color:var(--orange-600);font-weight:600;text-decoration:underline">Create a free Wagr account</a>
+            Want to save this for your vet? <a href="/auth?mode=signup" style="color:var(--orange-600);font-weight:600;text-decoration:underline">Create a free Pup File account</a>
           </div>
         </div>
       </div>
@@ -1264,7 +1257,7 @@
           </div>
           <div class="calc-results" id="calc-results"></div>
           <div style="margin-top:16px;padding:12px;background:var(--bg-secondary);border:1px dashed var(--border-color);border-radius:var(--radius-md);text-align:center;font-size:0.78rem;color:var(--text-muted)">
-            Want to save this for your vet? <a href="/auth?mode=signup" style="color:var(--orange-600);font-weight:600;text-decoration:underline">Create a free Wagr account</a>
+            Want to save this for your vet? <a href="/auth?mode=signup" style="color:var(--orange-600);font-weight:600;text-decoration:underline">Create a free Pup File account</a>
           </div>
         </div>
       </div>
@@ -1275,11 +1268,8 @@
   <footer class="landing-footer">
     <div class="container footer-inner">
       <div>
-        <div class="navbar-logo" style="margin-bottom:4px">
-          <div class="logo-icon">H</div>
-          Wagr
-        </div>
-        <div class="footer-text">© 2026 Wagr. Built for dog people.</div>
+        <div class="navbar-logo" style="margin-bottom:4px">\n          <div class="logo-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>\n          Pup File\n        </div>
+        <div class="footer-text">© 2026 Pup File. Built for dog people.</div>
         <div class="footer-text" style="margin-top:4px">Made with 🧡 for dog owners, by a dog owner</div>
       </div>
       <div class="footer-links">
@@ -1369,6 +1359,20 @@
         document.getElementById('support-form').reset();
       }
     });
+  </script>
+  <script>
+    /* --- Auth-aware Nav --- */
+    (async function() {
+      try {
+        initSupabase();
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          document.getElementById('nav-login').style.display = 'none';
+          document.getElementById('nav-signup').style.display = 'none';
+          document.getElementById('nav-dashboard').style.display = '';
+        }
+      } catch (e) {}
+    })();
   </script>
   <script>
     /* --- Calculator Tabs --- */
@@ -1536,7 +1540,7 @@ c.innerHTML = `
             if (newWorker.state === 'activated') {
               const el = document.createElement('div');
               el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,0.3)';
-              el.innerHTML = 'Wagr just updated! <button onclick="location.reload()" style="background:var(--orange-600);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-weight:600">Refresh</button>';
+              el.innerHTML = 'Pup File just updated! <button onclick="location.reload()" style="background:var(--orange-600);color:#fff;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-weight:600">Refresh</button>';
               document.body.appendChild(el);
               setTimeout(() => el.remove(), 10000);
             }

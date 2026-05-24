@@ -1,5 +1,5 @@
 /* ========================================
-   Wagr — UI Controller
+   Pup File — UI Controller
    ======================================== */
 
 /* --- Sidebar Toggle --- */

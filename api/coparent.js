@@ -8,17 +8,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
 
-function cors(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+function cors(res, req) {
+  const origin = req?.headers?.origin;
+  const allowedOrigins = ['https://pupfile.com', 'http://localhost:3000', 'http://localhost:5173'];
+  if (origin && !allowedOrigins.includes(origin)) return false;
+  res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  return true;
 }
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') { cors(res); return res.status(200).end(); }
-  if (req.method !== 'POST') { cors(res); return res.status(405).json({ error: 'Method not allowed' }); }
+  if (req.method === 'OPTIONS') { if (!cors(res, req)) return res.status(403).json({ error: 'Origin not allowed' }); return res.status(200).end(); }
+  if (req.method !== 'POST') { cors(res, req); return res.status(405).json({ error: 'Method not allowed' }); }
 
-  cors(res);
+  if (!cors(res, req)) return res.status(403).json({ error: 'Origin not allowed' });
 
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -87,7 +91,7 @@ export default async function handler(req, res) {
 
       if (inviteError) return res.status(500).json({ error: 'Failed to create invite' });
 
-      const origin = req.headers.origin || 'https://wagr-ai.vercel.app';
+      const origin = req.headers.origin || 'https://pupfile.com';
       const inviteUrl = `${origin}/coparent?token=${token}`;
 
       return res.status(200).json({
