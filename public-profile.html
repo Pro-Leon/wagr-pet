@@ -275,7 +275,7 @@
     let currentOwnerEmail = '';
 
     document.addEventListener('DOMContentLoaded', async () => {
-      try { initSupabase(); lucide.createIcons(); } catch(e) { console.error('Init failed:', e); }
+      try { initSupabase(); typeof lucide !== 'undefined' && lucide.createIcons(); } catch(e) { console.error('Init failed:', e); }
 
       // Extract pet ID from URL
       const path = window.location.pathname;

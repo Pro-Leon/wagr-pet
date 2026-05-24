@@ -479,7 +479,7 @@
       isCoparentSignup = redirectUrl && redirectUrl.startsWith('/coparent');
 
       checkSession();
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
 
       // Detect password recovery flow
       if (window.location.hash && window.location.hash.includes('type=recovery')) {

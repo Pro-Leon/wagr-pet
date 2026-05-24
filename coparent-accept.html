@@ -100,7 +100,7 @@
     let inviteOwnerEmail = null;
 
     document.addEventListener('DOMContentLoaded', async () => {
-      try { initSupabase(); lucide.createIcons(); } catch(e) { console.error('Init failed:', e); }
+      try { initSupabase(); typeof lucide !== 'undefined' && lucide.createIcons(); } catch(e) { console.error('Init failed:', e); }
 
       // Extract token from URL
       const params = new URLSearchParams(window.location.search);
@@ -147,7 +147,7 @@
         document.getElementById('invite-detail').style.display = 'none';
         document.getElementById('invite-accept-btn').style.display = 'none';
         document.getElementById('invite-success').style.display = 'block';
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         document.getElementById('invite-success-text').textContent =
           `You can now co-parent ${escapeHtml(result.petName)} alongside ${escapeHtml(result.ownerEmail)}.`;
       } catch (err) {

@@ -1905,7 +1905,7 @@
       try { 
         initSupabase(); 
         console.log('Supabase initialized');
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
       } catch(e) { 
         console.error('Init failed:', e); 
         document.getElementById('dashboard-loading').innerHTML = '<div style="padding:20px;text-align:center"><h3>Failed to initialize</h3><p>Error: ' + e.message + '</p><p>Make sure you\'re running on a local server (not just opening the file).</p></div>';
@@ -2084,7 +2084,7 @@ if (!hasPet) {
       <button class="btn btn-primary" onclick="openModal('modal-add-pet')">Add Your Dog</button>
     </div>`;
         el.innerHTML = html;
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         return;
       }
 
@@ -2158,7 +2158,7 @@ if (!hasPet) {
           requestAnimationFrame(step);
         }
       }
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
     }
 
     /* --- Refresh profile from server (e.g., after Paystack webhook upgrade) --- */
@@ -2439,7 +2439,7 @@ if (!hasPet) {
     function renderPetsList() {
       const c = document.getElementById('pets-list');
       if (!c) return;
-      if (AppState.pets.length === 0) { c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="paw-print" style="width:32px;height:32px"></i></span><h3>No pets yet</h3><p>Add your first pet to get started.</p><button class="btn btn-primary" onclick="openModal(\'modal-add-pet\')">Add Pet</button></div>'; lucide.createIcons(); return; }
+      if (AppState.pets.length === 0) { c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="paw-print" style="width:32px;height:32px"></i></span><h3>No pets yet</h3><p>Add your first pet to get started.</p><button class="btn btn-primary" onclick="openModal(\'modal-add-pet\')">Add Pet</button></div>'; typeof lucide !== 'undefined' && lucide.createIcons(); return; }
       c.innerHTML = AppState.pets.map(pet => `
         <div class="card flex items-center justify-between" style="padding:16px 20px">
           <div class="flex items-center gap-3">
@@ -2455,7 +2455,7 @@ if (!hasPet) {
           </div>
         </div>
       `).join('');
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
     }
 
     function editPet(petId) {
@@ -2527,7 +2527,7 @@ if (!hasPet) {
               </ul>
               <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Timeline — from $4.99/mo</button>
             </div>`;
-          lucide.createIcons();
+          typeof lucide !== 'undefined' && lucide.createIcons();
         }
       } else {
         renderTimeline(AppState.logs);
@@ -2627,7 +2627,7 @@ if (!hasPet) {
           <p>Track what your dog eats — brands, portions, homemade recipes.</p>
           ${buttonHtml}
         </div>`;
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         return;
       }
 
@@ -2912,7 +2912,7 @@ if (!hasPet) {
           <h4>Nothing flagged yet</h4>
           <p>${escapeHtml(AppState.activePet.name)}'s feeling good — no symptoms to report.</p>
         </div>`;
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         return;
       }
 
@@ -2949,7 +2949,7 @@ if (!hasPet) {
             </div>
           </div>`;
       }).join('');
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
     }
 
     document.getElementById('add-symptom-form').addEventListener('submit', async (e) => {
@@ -3074,7 +3074,7 @@ if (!hasPet) {
 
       if (groomingAppointments.length === 0) {
         c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="scissors" style="width:32px;height:32px"></i></span><h3>No grooming appointments</h3><p>Track your pet\'s grooming history, products used, and results.</p></div>';
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         return;
       }
 
@@ -3117,7 +3117,7 @@ if (!hasPet) {
           '</div>' +
         '</div>';
       }).join('');
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
     }
 
     function openGroomingModal(id) {
@@ -3641,7 +3641,7 @@ if (!hasPet) {
           </div>
         `).join('');
         container.style.display = 'block';
-        try { lucide.createIcons(); } catch(e) {}
+        try { typeof lucide !== 'undefined' && lucide.createIcons(); } catch(e) {}
       } catch (e) { container.style.display = 'none'; }
     }
 
@@ -4333,7 +4333,7 @@ if (!hasPet) {
             <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Family</button>
           </div>
         `;
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         return;
       }
 
@@ -4345,7 +4345,7 @@ if (!hasPet) {
       if (pets.length === 0) {
         container.innerHTML =
           `<div class="empty-state"><p style="color:var(--text-secondary)">Add a pet first to invite co-parents.</p></div>`;
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
         return;
       }
 
@@ -4432,7 +4432,7 @@ if (!hasPet) {
       }
 
       container.innerHTML = html;
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
     }
 
     async function generateCoparentInvite(petId) {

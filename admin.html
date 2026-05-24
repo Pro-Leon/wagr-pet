@@ -874,7 +874,7 @@
               <p style="color:var(--text-muted);font-size:0.78rem;margin-top:12px">Run this SQL in the database SQL Editor to gain access:<br><code style="background:var(--bg-tertiary);padding:4px 8px;border-radius:4px;font-size:0.72rem">UPDATE profiles SET is_admin = true WHERE email = '${escapeHtml(user.email)}';</code></p>
               <a href="/dashboard" class="btn btn-primary btn-sm" style="margin-top:16px">Back to Dashboard</a>
             </div>`;
-          lucide.createIcons();
+          typeof lucide !== 'undefined' && lucide.createIcons();
           return;
         }
       } catch (e) {
@@ -895,7 +895,7 @@
             </div>
             <button class="btn btn-secondary btn-sm" onclick="location.reload()" style="margin-top:8px">Retry After Running SQL</button>
           </div>`;
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
       }
 
       if (!isAdmin) return;
@@ -1123,7 +1123,7 @@
               <td class="mono">${new Date(l.created_at).toLocaleString()}</td>
             </tr>
           `).join('');
-          lucide.createIcons();
+          typeof lucide !== 'undefined' && lucide.createIcons();
         } else {
           logsBody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted)">No logs.</td></tr>';
         }
@@ -1269,7 +1269,7 @@
               </td>
             </tr>
           `).join('');
-        lucide.createIcons();
+        typeof lucide !== 'undefined' && lucide.createIcons();
 
         renderPagination('logs-pagination', currentLogPage, logs.length < ADMIN_PAGE_SIZE, () => {
           currentLogPage++;
@@ -1501,7 +1501,7 @@
     /* --- Theme & Init --- */
     document.addEventListener('DOMContentLoaded', () => {
       ThemeManager.init();
-      lucide.createIcons();
+      typeof lucide !== 'undefined' && lucide.createIcons();
     });
   </script>
   <script>if('serviceWorker'in navigator){navigator.serviceWorker.register('/sw.js')}</script>
