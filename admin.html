@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Pup File</title>
+  <title>Admin — PupFile</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="css/globals.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
@@ -514,8 +514,8 @@
     <!-- Topbar -->
     <div class="admin-topbar">
       <div class="logo">
-        <div class="mark" style="font-size:0"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>
-        Pup File Admin
+        <div class="mark" style="font-size:0"><svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>
+        PupFile Admin
       </div>
       <div style="display:flex;align-items:center;gap:12px">
         <span style="font-size:0.78rem;color:var(--text-muted)" id="admin-email"></span>
@@ -822,13 +822,18 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
-    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('.admin-body').innerHTML = '<div style="text-align:center;padding:48px"><h3>Could not load required libraries</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
-      });
-    }
+    (function checkSupabase(attempts) {
+      if (typeof window.supabase !== 'undefined' && window.supabase.createClient) return;
+      if (attempts >= 20) {
+        document.addEventListener('DOMContentLoaded', () => {
+          document.querySelector('.admin-body').innerHTML = '<div style="text-align:center;padding:48px"><h3>Could not load required libraries</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
+        });
+        return;
+      }
+      setTimeout(function() { checkSupabase(attempts + 1); }, 100);
+    })(0);
   </script>
   <script src="js/app.js"></script>
   <script src="js/api.js"></script>
@@ -836,7 +841,7 @@
   <script src="js/analytics.js"></script>
   <script>
     /* ========================================
-       Pup File — Admin Dashboard
+       PupFile — Admin Dashboard
        ======================================== */
 
     const ADMIN_PAGE_SIZE = 50;

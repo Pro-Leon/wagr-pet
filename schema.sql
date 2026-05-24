@@ -178,7 +178,7 @@ SELECT
     p.name,
     p.breed,
     p.medical_flags,
-    'Contact owner via Pup File'::text AS owner_contact
+    'Contact owner via PupFile'::text AS owner_contact
 FROM pets p;
 
 -- ========================================
@@ -197,7 +197,7 @@ RETURNS TABLE (
 LANGUAGE SQL SECURITY DEFINER
 STABLE
 AS $$
-    SELECT p.id, p.name, p.breed, p.medical_flags, 'Contact owner via Pup File'::text
+    SELECT p.id, p.name, p.breed, p.medical_flags, 'Contact owner via PupFile'::text
     FROM pets p
     WHERE p.id = pet_id;
 $$;

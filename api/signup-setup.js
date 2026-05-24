@@ -79,14 +79,14 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'api-key': BREVO_API_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
-          sender: { name: 'Pup File', email: 'hello@pupfile.com' },
+          sender: { name: 'PupFile', email: 'hello@pupfile.com' },
           to: [{ email, name: displayName || email.split('@')[0] }],
-          subject: 'Welcome to Pup File — your pet care dashboard is ready',
+          subject: 'Welcome to PupFile — your pet care dashboard is ready',
           htmlContent: `
             <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-              <h2 style="color:#ea580c">Pup File</h2>
+              <h2 style="color:#ea580c">PupFile</h2>
               <p>Hi ${displayName || email.split('@')[0]},</p>
-              <p>Welcome to Pup File! Your smart dog care dashboard is ready to go.</p>
+              <p>Welcome to PupFile! Your smart dog care dashboard is ready to go.</p>
               <p>Here's what you can do:</p>
               <ul>
                 <li>Log meals, medications, and bathroom breaks</li>

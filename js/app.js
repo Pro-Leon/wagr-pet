@@ -1,5 +1,5 @@
 /* ========================================
-   Pup File — AppState Engine
+   PupFile — AppState Engine
    ======================================== */
 
 const AppState = {

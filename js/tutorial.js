@@ -1,11 +1,11 @@
 /* ========================================
-   Pup File — In-App Tutorial Overlay
+   PupFile — In-App Tutorial Overlay
    Vanilla JS, no dependencies.
    ======================================== */
 
 const Tutorial = (() => {
   const STEPS = [
-    { id: 'pet-card', title: 'Meet your pet profile', body: 'Everything in Pup File is organized around your pet. View their name, breed, and access all their health data from here.', tab: 'home' },
+    { id: 'pet-card', title: 'Meet your pet profile', body: 'Everything in PupFile is organized around your pet. View their name, breed, and access all their health data from here.', tab: 'home' },
     { id: 'streak-bar', title: 'Build your streak \ud83d\udd25', body: 'Log daily to track health patterns over time. The longer your streak, the more data your vet has to work with.', tab: 'home' },
     { id: 'quick-actions', title: 'Log in two taps', body: 'Feed, Meds, Walk, and Note buttons for instant logging. Tap any button to quickly record what happened.', tab: 'home' },
     { id: 'status-cards', title: 'Today at a glance', body: 'See last meal, meds, and walk at a glance. Tap any card to log a new entry of that type.', tab: 'home' },

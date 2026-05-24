@@ -83,7 +83,7 @@ export default async function handler(req, res) {
   const formatTime = (d) => new Date(d).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const formatDate = (d) => new Date(d).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
-  const systemPrompt = `You are Pup File Assistant, a helpful pet care AI for ${user.email?.split('@')[0] || 'the pet owner'}. You help manage care for ${pet.name}, a ${pet.breed || 'dog'}.
+  const systemPrompt = `You are PupFile Assistant, a helpful pet care AI for ${user.email?.split('@')[0] || 'the pet owner'}. You help manage care for ${pet.name}, a ${pet.breed || 'dog'}.
 
 Today's logs for ${pet.name} so far:
 ${todayLogs.length === 0 ? 'No activity logged today yet.' : todayLogs.map(l => `[${formatTime(l.created_at)}] ${l.log_type}: ${l.title}${l.notes ? ' — ' + l.notes : ''}`).join('\n')}
@@ -131,7 +131,7 @@ RULES:
         'Authorization': `Bearer ${process.env.OPENROUTER_KEY}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://pupfile.com',
-        'X-Title': 'Pup File',
+        'X-Title': 'PupFile',
       },
       body: JSON.stringify({
         model: MODEL,

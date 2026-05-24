@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>I Found a Dog — Pup File</title>
-  <meta name="description" content="You found a dog with a Pup File QR tag. View their profile and notify the owner.">
+  <title>I Found a Dog — PupFile</title>
+  <meta name="description" content="You found a dog with a PupFile QR tag. View their profile and notify the owner.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="css/globals.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
@@ -248,17 +248,22 @@
     </div>
 
     <div class="public-footer">
-      <a href="/">Pup File</a> — Smart Dog Care
+      <a href="/">PupFile</a> — Smart Dog Care
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script>
-    if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('loading-state').innerHTML = '<div style="text-align:center;padding:32px"><h3 style="margin-bottom:8px">Could not load required libraries</h3><p style="color:#666;font-size:14px">Check your connection and reload.</p></div>';
-      });
-    }
+    (function checkSupabase(attempts) {
+      if (typeof window.supabase !== 'undefined' && window.supabase.createClient) return;
+      if (attempts >= 20) {
+        document.addEventListener('DOMContentLoaded', () => {
+          document.getElementById('loading-state').innerHTML = '<div style="text-align:center;padding:32px"><h3 style="margin-bottom:8px">Could not load required libraries</h3><p style="color:#666;font-size:14px">Check your connection and reload.</p></div>';
+        });
+        return;
+      }
+      setTimeout(function() { checkSupabase(attempts + 1); }, 100);
+    })(0);
   </script>
   <script src="js/app.js"></script>
   <script src="js/api.js"></script>
@@ -317,7 +322,7 @@
       document.getElementById('profile-state').style.display = 'block';
       document.getElementById('pet-name').textContent = pet.name;
       document.getElementById('pet-breed').textContent = pet.breed || '';
-      document.title = `I Found ${pet.name} — Pup File`;
+      document.title = `I Found ${pet.name} — PupFile`;
 
       // Medical flags
       const flagsContainer = document.getElementById('medical-flags');

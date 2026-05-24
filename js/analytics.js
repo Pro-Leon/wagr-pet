@@ -103,7 +103,7 @@ function showConsentBanner() {
   banner.id = 'analytics-consent-banner';
   banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--bg-secondary,#1a1a2e);border-top:1px solid var(--border-color,#333);padding:14px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;font-size:0.82rem;box-shadow:0 -4px 20px rgba(0,0,0,0.15)';
   banner.innerHTML = `
-    <span style="color:var(--text-secondary,#aaa)">We use anonymized analytics to improve Pup File. <a href="/cookies" style="color:var(--orange-500,#ea580c);text-decoration:underline">Learn more</a></span>
+    <span style="color:var(--text-secondary,#aaa)">We use anonymized analytics to improve PupFile. <a href="/cookies" style="color:var(--orange-500,#ea580c);text-decoration:underline">Learn more</a></span>
     <div style="display:flex;gap:8px">
       <button id="consent-decline" style="padding:6px 14px;border-radius:6px;border:1px solid var(--border-color,#444);background:transparent;color:var(--text-secondary,#aaa);cursor:pointer;font-size:0.8rem">Decline</button>
       <button id="consent-accept" style="padding:6px 14px;border-radius:6px;border:none;background:var(--orange-500,#ea580c);color:#fff;cursor:pointer;font-weight:600;font-size:0.8rem">Accept</button>

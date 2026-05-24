@@ -67,7 +67,7 @@ export default async function handler(req, res) {
           'Authorization': `Bearer ${OPENROUTER_KEY}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://pupfile.com',
-          'X-Title': 'Pup File',
+          'X-Title': 'PupFile',
         },
         body: JSON.stringify({
           model,

@@ -6,7 +6,7 @@ export const config = { api: { bodyParser: false } };
 
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
-const SENDER = { name: 'Pup File', email: 'hello@pupfile.com' };
+const SENDER = { name: 'PupFile', email: 'hello@pupfile.com' };
 
 function escapeHtml(str) {
   if (!str) return '';
@@ -49,12 +49,12 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
 
   switch (type) {
     case 'sitter_invite':
-      subject = `${ownerName || 'Your friend'} invited you to care for ${petName || 'their pet'} on Pup File`;
+      subject = `${ownerName || 'Your friend'} invited you to care for ${petName || 'their pet'} on PupFile`;
       htmlContent = `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-          <h2 style="color:#ea580c">Pup File</h2>
+          <h2 style="color:#ea580c">PupFile</h2>
           <p>Hi ${toName || 'there'},</p>
-          <p><strong>${ownerName || 'Someone'}</strong> has invited you to help care for <strong>${petName || 'their pet'}</strong> on Pup File.</p>
+          <p><strong>${ownerName || 'Someone'}</strong> has invited you to help care for <strong>${petName || 'their pet'}</strong> on PupFile.</p>
           <p>Click the button below to view their pet's profile and log care activities — no account needed.</p>
           <a href="${link}" style="display:inline-block;padding:12px 24px;background:#ea580c;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">View Pet &amp; Log Care</a>
           <p style="color:#666;font-size:0.85rem">This link is unique and expires when a new one is generated.</p>
@@ -65,7 +65,7 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
       subject = `📍 Location alert for ${petName || 'your pet'}`;
       htmlContent = `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-          <h2 style="color:#ea580c">Pup File</h2>
+          <h2 style="color:#ea580c">PupFile</h2>
           <p>Hi ${toName || 'there'},</p>
           <p>Someone scanned your pet <strong>${petName || 'unknown'}</strong>'s QR tag and shared their location.</p>
           <p><a href="${link}" style="color:#ea580c">View location on map</a></p>
@@ -74,10 +74,10 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
       break;
 
     case 'support_reply':
-      subject = `Pup File Support: ${escapeHtml(message) || 'We responded to your ticket'}`;
+      subject = `PupFile Support: ${escapeHtml(message) || 'We responded to your ticket'}`;
       htmlContent = `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-          <h2 style="color:#ea580c">Pup File Support</h2>
+          <h2 style="color:#ea580c">PupFile Support</h2>
           <p>Hi ${escapeHtml(toName) || 'there'},</p>
           <p>We've responded to your support ticket:</p>
           <div style="background:#f5f5f5;padding:16px;border-radius:8px;margin:12px 0;font-size:0.9rem">${escapeHtml(message || '').replace(/\n/g, '<br>')}</div>
@@ -86,12 +86,12 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
       break;
 
     case 'welcome':
-      subject = 'Welcome to Pup File — your pet care dashboard is ready';
+      subject = 'Welcome to PupFile — your pet care dashboard is ready';
       htmlContent = `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-          <h2 style="color:#ea580c">Pup File</h2>
+          <h2 style="color:#ea580c">PupFile</h2>
           <p>Hi ${toName || 'there'},</p>
-          <p>Welcome to Pup File! Your smart dog care dashboard is ready to go.</p>
+          <p>Welcome to PupFile! Your smart dog care dashboard is ready to go.</p>
           <p>Here's what you can do:</p>
           <ul>
             <li>Log meals, medications, and bathroom breaks</li>
@@ -106,12 +106,12 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
       break;
 
     case 'subscription':
-      subject = `Pup File — you're now on the ${tier || 'paid'} plan!`;
+      subject = `PupFile — you're now on the ${tier || 'paid'} plan!`;
       htmlContent = `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
-          <h2 style="color:#ea580c">Pup File</h2>
+          <h2 style="color:#ea580c">PupFile</h2>
           <p>Hi ${toName || 'there'},</p>
-          <p>Your subscription to <strong>${tier || 'a paid'}</strong> plan is now active on Pup File.</p>
+          <p>Your subscription to <strong>${tier || 'a paid'}</strong> plan is now active on PupFile.</p>
           ${plan === 'yearly' ? '<p>You chose the yearly plan — great savings!</p>' : ''}
           <p>You now have access to all features in your tier. <a href="https://pupfile.com/dashboard" style="color:#ea580c">Go to your dashboard</a> to start using them.</p>
           <p style="color:#666;font-size:0.85rem">Need help? Reply to this email or contact support from your dashboard.</p>
@@ -119,21 +119,21 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
       break;
 
     case 'ai_report':
-      subject = `AI Health Report — ${petName || 'Your Pet'} (Pup File)`;
+      subject = `AI Health Report — ${petName || 'Your Pet'} (PupFile)`;
       htmlContent = `
         <div style="font-family:sans-serif;max-width:560px;margin:0 auto">
-          <h2 style="color:#ea580c">Pup File — AI Health Report</h2>
+          <h2 style="color:#ea580c">PupFile — AI Health Report</h2>
           <p style="color:#666;font-size:0.85rem">Prepared for: <strong>${petName || 'Unknown Pet'}</strong></p>
           <hr style="border:none;border-top:1px solid #eee;margin:16px 0">
           <div style="font-size:0.9rem;line-height:1.7;white-space:pre-wrap;font-family:monospace;background:#f9f9f9;padding:16px;border-radius:8px;margin:12px 0">${(report || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
           ${note ? `<hr style="border:none;border-top:1px solid #eee;margin:16px 0"><p style="font-size:0.88rem;color:#333"><strong>Note from owner:</strong><br>${escapeHtml(note).replace(/\n/g, '<br>')}</p>` : ''}
           <hr style="border:none;border-top:1px solid #eee;margin:16px 0">
-          <p style="color:#999;font-size:0.75rem">Generated by Pup File — <a href="https://pupfile.com" style="color:#ea580c">pupfile.com</a></p>
+          <p style="color:#999;font-size:0.75rem">Generated by PupFile — <a href="https://pupfile.com" style="color:#ea580c">pupfile.com</a></p>
         </div>`;
       break;
 
     default:
-      subject = body.subject || 'Pup File notification';
+      subject = body.subject || 'PupFile notification';
       htmlContent = body.htmlContent || `<p>${body.message || ''}</p>`;
   }
 
