@@ -8,6 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 });
 
 const MODEL = 'z-ai/glm-4.5-air:free';
+const FREE_TIER_LIMIT = 3;
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
@@ -44,12 +45,26 @@ export default async function handler(req, res) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('tier')
+    .select('tier, chat_queries_used')
     .eq('id', user.id)
     .single();
 
   const tier = profile?.tier || 'starter';
   const canLog = ['basic', 'family'].includes(tier);
+  const queriesUsed = profile?.chat_queries_used || 0;
+  const isFree = tier === 'starter';
+  const queriesRemaining = isFree ? Math.max(0, FREE_TIER_LIMIT - queriesUsed) : -1;
+
+  // Free tier: enforce query limit
+  if (isFree && queriesUsed >= FREE_TIER_LIMIT) {
+    return res.status(200).json({
+      reply: `<div style="padding:8px 0"><strong>🔒 You've used all ${FREE_TIER_LIMIT} free queries.</strong></div><div style="margin-top:8px;padding:12px;background:var(--orange-50);border:1px solid var(--orange-200);border-radius:var(--radius-md);text-align:center"><p style="margin:0 0 8px;font-size:0.85rem">Upgrade to Starter to unlock unlimited AI chat, the ability to log care through the assistant, and more.</p><a href="#" onclick="openModal('modal-pricing');return false" style="display:inline-block;padding:8px 20px;background:#ea580c;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.85rem">See Plans — from $4.99/mo</a></div>`,
+      actions: [],
+      queriesRemaining: 0,
+      queriesLimit: FREE_TIER_LIMIT,
+      locked: true,
+    });
+  }
 
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
@@ -80,7 +95,16 @@ export default async function handler(req, res) {
   const formatTime = (d) => new Date(d).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const formatDate = (d) => new Date(d).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
 
-  const systemPrompt = `You are PupFile Assistant, a helpful pet care AI for ${user.email?.split('@')[0] || 'the pet owner'}. You help manage care for ${pet.name}, a ${pet.breed || 'dog'}.
+  const usageNote = isFree && queriesRemaining > 0
+    ? `\n\nNOTE: This is query ${queriesUsed + 1} of ${FREE_TIER_LIMIT} for the free tier. After ${FREE_TIER_LIMIT} queries, the assistant will be read-only.`
+    : '';
+
+  const systemPrompt = `You are PupFile Assistant, a specialized pet care AI for ${user.email?.split('@')[0] || 'the pet owner'}. You help manage care for ${pet.name}, a ${pet.breed || 'dog'}. Your role is to provide helpful pet care guidance and help log care activities.
+
+IMPORTANT — SCOPE LIMITATION:
+You are strictly limited to pet-related topics ONLY. This includes: pet health, nutrition, behavior, grooming, exercise, training, medications, symptoms, vet visits, and general dog/cat/pet care advice. If a user asks about anything outside pet care (politics, coding, math, current events, etc.), politely decline by saying "I'm PupFile Assistant — I can only help with pet care questions. Ask me about ${pet.name}'s health, meals, or anything pet-related!" Do not answer non-pet questions under any circumstances.
+
+DISCLAIMER — Always include this disclaimer or similar wording in your first response to any new conversation: "Remember, I'm an AI assistant and not a veterinarian. Always consult your vet for medical decisions."
 
 Today's logs for ${pet.name} so far:
 ${todayLogs.length === 0 ? 'No activity logged today yet.' : todayLogs.map(l => `[${formatTime(l.created_at)}] ${l.log_type}: ${l.title}${l.notes ? ' — ' + l.notes : ''}`).join('\n')}
@@ -92,7 +116,7 @@ ${foodLogs.length > 0 ? `Recent meals:\n${foodLogs.map(l => `[${formatDate(l.fed
 
 ${medications.length > 0 ? `Known medications: ${[...new Set(medications.map(m => m.title))].join(', ')}` : 'No known medications on file.'}
 
-${!canLog ? 'NOTE: You are in read-only mode. You can answer questions about the pet\'s logs but CANNOT create new entries.' : ''}
+${!canLog ? 'NOTE: You are in read-only mode. You can answer questions about the pet\'s logs but CANNOT create new entries.' : ''}${usageNote}
 
 You must respond with ONLY valid JSON — no additional text, no markdown formatting, no code fences. The JSON must have this structure:
 {
@@ -119,7 +143,8 @@ RULES:
 6. Keep replies friendly and conversational.
 7. ${!canLog ? 'You are in READ-ONLY mode. Never include actions.' : 'You may include log_timeline actions when the user asks you to log something.'}
 8. For food queries, use the provided meal data. Don't log food entries — just timeline entries with log_type "meal".
-9. For summary requests, describe the recent patterns in plain English.`;
+9. For summary requests, describe the recent patterns in plain English.
+10. You MAY use Markdown formatting (bold, italic, bullet points) in your "reply" to make responses more readable.`;
 
   try {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -159,7 +184,12 @@ RULES:
     }
 
     if (!parsed || !parsed.reply) {
-      return res.status(200).json({ reply: content, actions: [] });
+      return res.status(200).json({
+        reply: content,
+        actions: [],
+        queriesRemaining: isFree ? queriesRemaining - 1 : -1,
+        queriesLimit: FREE_TIER_LIMIT,
+      });
     }
 
     const executed = [];
@@ -190,9 +220,19 @@ RULES:
       }
     }
 
+    // Increment counter for free tier
+    if (isFree) {
+      await supabase
+        .from('profiles')
+        .update({ chat_queries_used: queriesUsed + 1 })
+        .eq('id', user.id);
+    }
+
     return res.status(200).json({
       reply: parsed.reply,
       actions: executed,
+      queriesRemaining: isFree ? queriesRemaining - 1 : -1,
+      queriesLimit: FREE_TIER_LIMIT,
     });
 
   } catch (error) {

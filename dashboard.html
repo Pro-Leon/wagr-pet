@@ -94,14 +94,22 @@
 
     /* --- Locked Feature Cards --- */
     .locked-feature {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 28px;
+      background: #FFF9F6;
+      border: 1px solid #FED7AA;
+      border-radius: var(--radius-xl);
+      padding: 32px 28px;
       text-align: center;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 20px rgba(249,115,22,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="dark"] .locked-feature {
+      background: rgba(249,115,22,0.06);
+      border-color: rgba(249,115,22,0.2);
+      box-shadow: none;
     }
     .locked-feature .lock-emoji { margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
+    .locked-feature .paw-icon { width: 56px; height: 40px; }
     .locked-feature h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
     .locked-feature p { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 16px; max-width: 340px; margin-left: auto; margin-right: auto; line-height: 1.55; }
     .locked-feature .perks { text-align: left; max-width: 280px; margin: 0 auto 20px; }
@@ -110,6 +118,120 @@
       font-size: 0.8rem; color: var(--text-secondary); padding: 5px 0;
     }
     .locked-feature .perks li svg { width: 14px; height: 14px; stroke: var(--orange-500); fill: none; stroke-width: 2.5; flex-shrink: 0; }
+
+    /* --- Locked feature preview mockup --- */
+    .lf-preview {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 16px 0;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="dark"] .lf-preview {
+      background: rgba(20,20,22,0.8);
+    }
+    .lf-preview .lf-blur {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to bottom, transparent, #FFF9F6 80%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 16px;
+    }
+    [data-theme="dark"] .lf-preview .lf-blur {
+      background: linear-gradient(to bottom, transparent, rgba(249,115,22,0.06) 80%);
+    }
+    .lf-preview .preview-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.8rem;
+    }
+    .lf-preview .preview-row + .preview-row {
+      border-top: 1px solid var(--border-subtle);
+    }
+    .lf-preview .preview-avatar {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .lf-preview .preview-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .lf-preview .preview-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.82rem;
+    }
+    .lf-preview .preview-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .lf-preview .preview-tag {
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      margin-left: auto;
+    }
+    .lf-preview .preview-tag.green { background: #dcfce7; color: #15803d; }
+    .lf-preview .preview-tag.orange { background: #ffedd5; color: #c2410c; }
+    .lf-preview .preview-tag.blue { background: #dbeafe; color: #1d4ed8; }
+    .lf-preview .preview-chart {
+      display: flex; align-items: flex-end; gap: 4px; height: 60px; padding: 8px 0;
+    }
+    .lf-preview .preview-chart .bar {
+      flex: 1; border-radius: 3px 3px 0 0;
+      background: var(--orange-200);
+    }
+    .lf-preview .preview-chart .bar.fill { background: var(--orange-500); }
+    .lf-preview .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .lf-preview .preview-grid .grid-item {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      text-align: center;
+    }
+    .lf-preview .preview-grid .grid-item .val {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .lf-preview .preview-grid .grid-item .lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .lf-preview .preview-score {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .lf-preview .preview-score .dot {
+      width: 8px; height: 8px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .lf-preview .preview-score .dot.green { background: #22c55e; }
+    .lf-preview .preview-score .dot.red { background: #ef4444; }
+    .lf-preview .preview-score .dot.amber { background: #f59e0b; }
 
     /* --- AI Data Sources --- */
     .ai-data-sources {
@@ -587,6 +709,11 @@
       0%, 60%, 100% { opacity: 0.3; transform: scale(1); }
       30% { opacity: 1; transform: scale(1.2); }
     }
+    [data-theme="dark"] #chat-disclaimer {
+      background: rgba(249,115,22,0.08);
+      color: var(--text-muted);
+    }
+    #chat-limit-indicator svg { vertical-align: middle; }
 
     /* --- Pet avatar in sidebar --- */
     .pet-badge {
@@ -694,24 +821,10 @@
     [data-theme="dark"] .food-type-badge.treat { background: rgba(16,185,129,0.2); color: #34d399; }
     [data-theme="dark"] .food-type-badge.supplement { background: rgba(99,102,241,0.2); color: #818cf8; }
 
-    /* Nutrition paywall */
-    .nutrition-locked {
-      background: var(--bg-tertiary);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      text-align: center;
-      margin-top: 12px;
-    }
-    .nutrition-locked p {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      margin-bottom: 10px;
-    }
-
     /* --- Dashboard Pricing Cards --- */
     #modal-pricing .pricing-grid-dash {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       padding: 4px 0;
     }
@@ -962,16 +1075,58 @@
           </div>
           <div id="tasks-section">
             <div id="tasks-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="clipboard-check" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Pet Care Tasks</h3>
               <p>Create tasks for yourself, your co-parents, and sitters. Track what needs to be done and when.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div class="preview-avatar" style="background:#ea580c">J</div>
+                  <div>
+                    <div class="preview-title">Walk Buddy before work</div>
+                    <div class="preview-meta">Today, 8:00 AM · Assigned to you</div>
+                  </div>
+                  <span class="preview-tag orange">TODAY</span>
+                </div>
+                <div class="preview-row">
+                  <div class="preview-avatar" style="background:#2563eb">S</div>
+                  <div>
+                    <div class="preview-title">Pick up heartworm meds</div>
+                    <div class="preview-meta">Wed, Jun 3 · Assigned to Sarah</div>
+                  </div>
+                  <span class="preview-tag blue">UPCOMING</span>
+                </div>
+                <div class="preview-row">
+                  <div class="preview-avatar" style="background:#16a34a">M</div>
+                  <div>
+                    <div class="preview-title">Bath &amp; nail trim</div>
+                    <div class="preview-meta">Sat, Jun 6 · Assigned to Mike</div>
+                  </div>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Create &amp; assign tasks to co-parents</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Sitters can see and complete tasks</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Get email reminders for upcoming tasks</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Popup reminders when you open your dashboard</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
             </div>
             <div id="tasks-active" style="display:none">
               <div id="tasks-stats" class="task-stats"></div>
@@ -994,20 +1149,70 @@
               </div>
             </div>
             <div id="qr-no-pet" class="locked-feature" style="display:none">
-              <span class="lock-emoji"><i data-lucide="tag" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Generate a QR tag for your pet</h3>
               <p>Add a pet first, then create a scannable tag that links to their emergency profile.</p>
             </div>
             <div id="qr-locked" class="locked-feature" style="display:none">
-              <span class="lock-emoji"><i data-lucide="tag" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>QR Emergency Tags</h3>
               <p>Anyone who finds your dog scans the tag and sees their medical info. You get their GPS location instantly.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="width:36px;height:36px;background:var(--bg-tertiary);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="4" height="4"/><rect x="13" y="7" width="4" height="4"/><rect x="7" y="13" width="4" height="4"/><rect x="13" y="13" width="4" height="4"/></svg>
+                  </div>
+                  <div>
+                    <div class="preview-title">Buddy's Emergency Tag</div>
+                    <div class="preview-meta">Scanned 3 times · Last scan 2 days ago</div>
+                  </div>
+                  <span class="preview-tag green">ACTIVE</span>
+                </div>
+                <div class="preview-row">
+                  <div style="background:var(--orange-50);border-radius:var(--radius-sm);padding:6px 10px;width:100%;display:flex;align-items:center;gap:8px">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--orange-500)" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+                    <span style="font-size:0.75rem;color:var(--text-secondary)">GPS location shared · 2 min ago</span>
+                  </div>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Printable QR code for collar tags</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Live GPS location alerts when scanned</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Public profile with medical flags</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
             </div>
           </div>
         </div>
@@ -1126,16 +1331,51 @@
           </div>
           <div id="inventory-section">
             <div id="inventory-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="package" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Food Inventory &amp; Restock Alerts</h3>
               <p>Track your pet food stock, get restock alerts when supplies run low, and estimate when you'll need to reorder.</p>
+              <div class="lf-preview">
+                <div class="preview-grid">
+                  <div class="grid-item">
+                    <div class="val">2.4</div>
+                    <div class="lbl">bags remaining</div>
+                    <div style="margin-top:4px;font-size:0.62rem;color:#15803d">~18 days left</div>
+                  </div>
+                  <div class="grid-item">
+                    <div class="val">1</div>
+                    <div class="lbl">bag remaining</div>
+                    <div style="margin-top:4px;font-size:0.62rem;color:#c2410c">~7 days left</div>
+                  </div>
+                </div>
+                <div style="margin-top:8px;padding:6px 10px;background:#fef2f2;border-radius:var(--radius-sm);font-size:0.72rem;color:#dc2626;display:flex;align-items:center;gap:6px">
+                  <span>⚠</span>
+                  <span>Hill's Science Diet — low stock! Restock by Jun 2</span>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Track quantities by brand &amp; category</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Auto-calculated restock dates</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Low stock warnings &amp; alerts</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Quick-log meals from inventory</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
             </div>
             <div id="inventory-active" style="display:none">
               <div id="inventory-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap"></div>
@@ -1156,16 +1396,60 @@
           </div>
           <div id="weight-section">
             <div id="weight-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="trending-up" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Weight Tracking &amp; Trend Charts</h3>
               <p>Monitor your pet's weight over time with beautiful trend charts. Track growth, detect changes early, and share reports with your vet.</p>
+              <div class="lf-preview">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <span class="preview-label">Weight Trend — Last 30 Days</span>
+                  <span style="font-size:0.72rem;color:#15803d;font-weight:600">+0.3 kg</span>
+                </div>
+                <div class="preview-chart">
+                  <div class="bar" style="height:30%"></div>
+                  <div class="bar" style="height:35%"></div>
+                  <div class="bar" style="height:28%"></div>
+                  <div class="bar fill" style="height:45%"></div>
+                  <div class="bar" style="height:40%"></div>
+                  <div class="bar" style="height:50%"></div>
+                  <div class="bar fill" style="height:55%"></div>
+                  <div class="bar fill" style="height:60%"></div>
+                  <div class="bar fill" style="height:58%"></div>
+                  <div class="bar fill" style="height:65%"></div>
+                  <div class="bar" style="height:55%"></div>
+                  <div class="bar" style="height:50%"></div>
+                  <div class="bar fill" style="height:62%"></div>
+                  <div class="bar" style="height:52%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px">
+                  <div><span class="preview-meta">Min: 13.8 kg</span></div>
+                  <div><span class="preview-meta">Avg: 14.2 kg</span></div>
+                  <div><span class="preview-meta">Max: 14.7 kg</span></div>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Interactive weight trend chart</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Growth rate tracking</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Stats: min, max, average, trend</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weight change alerts</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
             </div>
             <div id="weight-active" style="display:none">
               <div id="weight-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap"></div>
@@ -1188,16 +1472,59 @@
           </div>
           <div id="symptoms-section">
             <div id="symptoms-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="stethoscope" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Symptom Tracking for Vets</h3>
               <p>Track GI issues (vomit/feces), respiratory rate, test results, and skin conditions. Generate reports to share with your vet.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="flex-shrink:0">
+                    <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:1rem">💩</div>
+                  </div>
+                  <div>
+                    <div class="preview-title">Loose stool — Buddy</div>
+                    <div class="preview-meta">May 24, 7:32 AM · Urgency: Moderate</div>
+                  </div>
+                  <span class="preview-tag orange">GI</span>
+                </div>
+                <div class="preview-row">
+                  <div style="flex-shrink:0">
+                    <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:1rem">🌬️</div>
+                  </div>
+                  <div>
+                    <div class="preview-title">Respiratory rate spike</div>
+                    <div class="preview-meta">May 23, 2:15 PM · 42 bpm</div>
+                  </div>
+                  <span class="preview-tag blue">CARDIO</span>
+                </div>
+                <div class="preview-score" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-subtle)">
+                  <div class="dot amber"></div>
+                  <div><span class="preview-meta">Vet Report Ready: 6 symptoms logged this week</span></div>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> GI Tracking (with photos)</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Respiratory Rate Logging</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Test Results & Reports</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Dermatology (with photos)</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
             </div>
             <div id="symptoms-active" style="display:none">
               <div class="symptom-tabs" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
@@ -1224,16 +1551,54 @@
           </div>
           <div id="grooming-section">
             <div id="grooming-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="scissors" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Grooming Appointments</h3>
               <p>Track all your pet's grooming appointments, products used, and results. Keep a history for your groomer.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">✂️</div>
+                  <div>
+                    <div class="preview-title">Full groom — Buddy</div>
+                    <div class="preview-meta">May 20 · Paws &amp; Claws Grooming</div>
+                  </div>
+                  <span class="preview-tag green">DONE</span>
+                </div>
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#f5f3ff;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.85rem">📅</div>
+                  <div>
+                    <div class="preview-title">Nail trim &amp; bath</div>
+                    <div class="preview-meta">Jun 3, 10:00 AM · Mobile Groomer</div>
+                  </div>
+                  <span class="preview-tag blue">UPCOMING</span>
+                </div>
+                <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-subtle)">
+                  <span class="preview-meta">Products used last visit: oatmeal shampoo, conditioner, de-shedding treatment</span>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Date & time tracking</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Products used</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Photo history</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Groomer notes</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
             </div>
             <div id="grooming-active" style="display:none">
               <div id="grooming-list" class="flex flex-col gap-3"></div>
@@ -1246,15 +1611,56 @@
           <div class="timeline-header"><h2>Sitter Magic Links</h2></div>
           <div id="sitter-section">
             <div id="sitter-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="link" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Sitter Magic Links</h3>
               <p>Your sitter gets their own magic link — no account needed. They can view the timeline and add care events that sync to your dashboard instantly.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="width:28px;height:28px;background:#ea580c;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.65rem;font-weight:700;color:#fff">B</div>
+                  <div>
+                    <div class="preview-title">Magic link for Buddy</div>
+                    <div class="preview-meta">Created May 22 · Expires Jun 5</div>
+                  </div>
+                  <span class="preview-tag green">ACTIVE</span>
+                </div>
+                <div class="preview-row">
+                  <div style="background:var(--bg-tertiary);border-radius:var(--radius-sm);padding:8px 12px;width:100%">
+                    <div style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--text-secondary)">
+                      <span>🔗</span>
+                      <span style="font-family:monospace;font-size:0.7rem">pupfile.com/s/live/Zx9k... </span>
+                      <span style="margin-left:auto;font-size:0.65rem;color:var(--orange-600);font-weight:600">LIVE</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">
+                  <span style="font-size:0.65rem;padding:1px 6px;background:#f0fdf4;color:#15803d;border-radius:var(--radius-full)">2 meals logged</span>
+                  <span style="font-size:0.65rem;padding:1px 6px;background:#f0fdf4;color:#15803d;border-radius:var(--radius-full)">1 walk recorded</span>
+                  <span style="font-size:0.65rem;padding:1px 6px;background:#f0fdf4;color:#15803d;border-radius:var(--radius-full)">med given ✓</span>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> No app download for sitters</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Real-time sync to your dashboard</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Links expire automatically</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
             </div>
             <div id="sitter-active" style="display:none">
               <!-- Care Plan Notifications -->
@@ -1408,16 +1814,58 @@
           </div>
           <div id="vetrecords-section">
             <div id="vetrecords-locked" class="locked-feature">
-              <span class="lock-emoji"><i data-lucide="folder-medical" style="width:24px;height:24px"></i></span>
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Vet Records &amp; Document Storage</h3>
               <p>Store and organize all your pet's medical documents, vaccination records, lab results, and prescriptions in one secure place.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#eff6ff;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">💉</div>
+                  <div>
+                    <div class="preview-title">DHPP Vaccine — 2026</div>
+                    <div class="preview-meta">Vaccine · Jan 15, 2026</div>
+                  </div>
+                  <span class="preview-tag green">CURRENT</span>
+                </div>
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">🔬</div>
+                  <div>
+                    <div class="preview-title">CBC &amp; Chemistry Panel</div>
+                    <div class="preview-meta">Lab Result · Mar 3, 2026</div>
+                  </div>
+                  <span class="preview-tag orange">REVIEW</span>
+                </div>
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">💊</div>
+                  <div>
+                    <div class="preview-title">Heartgard — monthly</div>
+                    <div class="preview-meta">Prescription · Refills: 3 remaining</div>
+                  </div>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
+                </div>
+              </div>
               <ul class="perks">
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Upload &amp; store medical documents</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Organize by type (lab, prescription, vaccine, etc.)</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Add notes &amp; search records</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Share with your vet instantly</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
             </div>
             <div id="vetrecords-active" style="display:none">
               <div id="vetrecords-list" class="flex flex-col gap-3"></div>
@@ -1449,12 +1897,17 @@
         <!-- ===== ASSISTANT TAB ===== -->
         <div class="tab-content" id="tab-assistant" style="height:100%">
           <div class="timeline-header" style="flex-shrink:0">
-            <h2>Assistant</h2>
+            <h2><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/></svg> Assistant</h2>
           </div>
           <div id="chat-container">
+            <div id="chat-disclaimer" style="padding:8px 14px;font-size:0.72rem;color:var(--text-muted);background:var(--orange-50);border-bottom:1px solid var(--border-color);text-align:center;flex-shrink:0">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              AI-generated advice for informational purposes only. Always consult a veterinarian for medical decisions.
+            </div>
+            <div id="chat-limit-indicator" style="display:none;padding:6px 14px;font-size:0.72rem;color:var(--text-muted);background:var(--bg-tertiary);border-bottom:1px solid var(--border-color);text-align:center;flex-shrink:0"></div>
             <div id="chat-messages"></div>
             <div id="chat-input-area">
-              <textarea id="chat-input" placeholder="Tell me about your pet..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();handleChatSend()}"></textarea>
+              <textarea id="chat-input" placeholder="Ask about your pet's health, meals, or anything pet-related..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();handleChatSend()}"></textarea>
               <button id="chat-send-btn" onclick="handleChatSend()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               </button>
@@ -2370,7 +2823,8 @@
             AppState.setProfile(profile);
             updateUIForUser();
             renderHomeTab();
-            showToast(`Plan upgraded to ${profile.tier.charAt(0).toUpperCase() + profile.tier.slice(1)}!`, 'success');
+            const tierLabels = { starter: 'Free', basic: 'Starter', family: 'Pro' };
+            showToast(`Plan upgraded to ${tierLabels[profile.tier] || profile.tier}!`, 'success');
           }
         } catch (e) {
           // Silently fail — not critical
@@ -2537,15 +2991,31 @@ if (!hasPet) {
       const canWrite = AppState.canWrite();
 
       html += `<div class="summary-grid" id="status-cards">`;
-      html += `<div class="summary-card${canWrite ? '' : ' cursor-default'}"${canWrite ? ` onclick="openLogModal('meal')"` : ''}><div class="sc-icon orange"><i data-lucide="utensils-crossed" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMeal ? escapeHtml(lastMeal.title) : 'No meal logged'}</h4><p>${lastMeal ? formatDateTime(lastMeal.created_at) : 'Log the first meal of the day'}</p></div></div>`;
-      html += `<div class="summary-card${canWrite ? '' : ' cursor-default'}"${canWrite ? ` onclick="openLogModal('medication')"` : ''}><div class="sc-icon blue"><i data-lucide="pill" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMed ? escapeHtml(lastMed.title) : 'No medication'}</h4><p>${lastMed ? formatDateTime(lastMed.created_at) : 'No meds recorded yet'}</p></div></div>`;
-      html += `<div class="summary-card${canWrite ? '' : ' cursor-default'}"${canWrite ? ` onclick="openLogModal('bathroom')"` : ''}><div class="sc-icon green"><i data-lucide="footprints" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastBath ? escapeHtml(lastBath.title) : 'No Walk logged'}</h4><p>${lastBath ? formatDateTime(lastBath.created_at) : 'Log your last Walk'}</p></div></div>`;
+      html += `<div class="summary-card" onclick="openLogModal('meal')"><div class="sc-icon orange"><i data-lucide="utensils-crossed" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMeal ? escapeHtml(lastMeal.title) : 'No meal logged'}</h4><p>${lastMeal ? formatDateTime(lastMeal.created_at) : 'Log the first meal of the day'}</p></div></div>`;
+      html += `<div class="summary-card" onclick="openLogModal('medication')"><div class="sc-icon blue"><i data-lucide="pill" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastMed ? escapeHtml(lastMed.title) : 'No medication'}</h4><p>${lastMed ? formatDateTime(lastMed.created_at) : 'No meds recorded yet'}</p></div></div>`;
+      html += `<div class="summary-card" onclick="openLogModal('bathroom')"><div class="sc-icon green"><i data-lucide="footprints" style="width:18px;height:18px"></i></div><div class="sc-text"><h4>${lastBath ? escapeHtml(lastBath.title) : 'No Walk logged'}</h4><p>${lastBath ? formatDateTime(lastBath.created_at) : 'Log your last Walk'}</p></div></div>`;
       html += `</div>`;
 
       // Starter tier: history depth prompt
       if (tier === 'starter') {
         html += `
           <div class="locked-feature" style="margin-top:8px">
+            <span class="lock-emoji">
+              <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                <g opacity="0.3" transform="translate(3,-1)">
+                  <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                  <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                  <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                </g>
+                <g>
+                  <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                  <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                  <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                </g>
+              </svg>
+            </span>
             <h3>Logs expire after 7 days</h3>
             <p>Upgrade to keep your dog's full history, unlock AI reports, and see patterns your vet will thank you for.</p>
             <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
@@ -3112,7 +3582,7 @@ if (!hasPet) {
       if (noPet) noPet.style.display = 'none';
       if (list) list.style.display = 'flex';
       
-      // Show add button only for Basic+/Family+/Pro, show upgrade for Starter
+      // Show add button only for Starter+/Pro, show upgrade for Free
       if (addBtn) {
         if (canAddFood) {
           addBtn.style.display = 'inline-flex';
@@ -3138,6 +3608,22 @@ if (!hasPet) {
         } else {
           buttonHtml = `
             <div class="locked-feature" style="margin-top:8px">
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
               <h3>Track your dog's nutrition</h3>
               <p>Log food brands, portions, and homemade recipes. Get nutritional analysis to understand what they're eating.</p>
               <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock Food Log — from $4.99/mo</button>
@@ -3170,8 +3656,24 @@ if (!hasPet) {
           nutritionHtml = `<button class="btn btn-secondary btn-sm analyze-btn" onclick="analyzeFood('${food.id}')">Analyze Nutrition</button>`;
         } else {
           nutritionHtml = `
-            <div class="nutrition-locked">
-              <p>Get nutritional analysis with Starter plan or above.</p>
+            <div class="locked-feature" style="margin-top:12px;padding:16px">
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none" style="width:40px;height:28px">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
+              <p style="margin-bottom:10px">Get nutritional analysis with Starter plan or above.</p>
               <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Unlock — from $4.99/mo</button>
             </div>`;
         }
@@ -3364,7 +3866,7 @@ if (!hasPet) {
       } catch (err) { showToast(err.message, 'error'); }
     }
 
-    /* --- Symptom Tracking (Pro) --- */
+    /* --- Symptom Tracking (Starter+) --- */
     let giLogs = [], cardioLogs = [], testResults = [], dermaLogs = [];
     let symptomFilter = 'all';
 
@@ -3560,7 +4062,7 @@ if (!hasPet) {
       } catch (err) { showToast(err.message, 'error'); }
     }
 
-    /* --- Grooming (Pro) --- */
+    /* --- Grooming (Starter+) --- */
     let groomingAppointments = [];
 
     async function loadGroomingAppointments() {
@@ -5200,13 +5702,14 @@ if (!hasPet) {
       const currentTier = AppState.tier;
       const y = isYearlyPricing;
 
+      const tierLabels = { starter: 'Free', basic: 'Starter', family: 'Pro' };
       const hasSub = AppState.profile?.subscription_code && currentTier !== 'starter';
       function btn(tier, label) {
         if (currentTier === tier) {
           return '<button class="btn btn-secondary w-full btn-sm" onclick="closeAllModals()">Current Plan</button>';
         }
         if (hasSub) {
-          return '<button class="btn btn-primary w-full btn-sm" onclick="handleSwitchPlan(\'' + tier + '\')">Switch to ' + tier.charAt(0).toUpperCase() + tier.slice(1) + '</button>';
+          return '<button class="btn btn-primary w-full btn-sm" onclick="handleSwitchPlan(\'' + tier + '\')">Switch to ' + (tierLabels[tier] || tier) + '</button>';
         }
         return '<button class="btn btn-primary w-full btn-sm" onclick="handleSubscribe(\'' + tier + '\')">' + label + '</button>';
       }
@@ -5490,6 +5993,27 @@ if (!hasPet) {
     /* --- Chat Assistant --- */
     let chatInitialized = false;
 
+    function updateChatLimitIndicator(remaining, limit) {
+      const el = document.getElementById('chat-limit-indicator');
+      if (!el) return;
+      if (remaining < 0) { el.style.display = 'none'; return; }
+      el.style.display = 'block';
+      el.innerHTML = remaining > 0
+        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' + remaining + ' of ' + limit + ' free queries remaining'
+        : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Free queries used — upgrade to continue';
+    }
+
+    function setChatLocked(locked) {
+      const input = document.getElementById('chat-input');
+      const btn = document.getElementById('chat-send-btn');
+      if (!input || !btn) return;
+      if (locked) {
+        input.disabled = true;
+        input.placeholder = 'You\'ve used all free queries. Upgrade to continue.';
+        btn.disabled = true;
+      }
+    }
+
     function initChat() {
       if (chatInitialized) return;
       chatInitialized = true;
@@ -5498,10 +6022,13 @@ if (!hasPet) {
       if (container && container.children.length === 0) {
         const name = AppState.activePet?.name || 'your pet';
         const canLog = AppState.canWrite();
+        const tier = AppState.tier || 'starter';
         const intro = canLog
-          ? 'Hi! I\'m your pet care assistant. Tell me what\'s happening with ' + name + ' — I can log meals, medications, walks, and answer questions about their recent activity.'
-          : 'Hi! I\'m your pet care assistant. I can answer questions about ' + name + '\'s recent activity. Upgrade to Starter for the ability to log via chat too.';
-        addChatMessage('assistant', intro);
+          ? 'Hi! I\'m <strong>PupFile Assistant</strong> — your pet care AI. I can answer questions about <strong>' + name + '</strong>\'s health, meals, and activity, and I can log meals, medications, and walks directly. Just tell me what\'s happening!'
+          : tier === 'starter'
+            ? 'Hi! I\'m <strong>PupFile Assistant</strong> — your pet care AI. You have <strong>3 free queries</strong> to ask about <strong>' + name + '</strong>\'s health, meals, and activity. <a href="#" onclick="openModal(\'modal-pricing\');return false" style="color:var(--orange-600);text-decoration:underline">Upgrade to Starter</a> for unlimited AI chat with logging.'
+            : 'Hi! I\'m <strong>PupFile Assistant</strong> — your pet care AI. I can answer questions about <strong>' + name + '</strong>\'s health, meals, and activity based on their recent logs. <a href="#" onclick="openModal(\'modal-pricing\');return false" style="color:var(--orange-600);text-decoration:underline">Upgrade to Starter</a> to also let me log care for you!';
+        addChatMessage('assistant', '<div style="padding:4px 0">' + intro + '</div><div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);font-size:0.78rem;color:var(--text-muted)">⚠️ I\'m an AI — always check with your vet for medical advice. I can only discuss pet care topics.</div>');
       } else {
         if (inputArea) inputArea.style.display = '';
       }
@@ -5530,6 +6057,12 @@ if (!hasPet) {
         if (!res.ok) throw new Error(data.error || 'Request failed');
         hideChatLoading();
         addChatMessage('assistant', data.reply);
+        if (data.queriesRemaining !== undefined) {
+          updateChatLimitIndicator(data.queriesRemaining, data.queriesLimit || 3);
+        }
+        if (data.locked) {
+          setChatLocked(true);
+        }
         if (AppState.canWrite() && data.actions && data.actions.length > 0) {
           const logs = await getLogs(AppState.activePet?.id, 50, AppState.timelineDays());
           AppState.setLogs(logs);
@@ -5553,8 +6086,10 @@ if (!hasPet) {
       contentDiv.className = 'chat-msg-content';
       if (content instanceof HTMLElement) {
         contentDiv.appendChild(content);
-      } else {
+      } else if (role === 'user') {
         contentDiv.textContent = content;
+      } else {
+        contentDiv.innerHTML = content;
       }
       div.appendChild(contentDiv);
       container.appendChild(div);
@@ -5695,18 +6230,68 @@ if (!hasPet) {
 
       if (!AppState.canAccess('coparent_sync')) {
         container.innerHTML = `
-          <div class="upgrade-card" style="text-align:center;padding:40px 24px">
-            <div style="margin-bottom:12px"><i data-lucide="users" style="width:40px;height:40px"></i></div>
-            <h3 style="margin-bottom:8px">Co-parent Sync</h3>
-            <p style="color:var(--text-secondary);max-width:420px;margin:0 auto 16px">
-              Add a partner, family member, or fellow pet parent to share care duties.
-              Co-parents can log meals, track symptoms, and stay in sync.
-            </p>
-            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">
+          <div class="locked-feature" style="text-align:center">
+            <span class="lock-emoji">
+              <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                <g opacity="0.3" transform="translate(3,-1)">
+                  <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                  <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                  <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                </g>
+                <g>
+                  <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                  <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                  <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                </g>
+              </svg>
+            </span>
+            <h3>Co-parent Sync</h3>
+            <p>Add a partner, family member, or fellow pet parent to share care duties. Co-parents can log meals, track symptoms, and stay in sync.</p>
+            <div class="lf-preview">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                <div style="width:36px;height:36px;background:#ea580c;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff">J</div>
+                <div style="flex:1">
+                  <div style="font-size:0.82rem;font-weight:600">You — Jamie</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Primary owner</div>
+                </div>
+                <div style="width:36px;height:36px;background:#2563eb;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff">S</div>
+                <div style="flex:1">
+                  <div style="font-size:0.82rem;font-weight:600">Sarah</div>
+                  <div style="font-size:0.7rem;color:var(--text-muted)">Co-parent · since Mar 2</div>
+                </div>
+              </div>
+              <div class="preview-row" style="background:var(--bg-tertiary);border-radius:var(--radius-sm);padding:8px 10px">
+                <div style="width:24px;height:24px;background:#2563eb;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff;flex-shrink:0">S</div>
+                <div>
+                  <div class="preview-title">Breakfast — 1.5 cups kibble</div>
+                  <div class="preview-meta">7:32 AM · Logged by Sarah</div>
+                </div>
+              </div>
+              <div class="preview-row" style="padding:8px 10px">
+                <div style="width:24px;height:24px;background:#ea580c;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff;flex-shrink:0">J</div>
+                <div>
+                  <div class="preview-title">Morning walk — 25 min</div>
+                  <div class="preview-meta">8:15 AM · Logged by you</div>
+                </div>
+              </div>
+              <div class="preview-row" style="background:var(--bg-tertiary);border-radius:var(--radius-sm);padding:8px 10px">
+                <div style="width:24px;height:24px;background:#2563eb;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:#fff;flex-shrink:0">S</div>
+                <div>
+                  <div class="preview-title">Heartgard monthly dose</div>
+                  <div class="preview-meta">9:00 AM · Logged by Sarah</div>
+                </div>
+                <span class="preview-tag green">✓ DONE</span>
+              </div>
+              <div class="lf-blur">
+                <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Starter</button>
+              </div>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:16px">
               <strong>Starter plan:</strong> up to 2 co-parents &middot;
               <strong>Pro plan:</strong> unlimited co-parents
             </p>
-            <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Starter</button>
           </div>
         `;
         typeof lucide !== 'undefined' && lucide.createIcons();
@@ -5715,7 +6300,8 @@ if (!hasPet) {
 
       const maxCoparents = AppState.maxCoparents();
       const badge = document.getElementById('coparent-tier-badge');
-      if (badge) badge.textContent = AppState.tier.toUpperCase() + (maxCoparents === Infinity ? ' ∞' : ' max ' + maxCoparents);
+      const tierDisplay = { starter: 'Free', basic: 'Starter', family: 'Pro' }[AppState.tier] || AppState.tier;
+      if (badge) badge.textContent = tierDisplay.toUpperCase() + (maxCoparents === Infinity ? ' ∞' : ' max ' + maxCoparents);
 
       const pets = AppState.pets || [];
       if (pets.length === 0) {
