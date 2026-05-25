@@ -16,8 +16,7 @@ BEGIN
   SELECT COUNT(*) INTO pet_count FROM public.pets WHERE user_id = NEW.user_id;
 
   max_pets := CASE user_tier
-    WHEN 'pro' THEN 999999
-    WHEN 'family' THEN 4
+    WHEN 'family' THEN 999999
     WHEN 'basic' THEN 2
     ELSE 1
   END;

@@ -698,3 +698,63 @@
 /* --- Stat Cards (shared) --- */
 .stat-card { background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-lg); }
 .stat-card:hover { border-color: var(--orange-200); }
+
+/* --- AI Report Customizer --- */
+.ai-data-sources { display:flex; flex-direction:column; gap:6px; }
+.ai-checkbox { display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:var(--radius-md); cursor:pointer; transition:background var(--transition-fast); font-size:0.84rem; }
+.ai-checkbox:hover { background:var(--bg-tertiary); }
+.ai-checkbox input[type="checkbox"] { width:16px; height:16px; accent-color:var(--orange-500); cursor:pointer; flex-shrink:0; }
+.ai-checkbox span { display:flex; align-items:center; gap:4px; }
+.ai-checkbox span svg { width:14px; height:14px; stroke:var(--text-muted); flex-shrink:0; }
+.ai-checkbox:has(:checked) span svg { stroke:var(--orange-500); }
+.ai-select-actions { display:flex; gap:8px; }
+#ai-days-btn-group button { min-width:64px; justify-content:center; }
+.ai-report { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* --- Task Cards --- */
+.task-card { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:14px 16px; transition:border-color 0.15s, opacity 0.2s; }
+.task-card:hover { border-color:var(--orange-200); }
+.task-card.task-done { opacity:0.6; }
+.task-card.task-done .task-title { text-decoration:line-through; color:var(--text-muted); }
+.task-card.task-overdue .task-date-text { color:#dc2626; }
+.task-card.task-today .task-date-text { color:var(--orange-600); font-weight:600; }
+.task-card .task-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.task-card .task-check { width:18px; height:18px; border-radius:50%; border:2px solid var(--border-color); background:var(--bg-tertiary); cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:2px; transition:all 0.15s; }
+.task-card .task-check:hover { border-color:var(--orange-500); background:var(--orange-50); }
+[data-theme="dark"] .task-card .task-check:hover { background:rgba(249,115,22,0.15); }
+.task-card .task-check.task-checked { background:var(--orange-500); border-color:var(--orange-500); }
+.task-card .task-check.task-checked svg { display:block; }
+.task-card .task-check svg { display:none; width:10px; height:10px; stroke:white; stroke-width:3; }
+.task-card .task-body { flex:1; min-width:0; }
+.task-card .task-title { font-size:0.9rem; font-weight:600; margin-bottom:2px; }
+.task-card .task-desc { font-size:0.78rem; color:var(--text-secondary); margin-bottom:4px; }
+.task-card .task-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.72rem; color:var(--text-muted); }
+.task-card .task-meta .task-priority-high { color:#dc2626; font-weight:600; }
+.task-card .task-meta .task-priority-normal { color:var(--text-muted); }
+.task-card .task-meta .task-priority-low { color:var(--text-muted); }
+.task-card .task-meta .task-cat-badge { display:inline-flex; align-items:center; gap:3px; padding:1px 6px; background:var(--bg-tertiary); border-radius:var(--radius-full); }
+.task-card .task-meta .task-cat-badge svg { width:10px; height:10px; }
+.task-card .task-actions { display:flex; gap:4px; flex-shrink:0; align-items:flex-start; }
+.task-card .task-sitter-name { font-size:0.7rem; color:var(--text-muted); padding:1px 6px; background:var(--bg-tertiary); border-radius:var(--radius-full); }
+
+/* --- Task Modal --- */
+#modal-add-task .modal { max-width:460px; }
+
+/* --- Task Stats --- */
+.task-stats { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+
+/* --- Popup Reminder Overlay --- */
+.reminder-popup-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999; display:none; align-items:center; justify-content:center; padding:24px; }
+.reminder-popup-overlay.active { display:flex; }
+.reminder-popup { background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-xl); max-width:400px; width:100%; padding:24px; box-shadow:0 8px 32px rgba(0,0,0,0.15); animation:slideUp 0.25s ease; }
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+.reminder-popup h3 { font-size:1rem; font-weight:700; margin-bottom:4px; }
+.reminder-popup .rp-subtitle { font-size:0.82rem; color:var(--text-secondary); margin-bottom:16px; }
+.reminder-popup .rp-list { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.reminder-popup .rp-item { display:flex; align-items:flex-start; gap:8px; padding:8px 10px; background:var(--bg-secondary); border-radius:var(--radius-md); font-size:0.85rem; }
+.reminder-popup .rp-item .rp-icon { flex-shrink:0; width:16px; height:16px; margin-top:2px; }
+.reminder-popup .rp-item.rp-overdue .rp-icon { color:#dc2626; }
+.reminder-popup .rp-item .rp-title { font-weight:500; }
+.reminder-popup .rp-item .rp-date { font-size:0.72rem; color:var(--text-muted); }
+.reminder-popup .rp-actions { display:flex; gap:8px; justify-content:flex-end; }

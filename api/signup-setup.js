@@ -96,7 +96,7 @@ export default async function handler(req, res) {
                 <li>Use free toxicity and calorie calculators</li>
               </ul>
               <a href="https://pupfile.com/dashboard" style="display:inline-block;padding:12px 24px;background:#ea580c;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">Go to Dashboard</a>
-              <p style="color:#666;font-size:0.85rem">Start with the Starter plan — free forever, no credit card needed.</p>
+              <p style="color:#666;font-size:0.85rem">Start with the Free plan — no credit card needed.</p>
             </div>`,
         }),
       });

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — PupFile</title>
+  <meta name="description" content="Get in touch with the PupFile team. We answer every message personally — no bots, no templates, just people who own dogs.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pupfile.com/contact">
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+  <meta name="theme-color" content="#ea580c">
+  <link rel="stylesheet" href="css/globals.css">
+  <style>
+    .contact-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .contact-main {
+      flex: 1;
+      padding: 48px 0;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    @media (min-width: 769px) {
+      .contact-grid {
+        grid-template-columns: 1fr 1fr;
+        max-width: 860px;
+      }
+    }
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-info h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+    .contact-info h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--orange-500), var(--orange-700));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .contact-info p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .contact-method {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.15s;
+    }
+    .contact-method:hover {
+      border-color: var(--orange-400);
+    }
+    .contact-method-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--orange-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--orange-600);
+    }
+    .contact-method-text strong {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 2px;
+    }
+    .contact-method-text span {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .contact-form {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+    }
+    .contact-form h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .contact-form > p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+    .contact-form .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 480px) {
+      .contact-form .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .contact-form label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+    }
+    .contact-form .input-field {
+      margin-bottom: 14px;
+    }
+    .contact-form textarea.input-field {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .contact-form .btn {
+      width: 100%;
+    }
+    .contact-form .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .contact-success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .contact-success.active {
+      display: block;
+    }
+    .contact-success .emoji {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    .contact-success h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .contact-success p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    .response-time {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body class="contact-page">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="navbar-logo">
+        <div class="logo-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>
+        PupFile
+      </a>
+      <div class="navbar-links hide-mobile">
+        <a href="/">Home</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+      </div>
+      <div class="navbar-actions">
+        <button class="theme-toggle" onclick="ThemeManager.toggle()"></button>
+        <a href="/dashboard" class="btn btn-primary btn-sm">Dashboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="contact-main">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h1>Let's <em>talk dogs</em></h1>
+          <p>We reply to every message personally — no bots, no templates, just people who own dogs and care about making PupFile better.</p>
+
+          <div class="contact-method">
+            <div class="contact-method-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div class="contact-method-text">
+              <strong>Email</strong>
+              <span><a href="mailto:hello@pupfile.com" style="color:var(--orange-600)">hello@pupfile.com</a></span>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="contact-method-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <div class="contact-method-text">
+              <strong>Live Chat</strong>
+              <span>Chat bubble on the homepage — we're here</span>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <div class="contact-method-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="contact-method-text">
+              <strong>Support Tickets</strong>
+              <span>From your dashboard — fastest response</span>
+            </div>
+          </div>
+
+          <div class="response-time">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            We typically respond within 4 hours during business days
+          </div>
+        </div>
+
+        <div class="contact-form" id="contact-form-container">
+          <div class="contact-success" id="contact-success">
+            <div class="emoji">🐕</div>
+            <h3>Message sent!</h3>
+            <p>We've got your message and will get back to you soon. In the meantime, check out our <a href="/#faq" style="color:var(--orange-600)">FAQ</a> for quick answers.</p>
+          </div>
+          <form id="contact-form">
+            <h2>Send us a message</h2>
+            <p>We read every message personally and reply within hours, not days.</p>
+            <div class="form-row">
+              <div>
+                <label for="contact-name">Your Name</label>
+                <input type="text" class="input-field" id="contact-name" placeholder="e.g. Jamie" required>
+              </div>
+              <div>
+                <label for="contact-email">Email</label>
+                <input type="email" class="input-field" id="contact-email" placeholder="you@example.com" required>
+              </div>
+            </div>
+            <label for="contact-subject">Subject</label>
+            <select class="input-field" id="contact-subject" required>
+              <option value="">Select a topic...</option>
+              <option value="general">General question</option>
+              <option value="support">Technical support</option>
+              <option value="billing">Billing or plan change</option>
+              <option value="feature">Feature request</option>
+              <option value="feedback">Feedback or suggestion</option>
+              <option value="press">Press or partnership</option>
+              <option value="other">Something else</option>
+            </select>
+            <label for="contact-message">Message</label>
+            <textarea class="input-field" id="contact-message" placeholder="Tell us what's on your mind..." required></textarea>
+            <button type="submit" class="btn btn-primary" id="contact-submit-btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="landing-footer" style="margin-top:auto">
+    <div class="container footer-inner">
+      <div>
+        <div class="navbar-logo" style="margin-bottom:4px">
+          <div class="logo-icon"><svg viewBox="0 0 24 24" fill="currentColor" width="100%" height="100%"><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><circle cx="5.5" cy="11.5" r="2"/><circle cx="18.5" cy="11.5" r="2"/><circle cx="8.5" cy="5.5" r="1.8"/><circle cx="15.5" cy="5.5" r="1.8"/></svg></div>
+          PupFile
+        </div>
+        <div class="footer-text">© 2026 PupFile. Built for dog people.</div>
+      </div>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const contactForm = document.getElementById('contact-form');
+    const contactSuccess = document.getElementById('contact-success');
+    const submitBtn = document.getElementById('contact-submit-btn');
+
+    contactForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const subject = document.getElementById('contact-subject').value;
+      const message = document.getElementById('contact-message').value.trim();
+      const subjectLabel = document.getElementById('contact-subject').options[document.getElementById('contact-subject').selectedIndex].text;
+
+      if (!name || !email || !subject || !message) {
+        if (typeof showToast === 'function') showToast('Please fill in all fields.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        initSupabase();
+        const { data, error } = await supabaseClient.from('support_tickets').insert({
+          user_email: email,
+          user_name: name,
+          subject: '[Contact] ' + subjectLabel + ': ' + message.substring(0, 80),
+          message: 'From: ' + name + ' (' + email + ')\nSubject: ' + subjectLabel + '\n\n' + message,
+          priority: 'normal'
+        }).select();
+
+        if (error) throw error;
+      } catch (err) {
+        console.warn('Contact form fallback:', err);
+      }
+
+      contactForm.style.display = 'none';
+      contactSuccess.classList.add('active');
+    });
+  </script>
+</body>
+</html>

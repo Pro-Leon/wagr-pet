@@ -816,6 +816,7 @@
         <div class="nav-section-label">DAILY</div>
         <a href="#" data-tab="home" onclick="switchTab('home', this)"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Home</a>
         <a href="#" data-tab="timeline" onclick="switchTab('timeline', this)"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Timeline</a>
+        <a href="#" data-tab="tasks" onclick="switchTab('tasks', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg> Tasks</a>
 
         <div class="nav-section-label">HEALTH</div>
         <a href="#" data-tab="food" onclick="switchTab('food', this)"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Food Log</a>
@@ -878,6 +879,7 @@
           <div class="nav-section-label">DAILY</div>
           <a href="#" onclick="switchTab('home');closeMobileMenu()">Home</a>
           <a href="#" onclick="switchTab('timeline');closeMobileMenu()">Timeline</a>
+          <a href="#" onclick="switchTab('tasks');closeMobileMenu()">Tasks</a>
 
           <div class="nav-section-label">HEALTH</div>
           <a href="#" onclick="switchTab('food');closeMobileMenu()">Food Log</a>
@@ -949,6 +951,36 @@
           <div id="timeline-feed"></div>
         </div>
 
+        <!-- ===== TASKS TAB ===== -->
+        <div class="tab-content" id="tab-tasks">
+          <div class="timeline-header">
+            <h2>Tasks</h2>
+            <button class="btn btn-primary btn-sm" id="add-task-btn" onclick="openTaskModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Task
+            </button>
+          </div>
+          <div id="tasks-section">
+            <div id="tasks-locked" class="locked-feature">
+              <span class="lock-emoji"><i data-lucide="clipboard-check" style="width:24px;height:24px"></i></span>
+              <h3>Pet Care Tasks</h3>
+              <p>Create tasks for yourself, your co-parents, and sitters. Track what needs to be done and when.</p>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Create &amp; assign tasks to co-parents</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Sitters can see and complete tasks</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Get email reminders for upcoming tasks</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Popup reminders when you open your dashboard</li>
+              </ul>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
+            </div>
+            <div id="tasks-active" style="display:none">
+              <div id="tasks-stats" class="task-stats"></div>
+              <div id="tasks-starter-banner" style="display:none;margin-bottom:12px"></div>
+              <div id="tasks-list" class="flex flex-col gap-3"></div>
+            </div>
+          </div>
+        </div>
+
         <!-- ===== QR TAB ===== -->
         <div class="tab-content" id="tab-qr">
           <div class="timeline-header"><h2>QR Emergency Tag</h2></div>
@@ -986,33 +1018,62 @@
           <div id="ai-section">
             <!-- Pro: active -->
             <div id="ai-active" style="display:none">
-              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px">Compile your pet's data into a clinical summary for your vet.</p>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px">Select which data sources to include and customize your report.</p>
               
               <div class="card" style="margin-bottom:16px">
-                <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:12px">Include in Report</h4>
-                <div class="ai-data-sources">
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-timeline" checked> <span><i data-lucide="clipboard-list" style="width:14px;height:14px;vertical-align:middle"></i> Timeline (meals, meds, bathroom)</span></label>
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-food" checked> <span><i data-lucide="utensils-crossed" style="width:14px;height:14px;vertical-align:middle"></i> Food Log</span></label>
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-gi"> <span><i data-lucide="stethoscope" style="width:14px;height:14px;vertical-align:middle"></i> GI (vomit/feces)</span></label>
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-cardio"> <span><i data-lucide="heart" style="width:14px;height:14px;vertical-align:middle"></i> Cardiology (respiratory)</span></label>
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-tests"> <span><i data-lucide="flask-conical" style="width:14px;height:14px;vertical-align:middle"></i> Test Results</span></label>
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-derma"> <span><i data-lucide="bandage" style="width:14px;height:14px;vertical-align:middle"></i> Dermatology (skin)</span></label>
-                  <label class="ai-checkbox"><input type="checkbox" id="ai-grooming"> <span><i data-lucide="scissors" style="width:14px;height:14px;vertical-align:middle"></i> Grooming</span></label>
+                <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:4px">Report Customizer</h4>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px">Choose the data to include in your vet-prep report.</p>
+                
+                <div class="ai-data-section" style="margin-bottom:12px">
+                  <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Daily Activity</div>
+                  <div class="ai-data-sources">
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-timeline" checked> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Timeline (meals, meds, bathroom)</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-food" checked> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg> Food Log</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-grooming"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Grooming</span></label>
+                  </div>
+                </div>
+
+                <div class="ai-data-section" style="margin-bottom:12px">
+                  <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Health &amp; Symptoms</div>
+                  <div class="ai-data-sources">
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-gi"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> GI (vomit/feces)</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-cardio"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M19 14c1.5-2.5 2-5 2-5 2-5-3-8-7-4-4-4-9-1-7 4 0 0 .5 2.5 2 5"/></svg> Cardiology (respiratory)</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-tests"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Test Results</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-derma"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><circle cx="12" cy="12" r="3"/></svg> Dermatology (skin)</span></label>
+                  </div>
+                </div>
+
+                <div class="ai-data-section" style="margin-bottom:12px">
+                  <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Tracking &amp; Records</div>
+                  <div class="ai-data-sources">
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-weight" checked> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M12 3a9 9 0 0 0-9 9v0a9 9 0 0 0 9 9v0a9 9 0 0 0 9-9v0a9 9 0 0 0-9-9z"/><path d="M12 7v5l3 3"/></svg> Weight Tracking</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-inventory"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> Food Inventory</span></label>
+                    <label class="ai-checkbox"><input type="checkbox" id="ai-vetrecords"> <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Vet Records</span></label>
+                  </div>
+                </div>
+
+                <div class="ai-select-actions" style="display:flex;gap:8px;margin-top:8px;padding-top:10px;border-top:1px solid var(--border-color)">
+                  <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('#ai-active input[type=checkbox]').forEach(c => c.checked = true)" style="font-size:0.75rem">Select All</button>
+                  <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('#ai-active input[type=checkbox]').forEach(c => c.checked = false)" style="font-size:0.75rem">Clear All</button>
                 </div>
               </div>
               
-              <div class="input-group" style="margin-bottom:16px">
-                <label style="font-size:0.8rem;font-weight:500">Time Period</label>
-                <select class="input-field" id="ai-days" style="max-width:200px">
-                  <option value="7">Last 7 days</option>
-                  <option value="14">Last 14 days</option>
-                  <option value="30" selected>Last 30 days</option>
-                  <option value="60">Last 60 days</option>
-                  <option value="90">Last 90 days</option>
-                </select>
+              <div class="card" style="margin-bottom:16px">
+                <h4 style="font-size:0.85rem;font-weight:600;margin-bottom:8px">Time Period</h4>
+                <div id="ai-days-btn-group" style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button class="btn btn-sm btn-secondary" data-days="7">7 days</button>
+                  <button class="btn btn-sm btn-secondary" data-days="14">14 days</button>
+                  <button class="btn btn-sm btn-primary" data-days="30">30 days</button>
+                  <button class="btn btn-sm btn-secondary" data-days="60">60 days</button>
+                  <button class="btn btn-sm btn-secondary" data-days="90">90 days</button>
+                </div>
+                <input type="hidden" id="ai-days" value="30">
               </div>
               
-              <button class="btn btn-primary" id="generate-ai-btn" onclick="handleGenerateReport()">Generate Report</button>
+              <button class="btn btn-primary" id="generate-ai-btn" onclick="handleGenerateReport()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/></svg>
+                Generate Report
+              </button>
               <div id="ai-report-output" style="margin-top:20px;display:none"></div>
             </div>
             <!-- Teaser for non-pro -->
@@ -1027,7 +1088,7 @@
                   <strong>Bathroom Activity:</strong> Average 2.3 eliminations per day. Two episodes of loose stool (Jan 13, Jan 19) both occurring 12–18 hours after a skipped meal. Otherwise normal consistency...
                 </div>
                 <div class="ai-blur">
-                  <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+                  <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
                 </div>
               </div>
             </div>
@@ -1074,7 +1135,7 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Low stock warnings &amp; alerts</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Quick-log meals from inventory</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
             </div>
             <div id="inventory-active" style="display:none">
               <div id="inventory-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap"></div>
@@ -1104,7 +1165,7 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Stats: min, max, average, trend</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Weight change alerts</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
             </div>
             <div id="weight-active" style="display:none">
               <div id="weight-stats" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap"></div>
@@ -1116,7 +1177,7 @@
           </div>
         </div>
 
-        <!-- ===== SYMPTOMS TAB (PRO) ===== -->
+          <!-- ===== SYMPTOMS TAB ===== -->
         <div class="tab-content" id="tab-symptoms">
           <div class="timeline-header">
             <h2>Symptom Tracker</h2>
@@ -1136,7 +1197,7 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Test Results & Reports</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Dermatology (with photos)</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
             </div>
             <div id="symptoms-active" style="display:none">
               <div class="symptom-tabs" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
@@ -1152,7 +1213,7 @@
           </div>
         </div>
 
-        <!-- ===== GROOMING TAB (PRO) ===== -->
+          <!-- ===== GROOMING TAB ===== -->
         <div class="tab-content" id="tab-grooming">
           <div class="timeline-header">
             <h2>Grooming Appointments</h2>
@@ -1172,7 +1233,7 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Photo history</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Groomer notes</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
             </div>
             <div id="grooming-active" style="display:none">
               <div id="grooming-list" class="flex flex-col gap-3"></div>
@@ -1193,7 +1254,7 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Real-time sync to your dashboard</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Links expire automatically</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Unlock with Starter — from $4.99/mo</button>
             </div>
             <div id="sitter-active" style="display:none">
               <!-- Care Plan Notifications -->
@@ -1356,7 +1417,7 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Add notes &amp; search records</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Share with your vet instantly</li>
               </ul>
-              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $16.99/mo</button>
+              <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Pro — $9.99/mo</button>
             </div>
             <div id="vetrecords-active" style="display:none">
               <div id="vetrecords-list" class="flex flex-col gap-3"></div>
@@ -2142,6 +2203,81 @@
     </div>
   </div>
 
+  <!-- Add Task Modal -->
+  <div class="modal-overlay" id="modal-add-task">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="task-modal-title">Add Task</h3>
+        <button class="btn-icon" onclick="closeModal('modal-add-task')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-task-form" class="flex flex-col gap-4">
+        <input type="hidden" id="task-edit-id">
+        <div class="input-group">
+          <label>Task Title</label>
+          <input type="text" class="input-field" id="task-title" placeholder="e.g. Give heartworm pill" required>
+        </div>
+        <div class="input-group">
+          <label>Description (optional)</label>
+          <textarea class="input-field" id="task-desc" rows="2" placeholder="Any details..."></textarea>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Date</label>
+            <input type="date" class="input-field" id="task-date" required>
+          </div>
+          <div class="input-group">
+            <label>Time (optional)</label>
+            <input type="time" class="input-field" id="task-time">
+          </div>
+        </div>
+        <div class="grid grid-2" style="gap:12px">
+          <div class="input-group">
+            <label>Priority</label>
+            <select class="input-field" id="task-priority">
+              <option value="low">Low</option>
+              <option value="normal" selected>Normal</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Category</label>
+            <select class="input-field" id="task-category">
+              <option value="general">General</option>
+              <option value="feeding">Feeding</option>
+              <option value="medication">Medication</option>
+              <option value="grooming">Grooming</option>
+              <option value="exercise">Exercise</option>
+              <option value="vet">Vet Visit</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group" id="task-assign-group">
+          <label>Assign to (optional)</label>
+          <select class="input-field" id="task-assign">
+            <option value="">Just me</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" id="task-submit-btn">Save Task</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reminder Popup -->
+  <div class="reminder-popup-overlay" id="reminder-popup">
+    <div class="reminder-popup">
+      <h3 id="rp-title">&#9200; Upcoming Tasks</h3>
+      <p class="rp-subtitle" id="rp-subtitle">You have tasks that need attention</p>
+      <div class="rp-list" id="rp-list"></div>
+      <div class="rp-actions">
+        <button class="btn btn-ghost" onclick="closeReminderPopup()">Dismiss</button>
+        <button class="btn btn-primary" onclick="switchTab('tasks', null);closeReminderPopup()">View Tasks</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating AI Assistant Button -->
   <button class="fab ai-fab" onclick="switchTab('assistant', null)" title="AI Assistant">
     <svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/><path d="M8 15h8"/></svg>
@@ -2305,11 +2441,17 @@
         try { testResults = await getTestResults(AppState.activePet.id); } catch(e) { testResults = []; }
         try { dermaLogs = await getDermaLogs(AppState.activePet.id); } catch(e) { dermaLogs = []; }
         try { groomingAppointments = await getGroomingAppointments(AppState.activePet.id); } catch(e) { groomingAppointments = []; }
+        try { tasks = await getTasks(AppState.activePet.id); } catch(e) { tasks = []; }
       }
 
       updateUIForUser();
       renderPetSelector(AppState.pets, AppState.activePet?.id);
       renderHomeTab();
+
+      // Show popup reminders for tasks (once per session)
+      if (!sessionStorage.getItem('pupfile_reminder_shown')) {
+        setTimeout(function () { showTaskReminders(); }, 1500);
+      }
 
       // Check if returning from Paystack redirect
       checkPaymentReturn();
@@ -2377,7 +2519,7 @@ if (!hasPet) {
         html += `<div class="streak-card" id="streak-bar"><span class="streak-emoji"><i data-lucide="flame" style="width:18px;height:18px"></i></span><div class="streak-text"><span class="streak-num">${streak}</span>-day streak! Keep logging to stay on track.</div></div>`;
       }
 
-      // Quick log buttons — Family+ only
+      // Quick log buttons — Starter+ only
       if (AppState.canWrite()) {
         html += `
           <div class="quick-log-row" id="quick-actions">
@@ -2408,6 +2550,41 @@ if (!hasPet) {
             <p>Upgrade to keep your dog's full history, unlock AI reports, and see patterns your vet will thank you for.</p>
             <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
           </div>`;
+      }
+
+      // Upcoming tasks section
+      var pendingTasks = (tasks || []).filter(function (t) { return t.status === 'pending'; });
+      var overdueTasks = pendingTasks.filter(function (t) { return new Date(t.date + 'T' + (t.time || '00:00')) < new Date(); });
+      var todayTasks = pendingTasks.filter(function (t) { return t.date === todayStr(); });
+      var upcomingTasks = pendingTasks.filter(function (t) { return new Date(t.date) > new Date(new Date().toDateString()); }).slice(0, 5);
+      if (pendingTasks.length > 0) {
+        html += '<div class="timeline-header" style="margin-top:16px"><h2>' + (overdueTasks.length > 0 ? '&#9888; ' : '') + 'Tasks</h2></div>';
+        html += '<div class="flex flex-col gap-2" style="margin-bottom:4px">';
+        pendingTasks.slice(0, 5).forEach(function (t) {
+          var isOverdue = new Date(t.date + 'T' + (t.time || '00:00')) < new Date();
+          var isToday = t.date === todayStr();
+          var badge = '';
+          if (isOverdue) badge = '<span style="font-size:0.65rem;background:#fef2f2;color:#dc2626;padding:1px 6px;border-radius:var(--radius-full);font-weight:600;margin-left:6px">OVERDUE</span>';
+          else if (isToday) badge = '<span style="font-size:0.65rem;background:#fff7ed;color:#ea580c;padding:1px 6px;border-radius:var(--radius-full);font-weight:600;margin-left:6px">TODAY</span>';
+          html +=
+            '<div class="task-card" style="padding:10px 12px">' +
+              '<div class="task-top">' +
+                '<div class="task-check' + (t.status === 'done' ? ' task-checked' : '') + '" onclick="completeTaskHandler(\'' + t.id + '\')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+                '<div class="task-body">' +
+                  '<div class="task-title">' + escHtml(t.title) + badge + '</div>' +
+                  '<div class="task-meta" style="margin-top:2px">' +
+                    (t.time ? '<span>' + t.time + '</span>' : '') +
+                    (t.sitter_name ? '<span class="task-sitter-name">' + escHtml(t.sitter_name) + '</span>' : '') +
+                    (t.priority === 'high' ? '<span class="task-priority-high">High</span>' : '') +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+        });
+        if (pendingTasks.length > 5) {
+          html += '<button class="btn btn-ghost btn-sm" onclick="switchTab(\'tasks\')" style="margin-top:4px">View all ' + pendingTasks.length + ' tasks &rarr;</button>';
+        }
+        html += '</div>';
       }
 
       // Recent activity (last 5)
@@ -2470,7 +2647,7 @@ if (!hasPet) {
 
       ['sidebar-avatar', 'mobile-avatar'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = initials; });
       ['sidebar-name', 'mobile-name'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = name; });
-      const tierLabels = { starter: 'Starter', basic: 'Basic', family: 'Family', pro: 'Pro' };
+      const tierLabels = { starter: 'Free', basic: 'Starter', family: 'Pro' };
       ['sidebar-tier', 'mobile-tier'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = tierLabels[tier] || 'Free'; });
 
       const settingsEmail = document.getElementById('settings-email');
@@ -2478,7 +2655,7 @@ if (!hasPet) {
       const settingsName = document.getElementById('settings-name');
       if (settingsEmail) settingsEmail.textContent = email;
       if (settingsName) settingsName.value = AppState.user?.display_name || '';
-      if (settingsTier) settingsTier.textContent = tier.charAt(0).toUpperCase() + tier.slice(1);
+      if (settingsTier) settingsTier.textContent = tierLabels[tier] || tier.charAt(0).toUpperCase() + tier.slice(1);
 
       // Subscription management visibility
       const subStatus = document.getElementById('settings-sub-status');
@@ -2648,6 +2825,13 @@ if (!hasPet) {
       const vrActive = document.getElementById('vetrecords-active');
       if (AppState.canAccess('vet_records')) { show(vrActive); hide(vrLocked); }
       else { hide(vrActive); show(vrLocked); }
+
+      // Tasks
+      const tLocked = document.getElementById('tasks-locked');
+      const tActive = document.getElementById('tasks-active');
+      const tBtn = document.getElementById('add-task-btn');
+      if (AppState.canAccess('tasks')) { show(tActive); hide(tLocked); if (tBtn) tBtn.style.display = 'inline-flex'; }
+      else { hide(tActive); show(tLocked); if (tBtn) tBtn.style.display = 'none'; }
     }
 
     function show(el) { if (el) el.style.display = 'block'; }
@@ -2668,6 +2852,7 @@ if (!hasPet) {
       if (tab === 'settings') { refreshProfile().then(() => { updateUIForUser(); loadBillingInfo(); }); }
       if (tab === 'pets') renderPetsList();
       if (tab === 'timeline') handleTimelineTab();
+      if (tab === 'tasks') { renderTasksTab(); }
       if (tab === 'food') { renderFoodTab(); }
       if (tab === 'inventory') { renderInventoryTab(); }
       if (tab === 'weight') { renderWeightTab(); }
@@ -2679,7 +2864,7 @@ if (!hasPet) {
       if (tab === 'support') { renderSupportTab(); }
       if (tab === 'assistant') { initChat(); document.querySelectorAll('.fab').forEach(b => b.style.display = 'none'); }
       else { document.querySelectorAll('.fab').forEach(b => b.style.display = ''); }
-      if (['qr','ai','sitter','coparent','symptoms','grooming','support','assistant','inventory','weight','vetrecords'].includes(tab)) updateFeatureAccess();
+      if (['qr','ai','sitter','coparent','symptoms','grooming','support','assistant','inventory','weight','vetrecords','tasks'].includes(tab)) updateFeatureAccess();
       // Track feature usage for analytics
       if (typeof trackFeature === 'function') trackFeature('tab_' + tab);
     }
@@ -2701,6 +2886,7 @@ if (!hasPet) {
         try { testResults = await getTestResults(pet.id); } catch(e) { testResults = []; }
         try { dermaLogs = await getDermaLogs(pet.id); } catch(e) { dermaLogs = []; }
         try { groomingAppointments = await getGroomingAppointments(pet.id); } catch(e) { groomingAppointments = []; }
+        try { tasks = await getTasks(pet.id); } catch(e) { tasks = []; }
         updateFeatureAccess();
         updateUIForUser();
         renderHomeTab();
@@ -2985,7 +3171,7 @@ if (!hasPet) {
         } else {
           nutritionHtml = `
             <div class="nutrition-locked">
-              <p>Get nutritional analysis with Basic plan or above.</p>
+              <p>Get nutritional analysis with Starter plan or above.</p>
               <button class="btn btn-primary btn-sm" onclick="openModal('modal-pricing')">Unlock — from $4.99/mo</button>
             </div>`;
         }
@@ -3982,6 +4168,342 @@ if (!hasPet) {
       } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
     });
 
+    /* ===== TASKS ===== */
+    var tasks = [];
+
+    function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+    function getTaskCategoryIcon(cat) {
+      var icons = {
+        general: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>',
+        feeding: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>',
+        medication: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 4.5 3 12l7.5 7.5"/><path d="m13.5 4.5 7.5 7.5-7.5 7.5"/></svg>',
+        grooming: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>',
+        exercise: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+        vet: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>',
+        other: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+      };
+      return icons[cat] || icons.general;
+    }
+
+    function renderTasksTab() {
+      var addBtn = document.getElementById('add-task-btn');
+      var list = document.getElementById('tasks-list');
+      if (!AppState.activePet) {
+        if (list) { list.innerHTML = '<div class="welcome-state"><h3>Select a pet first</h3></div>'; }
+        if (addBtn) addBtn.style.display = 'none';
+        return;
+      }
+      if (addBtn) addBtn.style.display = AppState.canAccess('tasks') ? 'inline-flex' : 'none';
+      loadTasks();
+    }
+
+    async function loadTasks() {
+      try {
+        tasks = await getTasks(AppState.activePet.id);
+      } catch (e) { tasks = []; }
+      renderTaskList();
+      if (AppState.tier === 'starter') renderStarterTasksBanner();
+      populateTaskAssignDropdown();
+    }
+
+    function renderTaskList() {
+      var c = document.getElementById('tasks-list'); if (!c) return;
+      var statsEl = document.getElementById('tasks-stats');
+
+      var pending = tasks.filter(function (t) { return t.status === 'pending'; });
+      var done = tasks.filter(function (t) { return t.status === 'done'; });
+      var overdue = pending.filter(function (t) { return new Date(t.date + 'T' + (t.time || '00:00')) < new Date(); });
+      var total = tasks.length;
+
+      if (statsEl) {
+        statsEl.innerHTML =
+          '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700">' + total + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Total</div></div>' +
+          '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700">' + pending.length + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Pending</div></div>' +
+          '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700;' + (overdue.length > 0 ? 'color:#dc2626' : 'color:var(--green-500)') + '">' + overdue.length + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Overdue</div></div>' +
+          '<div class="stat-card" style="padding:12px 16px;min-width:80px"><div style="font-size:1.3rem;font-weight:700">' + done.length + '</div><div style="font-size:0.75rem;color:var(--text-muted)">Done</div></div>';
+      }
+
+      if (tasks.length === 0) {
+        c.innerHTML = '<div class="welcome-state"><span class="welcome-emoji"><i data-lucide="clipboard-check" style="width:32px;height:32px"></i></span><h3>No tasks yet</h3><p>Create your first task to start tracking pet care to-dos.</p><button class="btn btn-primary" onclick="openTaskModal()">Add Your First Task</button></div>';
+        typeof lucide !== 'undefined' && lucide.createIcons();
+        return;
+      }
+
+      // Sort: overdue first, then today, then upcoming, then done
+      var sorted = tasks.slice().sort(function (a, b) {
+        if (a.status !== b.status) return a.status === 'pending' ? -1 : 1;
+        var aDue = new Date(a.date + 'T' + (a.time || '00:00'));
+        var bDue = new Date(b.date + 'T' + (b.time || '00:00'));
+        if (aDue < new Date() && bDue >= new Date()) return -1;
+        if (bDue < new Date() && aDue >= new Date()) return 1;
+        return aDue - bDue;
+      });
+
+      c.innerHTML = sorted.map(function (t) {
+        var isOverdue = t.status === 'pending' && new Date(t.date + 'T' + (t.time || '00:00')) < new Date();
+        var isToday = t.status === 'pending' && t.date === todayStr();
+        var classes = 'task-card';
+        if (t.status === 'done') classes += ' task-done';
+        if (isOverdue) classes += ' task-overdue';
+        if (isToday) classes += ' task-today';
+        var escapedId = t.id.replace(/'/g, "\\'");
+        var priorityClass = 'task-priority-' + t.priority;
+
+        return '<div class="' + classes + '">' +
+          '<div class="task-top">' +
+            '<div class="task-check' + (t.status === 'done' ? ' task-checked' : '') + '" onclick="completeTaskHandler(\'' + escapedId + '\')" title="Toggle complete">' +
+              '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' +
+            '</div>' +
+            '<div class="task-body">' +
+              '<div class="task-title">' + escHtml(t.title) + '</div>' +
+              (t.description ? '<div class="task-desc">' + escHtml(t.description) + '</div>' : '') +
+              '<div class="task-meta">' +
+                '<span class="task-cat-badge">' + getTaskCategoryIcon(t.category) + ' ' + t.category + '</span>' +
+                '<span class="' + priorityClass + '">' + t.priority.charAt(0).toUpperCase() + t.priority.slice(1) + '</span>' +
+                '<span class="task-date-text">' + (isOverdue ? 'Overdue: ' : isToday ? 'Today: ' : '') + t.date + (t.time ? ' ' + t.time : '') + '</span>' +
+                (t.sitter_name ? '<span class="task-sitter-name">' + escHtml(t.sitter_name) + '</span>' : '') +
+              '</div>' +
+            '</div>' +
+            '<div class="task-actions">' +
+              '<button class="btn btn-ghost btn-sm" onclick="openTaskModal(\'' + escapedId + '\')" title="Edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+              '<button class="btn btn-ghost btn-sm" onclick="deleteTaskHandler(\'' + escapedId + '\')" style="color:#dc2626" title="Delete"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      typeof lucide !== 'undefined' && lucide.createIcons();
+    }
+
+    function renderStarterTasksBanner() {
+      var banner = document.getElementById('tasks-starter-banner');
+      if (!banner) return;
+
+      var daysUsed = 0;
+      if (tasks && tasks.length > 0) {
+        var uniqueDays = new Set();
+        tasks.forEach(function (t) {
+          if (t.created_at) uniqueDays.add(new Date(t.created_at).toDateString());
+        });
+        daysUsed = uniqueDays.size;
+      }
+
+      var maxDays = 7;
+      var pct = Math.min(100, (daysUsed / maxDays) * 100);
+      var isFull = daysUsed >= maxDays;
+
+      banner.style.display = 'block';
+      var barColor = isFull ? '#dc2626' : (pct > 75 ? '#f59e0b' : '#22c55e');
+
+      banner.innerHTML =
+        '<div style="padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+            '<div style="font-size:0.82rem;font-weight:600">' + daysUsed + ' of ' + maxDays + ' task days used</div>' +
+            (isFull ? '<span style="font-size:0.75rem;color:#dc2626;font-weight:600">At capacity</span>' : '<span style="font-size:0.75rem;color:var(--text-muted)">Unlimited with upgrade</span>') +
+          '</div>' +
+          '<div style="height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;margin-bottom:8px">' +
+            '<div style="height:100%;width:' + pct + '%;background:' + barColor + ';border-radius:3px;transition:width 0.4s ease"></div>' +
+          '</div>' +
+          (isFull
+            ? '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+                '<button class="btn btn-secondary btn-sm" onclick="clearStarterTasks()" style="font-size:0.78rem">Clear tasks &amp; start fresh</button>' +
+                '<button class="btn btn-primary btn-sm" onclick="openModal(\'modal-pricing\')" style="font-size:0.78rem">Upgrade for unlimited tasks</button>' +
+              '</div>'
+            : '<div style="font-size:0.75rem;color:var(--text-muted)">Create more tasks to stay organized. <button class="btn btn-ghost btn-sm" onclick="openModal(\'modal-pricing\')" style="font-size:0.75rem;padding:0;text-decoration:underline">Upgrade</button> for unlimited tasks.</div>'
+          ) +
+        '</div>';
+    }
+
+    async function clearStarterTasks() {
+      if (!AppState.activePet || !tasks || tasks.length === 0) return;
+      if (!confirm('This will delete all ' + tasks.length + ' tasks for ' + AppState.activePet.name + '. This cannot be undone.')) return;
+      try {
+        for (var i = 0; i < tasks.length; i++) {
+          await deleteTask(tasks[i].id);
+        }
+        tasks = [];
+        renderTaskList();
+        renderStarterTasksBanner();
+        renderHomeTab();
+        showToast('Tasks cleared! You can start fresh.', 'success');
+      } catch (err) {
+        showToast('Error clearing tasks: ' + err.message, 'error');
+      }
+    }
+
+    async function populateTaskAssignDropdown() {
+      var sel = document.getElementById('task-assign');
+      if (!sel) return;
+      var currentVal = sel.value;
+      sel.innerHTML = '<option value="">Just me</option>';
+      try {
+        var coparents = await getCoparents(AppState.activePet.id);
+        coparents.forEach(function (cp) {
+          var opt = document.createElement('option');
+          opt.value = cp.user_id;
+          opt.textContent = cp.email || 'Co-parent';
+          sel.appendChild(opt);
+        });
+      } catch (e) {}
+      if (currentVal) sel.value = currentVal;
+    }
+
+    function openTaskModal(id) {
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var modalTitle = document.querySelector('#modal-add-task .modal-header h3');
+      var submitBtn = document.getElementById('task-submit-btn');
+      document.getElementById('task-edit-id').value = '';
+      document.getElementById('add-task-form').reset();
+      document.getElementById('task-date').value = todayStr();
+      document.getElementById('task-time').value = '';
+
+      if (!id) {
+        modalTitle.textContent = 'Add Task';
+        submitBtn.textContent = 'Save Task';
+        populateTaskAssignDropdown();
+        openModal('modal-add-task');
+        return;
+      }
+
+      var task = tasks.find(function (t) { return t.id === id; });
+      if (!task) return;
+      modalTitle.textContent = 'Edit Task';
+      submitBtn.textContent = 'Update Task';
+      document.getElementById('task-edit-id').value = id;
+      document.getElementById('task-title').value = task.title;
+      document.getElementById('task-desc').value = task.description || '';
+      document.getElementById('task-date').value = task.date;
+      document.getElementById('task-time').value = task.time || '';
+      document.getElementById('task-priority').value = task.priority || 'normal';
+      document.getElementById('task-category').value = task.category || 'general';
+      populateTaskAssignDropdown();
+      if (task.assigned_to) document.getElementById('task-assign').value = task.assigned_to;
+      openModal('modal-add-task');
+    }
+
+    document.getElementById('add-task-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var editingId = document.getElementById('task-edit-id').value;
+      var title = document.getElementById('task-title').value.trim();
+      if (!title) { showToast('Enter a task title.', 'error'); return; }
+      var assignedTo = document.getElementById('task-assign').value;
+
+      var payload = {
+        title: title,
+        description: document.getElementById('task-desc').value.trim(),
+        date: document.getElementById('task-date').value,
+        time: document.getElementById('task-time').value || '',
+        priority: document.getElementById('task-priority').value,
+        category: document.getElementById('task-category').value,
+      };
+
+      try {
+        if (editingId) {
+          await updateTask(editingId, payload);
+          showToast('Task updated!', 'success');
+        } else {
+          payload.pet_id = AppState.activePet.id;
+          payload.user_id = AppState.user.id;
+          if (assignedTo) {
+            payload.assigned_to = assignedTo;
+            payload.assigned_by = AppState.user.id;
+          }
+          await addTask(payload);
+          showToast('Task created!', 'success');
+          // Send email notification if assigned to coparent
+          if (assignedTo) {
+            try {
+              var coparents = await getCoparents(AppState.activePet.id);
+              var assigned = coparents.find(function (c) { return c.user_id === assignedTo; });
+              if (assigned && assigned.email) {
+                sendEmailNotification('task_assignment', assigned.email, {
+                  petName: AppState.activePet.name,
+                  ownerName: AppState.user?.email?.split('@')[0] || 'A PupFile user',
+                  message: title,
+                  note: document.getElementById('task-desc').value.trim() || '',
+                  link: window.location.origin + '/dashboard',
+                });
+              }
+            } catch (emailErr) { console.log('Task assignment email:', emailErr.message); }
+          }
+        }
+        closeModal('modal-add-task');
+        document.getElementById('add-task-form').reset();
+        loadTasks();
+        renderHomeTab();
+      } catch (err) { showToast(err.message || 'Could not save task.', 'error'); }
+    });
+
+    async function completeTaskHandler(id) {
+      var task = tasks.find(function (t) { return t.id === id; });
+      if (!task) return;
+      try {
+        var newStatus = task.status === 'done' ? 'pending' : 'done';
+        await updateTask(id, { status: newStatus, sitter_name: '' });
+        task.status = newStatus;
+        renderTaskList();
+        renderHomeTab();
+        if (newStatus === 'done') showToast('Task completed!', 'success');
+      } catch (err) { showToast(err.message || 'Could not update task.', 'error'); }
+    }
+
+    async function deleteTaskHandler(id) {
+      if (!confirm('Delete this task?')) return;
+      try {
+        await deleteTask(id);
+        tasks = tasks.filter(function (t) { return t.id !== id; });
+        renderTaskList();
+        renderHomeTab();
+        showToast('Task deleted.', 'info');
+      } catch (err) { showToast(err.message, 'error'); }
+    }
+
+    /* --- Task Popup Reminders --- */
+    function showTaskReminders() {
+      if (!tasks || tasks.length === 0) return;
+      var popup = document.getElementById('reminder-popup');
+      if (!popup) return;
+
+      var pending = tasks.filter(function (t) { return t.status === 'pending'; });
+      var overdue = pending.filter(function (t) { return new Date(t.date + 'T' + (t.time || '00:00')) < new Date(); });
+      var todayDue = pending.filter(function (t) { return t.date === todayStr(); });
+
+      var items = [];
+      overdue.forEach(function (t) { items.push({ task: t, type: 'overdue' }); });
+      todayDue.forEach(function (t) {
+        if (!items.find(function (i) { return i.task.id === t.id; })) {
+          items.push({ task: t, type: 'today' });
+        }
+      });
+
+      if (items.length === 0) return;
+
+      var list = document.getElementById('rp-list');
+      var title = document.getElementById('rp-title');
+      var subtitle = document.getElementById('rp-subtitle');
+
+      title.textContent = overdue.length > 0 ? '\u26A0\uFE0F Overdue Tasks' : '\u23F0 Upcoming Tasks';
+      subtitle.textContent = items.length + ' task' + (items.length > 1 ? 's' : '') + ' need' + (items.length === 1 ? 's' : '') + ' your attention';
+
+      list.innerHTML = items.slice(0, 5).map(function (item) {
+        return '<div class="rp-item' + (item.type === 'overdue' ? ' rp-overdue' : '') + '">' +
+          '<span class="rp-icon">' + (item.type === 'overdue' ? '<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="16" height="16" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>') + '</span>' +
+          '<div><div class="rp-title">' + escHtml(item.task.title) + '</div><div class="rp-date">' + (item.type === 'overdue' ? 'Overdue: ' : 'Today: ') + item.task.date + (item.task.time ? ' ' + item.task.time : '') + '</div></div>' +
+        '</div>';
+      }).join('');
+
+      var rpListEl = document.getElementById('reminder-popup');
+      rpListEl.classList.add('active');
+    }
+
+    function closeReminderPopup() {
+      var popup = document.getElementById('reminder-popup');
+      if (popup) popup.classList.remove('active');
+      // Don't show again this session
+      sessionStorage.setItem('pupfile_reminder_shown', 'true');
+    }
+
     /* ===== VET RECORDS ===== */
     var vetRecords = [];
 
@@ -4081,6 +4603,17 @@ if (!hasPet) {
       document.getElementById('add-vetrecord-form').reset();
     });
 
+    // AI Report day selector
+    document.getElementById('ai-days-btn-group')?.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-days]');
+      if (!btn) return;
+      document.getElementById('ai-days').value = btn.getAttribute('data-days');
+      this.querySelectorAll('[data-days]').forEach(function (b) {
+        b.className = 'btn btn-sm btn-secondary';
+      });
+      btn.className = 'btn btn-sm btn-primary';
+    });
+
     function generateQR() {
       if (!AppState.activePet) return;
       const canvas = document.getElementById('qr-canvas');
@@ -4146,15 +4679,29 @@ if (!hasPet) {
       if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
       
       // Get selected options
+      var aiTimeline = document.getElementById('ai-timeline');
+      var aiFood = document.getElementById('ai-food');
+      var aiGI = document.getElementById('ai-gi');
+      var aiCardio = document.getElementById('ai-cardio');
+      var aiTests = document.getElementById('ai-tests');
+      var aiDerma = document.getElementById('ai-derma');
+      var aiGrooming = document.getElementById('ai-grooming');
+      var aiWeight = document.getElementById('ai-weight');
+      var aiInventory = document.getElementById('ai-inventory');
+      var aiVetRecords = document.getElementById('ai-vetrecords');
+      var aiDays = document.getElementById('ai-days');
       const options = {
-        includeTimeline: document.getElementById('ai-timeline').checked,
-        includeFood: document.getElementById('ai-food').checked,
-        includeGI: document.getElementById('ai-gi').checked,
-        includeCardio: document.getElementById('ai-cardio').checked,
-        includeTests: document.getElementById('ai-tests').checked,
-        includeDerma: document.getElementById('ai-derma').checked,
-        includeGrooming: document.getElementById('ai-grooming').checked,
-        days: parseInt(document.getElementById('ai-days').value)
+        includeTimeline: aiTimeline ? aiTimeline.checked : true,
+        includeFood: aiFood ? aiFood.checked : true,
+        includeGI: aiGI ? aiGI.checked : false,
+        includeCardio: aiCardio ? aiCardio.checked : false,
+        includeTests: aiTests ? aiTests.checked : false,
+        includeDerma: aiDerma ? aiDerma.checked : false,
+        includeGrooming: aiGrooming ? aiGrooming.checked : false,
+        includeWeight: aiWeight ? aiWeight.checked : true,
+        includeInventory: aiInventory ? aiInventory.checked : false,
+        includeVetRecords: aiVetRecords ? aiVetRecords.checked : false,
+        days: parseInt((aiDays || {}).value) || 30
       };
       
       const btn = document.getElementById('generate-ai-btn');
@@ -4667,67 +5214,56 @@ if (!hasPet) {
       c.innerHTML = `
         <div class="pricing-grid-dash">
           <div class="pricing-card">
-            <div class="plan-name">Starter</div>
+            <div class="plan-name">Free</div>
             <div class="plan-price">$0<span class="period">/mo</span></div>
             <p class="plan-desc">1 pet &middot; Forever free</p>
             <ul class="plan-features">
               <li>${ck}<span>1 Pet Profile</span></li>
-              <li>${ck}<span>Toxicity & Calorie Calculators</span></li>
-              <li>${ck}<span>7-Day Timeline Logging</span></li>
-              <li>${ck}<span>Meal, Meds & Bathroom Logs</span></li>
-              <li>${ck}<span>Activity Streak</span></li>
+              <li>${ck}<span>Timeline Logging — last 7 days</span></li>
+              <li>${ck}<span>Meal, Meds & Walk Logging</span></li>
+              <li>${ck}<span>AI Assistant (read-only)</span></li>
+              <li>${ck}<span>Passive QR Collar Tag</span></li>
+              <li>${ck}<span>Public Emergency Profile</span></li>
+              <li>${ck}<span>Toxicity &amp; Calorie Tools</span></li>
             </ul>
             ${btn('starter', 'Current Plan')}
           </div>
-          <div class="pricing-card">
-            <div class="plan-name">Basic</div>
+          <div class="pricing-card featured">
+            <div class="plan-badge">Popular</div>
+            <div class="plan-name">Starter</div>
             <div class="plan-price">${y ? '$44' : '$4.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
             <p class="plan-desc">Up to 2 Pets</p>
             <ul class="plan-features">
               <li>${ck}<span>Up to 2 Pets</span></li>
               <li>${ck}<span>Unlimited Log History</span></li>
               <li>${ck}<span>Food Log (all types)</span></li>
-              <li>${ck}<span>Passive QR Collar Tags</span></li>
-              <li>${ck}<span>Public Emergency Profile</span></li>
-              <li>${ck}<span>Support Tickets</span></li>
+              <li>${ck}<span>Symptom &amp; Grooming Tracking</span></li>
+              <li>${ck}<span>Medication &amp; Vaccine Reminders</span></li>
+              <li>${ck}<span>Feeding Schedule Templates</span></li>
+              <li>${ck}<span>Co-parent Sync (2 users)</span></li>
+              <li>${ck}<span>Sitter Magic Links &amp; Care Plans</span></li>
+              <li>${ck}<span>Active QR + GPS Alerts</span></li>
+              <li>${ck}<span>AI Assistant (full logging)</span></li>
             </ul>
             ${btn('basic', y ? '$44/yr' : '$4.99/mo')}
           </div>
-          <div class="pricing-card featured">
-            <div class="plan-badge">Popular</div>
-            <div class="plan-name">Family</div>
-            <div class="plan-price">${y ? '$89' : '$9.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
-            <p class="plan-desc">Up to 4 Pets</p>
-            <ul class="plan-features">
-              <li>${ck}<span>Up to 4 Pets</span></li>
-              <li>${ck}<span>Co-parent Sync (3 users)</span></li>
-              <li>${ck}<span>Active QR + GPS Alerts</span></li>
-              <li>${ck}<span>Sitter Magic Links</span></li>
-              <li>${ck}<span>Care Plans for Sitters</span></li>
-              <li>${ck}<span>Symptom Tracking (GI, Cardio, Derma, Tests)</span></li>
-              <li>${ck}<span>Grooming Appointments</span></li>
-              <li>${ck}<span>Medication &amp; Vaccine Reminders</span></li>
-              <li>${ck}<span>Feeding Schedule Templates</span></li>
-            </ul>
-            ${btn('family', y ? '$89/yr' : '$9.99/mo')}
-          </div>
           <div class="pricing-card">
             <div class="plan-name">Pro</div>
-            <div class="plan-price">${y ? '$149' : '$16.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
+            <div class="plan-price">${y ? '$89' : '$9.99'}<span class="period">${y ? '/yr' : '/mo'}</span></div>
             <p class="plan-desc">Unlimited Pets</p>
             <ul class="plan-features">
               <li>${ck}<span>Unlimited Pets</span></li>
               <li>${ck}<span>AI Vet-Prep Reports (PDF)</span></li>
-              <li>${ck}<span>Unlimited Co-parent Users</span></li>
-              <li>${ck}<span>Sitter Handover Summary Email</span></li>
               <li>${ck}<span>Weight Tracking &amp; Trend Charts</span></li>
               <li>${ck}<span>Vet Records &amp; Document Storage</span></li>
+              <li>${ck}<span>Food Inventory &amp; Restock Alerts</span></li>
               <li>${ck}<span>Heat Cycle Tracker</span></li>
               <li>${ck}<span>Multi-Pet Household Overview</span></li>
-              <li>${ck}<span>Food Inventory &amp; Restock Alerts</span></li>
+              <li>${ck}<span>Unlimited Co-parents</span></li>
+              <li>${ck}<span>Sitter Handover Summary Email</span></li>
               <li>${ck}<span>Priority Support</span></li>
             </ul>
-            ${btn('pro', y ? '$149/yr' : '$16.99/mo')}
+            ${btn('family', y ? '$89/yr' : '$9.99/mo')}
           </div>
         </div>`;
     }
@@ -4961,24 +5497,10 @@ if (!hasPet) {
       const container = document.getElementById('chat-messages');
       if (container && container.children.length === 0) {
         const name = AppState.activePet?.name || 'your pet';
-        if (AppState.tier === 'starter') {
-          const upgradeLink = document.createElement('a');
-          upgradeLink.href = '#';
-          upgradeLink.style.cssText = 'color:var(--orange-500);font-weight:600';
-          upgradeLink.textContent = 'Upgrade your plan';
-          upgradeLink.addEventListener('click', function (e) { e.preventDefault(); switchTab('settings', null); });
-          const msg = document.createElement('span');
-          msg.appendChild(document.createTextNode('The AI Assistant is available from the Basic tier and above. '));
-          msg.appendChild(upgradeLink);
-          msg.appendChild(document.createTextNode(' to chat with your pet care assistant and get AI-powered insights about ' + escapeHtml(name) + '.'));
-          addChatMessage('assistant', msg);
-          if (inputArea) inputArea.style.display = 'none';
-          return;
-        }
         const canLog = AppState.canWrite();
         const intro = canLog
           ? 'Hi! I\'m your pet care assistant. Tell me what\'s happening with ' + name + ' — I can log meals, medications, walks, and answer questions about their recent activity.'
-          : 'Hi! I\'m your pet care assistant. I can answer questions about ' + name + '\'s recent activity. Upgrade to Family for the ability to log via chat too.';
+          : 'Hi! I\'m your pet care assistant. I can answer questions about ' + name + '\'s recent activity. Upgrade to Starter for the ability to log via chat too.';
         addChatMessage('assistant', intro);
       } else {
         if (inputArea) inputArea.style.display = '';
@@ -4986,11 +5508,6 @@ if (!hasPet) {
     }
 
     async function handleChatSend() {
-      if (AppState.tier === 'starter') {
-        showToast('Upgrade to Basic or higher to use the AI Assistant.', 'info');
-        return;
-      }
-
       const input = document.getElementById('chat-input');
       const msg = input.value.trim();
       if (!msg) return;
@@ -5186,10 +5703,10 @@ if (!hasPet) {
               Co-parents can log meals, track symptoms, and stay in sync.
             </p>
             <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px">
-              <strong>Family plan:</strong> up to 3 co-parents &middot;
+              <strong>Starter plan:</strong> up to 2 co-parents &middot;
               <strong>Pro plan:</strong> unlimited co-parents
             </p>
-            <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Family</button>
+            <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Starter</button>
           </div>
         `;
         typeof lucide !== 'undefined' && lucide.createIcons();

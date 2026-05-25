@@ -39,10 +39,67 @@
     "operatingSystem": "Web",
     "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, symptom tracking, and daily care logging.",
     "offers": [
-      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Starter tier" },
-      { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "description": "Basic monthly" },
-      { "@type": "Offer", "price": "9.99", "priceCurrency": "USD", "description": "Family monthly" },
-      { "@type": "Offer", "price": "16.99", "priceCurrency": "USD", "description": "Pro monthly" }
+      { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free tier" },
+      { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "description": "Starter monthly" },
+      { "@type": "Offer", "price": "9.99", "priceCurrency": "USD", "description": "Pro monthly" }
+    ]
+  }
+  </script>
+
+  <!-- FAQ Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is PupFile free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, AI Assistant (read-only), a passive QR collar tag, a public emergency profile, and free Toxicity Checker and Calorie Calculator — all without a credit card."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use the calculators without an account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The Toxicity Checker and Calorie & Life-Stage Calculator work right on the PupFile homepage — no signup, no email, no credit card needed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the QR collar tag work if my dog gets lost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "If someone finds your dog, they tap the QR with their phone camera — no app download needed. They see your dog's emergency profile and can share their GPS location with you instantly."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can my sitter use PupFile without creating an account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Generate a Sitter Magic Link from your dashboard and send it to anyone — they can view care instructions, log meals and meds, and mark tasks complete without signing up or downloading an app."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can multiple people care for the same dog?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Co-parent sync lets you invite a partner or family member to share care duties. Everything they log appears on your timeline in real time."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I cancel anytime?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. There are no contracts or lock-ins. If you're on a paid plan, you can cancel from your dashboard and it takes effect at the end of your billing cycle."
+        }
+      }
     ]
   }
   </script>
@@ -880,6 +937,52 @@
       }
     }
 
+    /* --- FAQ --- */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .faq-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .faq-q {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .faq-q:hover { background: var(--bg-tertiary); }
+    .faq-chevron {
+      flex-shrink: 0;
+      color: var(--text-muted);
+      transition: transform 0.25s ease;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 20px;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+    .faq-item.open .faq-a {
+      max-height: 400px;
+      padding: 0 20px 16px;
+    }
+
     /* --- Section spacing --- */
     .section-pad { padding: 64px 0; }
     @media (min-width: 769px) {
@@ -900,7 +1003,8 @@
       <div class="navbar-links hide-mobile">
         <a href="#benefits">Why PupFile</a>
         <a href="#pricing">Pricing</a>
-        <a href="#privacy" onclick="event.preventDefault();document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</a>
+        <a href="#faq" onclick="event.preventDefault();document.getElementById('faq').scrollIntoView({behavior:'smooth'})">FAQ</a>
+        <a href="/contact">Contact</a>
         <a href="/terms">Terms</a>
       </div>
       <div class="navbar-actions">
@@ -920,7 +1024,8 @@
     <nav class="sidebar-nav">
       <a href="#benefits" onclick="closeSidebar()">Why PupFile</a>
       <a href="#pricing" onclick="closeSidebar()">Pricing</a>
-      <a href="#privacy" onclick="closeSidebar();document.getElementById('privacy').scrollIntoView({behavior:'smooth'})">Privacy</a>
+      <a href="#faq" onclick="closeSidebar();document.getElementById('faq').scrollIntoView({behavior:'smooth'})">FAQ</a>
+      <a href="/contact" onclick="closeSidebar()">Contact</a>
       <a href="/terms" onclick="closeSidebar()">Terms</a>
       <div class="divider" style="margin:12px 0"></div>
       <a href="/auth" onclick="closeSidebar()">Log in</a>
@@ -941,70 +1046,41 @@
           </a>
           <div class="hero-footnote">No credit card required · Free forever tier</div>
         </div>
-        <div class="hero-visual">
-          <div class="hero-dash">
-            <div class="hero-dash-top">
-              <div style="display:flex;align-items:center">
-                <div class="dd-avatar">B</div>
-                <span class="dd-pet-name">Bailey · Beagle</span>
-              </div>
-              <span class="dd-badge">Family</span>
-            </div>
-            <div class="hero-dash-body">
-              <div class="hero-dash-row">
-                <div class="dd-card">
-                  <div class="dd-card-label">Meals Today</div>
-                  <div class="dd-card-value">2</div>
-                </div>
-                <div class="dd-card">
-                  <div class="dd-card-label">Meds Given</div>
-                  <div class="dd-card-value green">1</div>
-                </div>
-                <div class="dd-card">
-                  <div class="dd-card-label">Poop Score</div>
-                  <div class="dd-card-value orange">Good</div>
-                </div>
-              </div>
-              <div style="font-size:0.72rem;font-weight:600;color:var(--text-secondary);margin:12px 0 6px">Today's Log</div>
-              <div class="dd-entry">
-                <div class="dd-entry-icon meal">🍗</div>
-                <div class="dd-entry-text">
-                  <div class="dd-entry-title">Breakfast</div>
-                  <div class="dd-entry-time">7:42 AM · 1.5 cups kibble</div>
-                </div>
-                <span class="dd-entry-status ok">Done</span>
-              </div>
-              <div class="dd-entry">
-                <div class="dd-entry-icon walk">🐾</div>
-                <div class="dd-entry-text">
-                  <div class="dd-entry-title">Morning Walk</div>
-                  <div class="dd-entry-time">8:15 AM · 22 min</div>
-                </div>
-                <span class="dd-entry-status ok">Done</span>
-              </div>
-              <div class="dd-entry">
-                <div class="dd-entry-icon med">💊</div>
-                <div class="dd-entry-text">
-                  <div class="dd-entry-title">Heartworm Pill</div>
-                  <div class="dd-entry-time">8:20 AM · Monthly dose</div>
-                </div>
-                <span class="dd-entry-status ok">Given</span>
-              </div>
-              <div class="dd-entry">
-                <div class="dd-entry-icon" style="background:#FEE2E2">⚠️</div>
-                <div class="dd-entry-text">
-                  <div class="dd-entry-title">Stool Note</div>
-                  <div class="dd-entry-time">Soft — keep an eye on it</div>
-                </div>
-                <span class="dd-entry-status warn">Flagged</span>
-              </div>
-            </div>
-            <div class="hero-dash-footer">
-              <span class="dd-tag ai">AI Report</span>
-              <span class="dd-tag ghost">Timeline</span>
-              <span class="dd-tag ghost">Sitter</span>
-            </div>
-          </div>
+        <div class="hero-visual" style="text-align:center">
+          <svg viewBox="0 0 400 340" style="width:100%;max-width:400px;height:auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="dogBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#ea580c;stop-opacity:0.9"/>
+                <stop offset="100%" style="stop-color:#c2410c;stop-opacity:0.9"/>
+              </linearGradient>
+              <linearGradient id="dogEar" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#d97706;stop-opacity:0.9"/>
+                <stop offset="100%" style="stop-color:#b45309;stop-opacity:0.9"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="200" cy="310" rx="140" ry="28" fill="var(--border-subtle)" opacity="0.3"/>
+            <ellipse cx="200" cy="310" rx="90" ry="16" fill="none" stroke="var(--border-color)" stroke-width="1" opacity="0.15"/>
+            <path d="M120 260 Q120 120 200 80 Q280 120 280 260 Z" fill="url(#dogBody)"/>
+            <path d="M140 140 Q100 60 130 30 Q165 20 170 80 Z" fill="url(#dogEar)"/>
+            <path d="M260 140 Q300 60 270 30 Q235 20 230 80 Z" fill="url(#dogEar)"/>
+            <ellipse cx="170" cy="190" rx="18" ry="22" fill="#fff"/>
+            <ellipse cx="230" cy="190" rx="18" ry="22" fill="#fff"/>
+            <ellipse cx="170" cy="190" rx="10" ry="13" fill="#1a1a2e"/>
+            <ellipse cx="230" cy="190" rx="10" ry="13" fill="#1a1a2e"/>
+            <ellipse cx="173" cy="185" rx="3.5" ry="3.5" fill="#fff"/>
+            <ellipse cx="233" cy="185" rx="3.5" ry="3.5" fill="#fff"/>
+            <path d="M170 220 Q175 230 185 232 Q195 233 200 228 Q205 233 215 232 Q225 230 230 220" fill="none" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round"/>
+            <ellipse cx="200" cy="245" rx="22" ry="14" fill="#1a1a2e"/>
+            <ellipse cx="200" cy="248" rx="14" ry="8" fill="#ff6b6b"/>
+            <path d="M190 256 Q200 270 210 256" fill="none" stroke="var(--orange-600)" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="158" cy="155" r="3" fill="#fff" opacity="0.4"/>
+            <circle cx="242" cy="155" r="3" fill="#fff" opacity="0.4"/>
+            <circle cx="200" cy="280" r="6" fill="var(--orange-400)" opacity="0.6">
+              <animate attributeName="r" values="6;10;6" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <text x="200" y="305" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-family="sans-serif">Always tracking. Always ready.</text>
+          </svg>
         </div>
       </div>
     </div>
@@ -1133,27 +1209,32 @@
           <thead>
             <tr>
               <th>Feature</th>
+              <th>Free</th>
               <th>Starter</th>
-              <th>Basic</th>
-              <th>Family</th>
               <th>Pro</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Pet Profiles</td><td>1</td><td>2</td><td>4</td><td>Unlimited</td></tr>
-            <tr><td>AI Assistant</td><td>Read-only</td><td>Read-only</td><td>Full logging</td><td>Full logging</td></tr>
-            <tr><td>Timeline Logging</td><td>7 days</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>QR Emergency Tags</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Co-parent Sync</td><td class="cross">—</td><td class="cross">—</td><td>3 users</td><td class="check">✓</td></tr>
-            <tr><td>Symptom Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Grooming Appointments</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Medication Reminders</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>AI Vet Reports</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
-            <tr><td>Weight Tracking</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
-            <tr><td>Vet Records Storage</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
-            <tr><td>Location Alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Sitter Links</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
-            <tr><td>Free Calculators</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Pet Profiles</td><td>1</td><td>2</td><td>Unlimited</td></tr>
+            <tr><td>AI Assistant</td><td>Read-only</td><td>Full logging</td><td>Full logging</td></tr>
+            <tr><td>Timeline Logging</td><td>7 days</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Food Log (all types)</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Feeding Schedule Templates</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>QR Emergency Tags</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Co-parent Sync</td><td class="cross">—</td><td>2 users</td><td>Unlimited</td></tr>
+            <tr><td>Symptom Tracking</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Grooming Appointments</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Medication Reminders</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Location Alerts</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Sitter Links &amp; Care Plans</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>AI Vet Reports (PDF)</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Weight Tracking &amp; Charts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Vet Records Storage</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Food Inventory &amp; Alerts</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Heat Cycle Tracker</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Sitter Handover Email</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Priority Support</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Free Calculators</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
           </tbody>
         </table>
       </div>
@@ -1193,6 +1274,89 @@
         <div style="display:flex;align-items:start;gap:14px;padding:20px;background:var(--bg-tertiary);border:1px solid var(--border-color);border-radius:var(--radius-lg)">
           <span style="font-size:1.2rem;flex-shrink:0;width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,0.1);display:flex;align-items:center;justify-content:center">🚫</span>
           <div><strong style="font-size:0.88rem">We don't sell your data. Period.</strong><p style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">No data mining. No third-party sharing. No ad targeting. Your dog's health record is yours — not a product to be packaged and sold. That's not a business model, it's a promise.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FAQ ========== -->
+  <section class="section-pad" id="faq" style="background:var(--bg-tertiary)">
+    <div class="container" style="max-width:720px">
+      <div class="text-center" style="margin-bottom:40px">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">Questions dog owners actually ask</h2>
+        <p class="section-desc mx-auto">Straight answers about how PupFile works, what it costs, and where your data lives.</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Is PupFile free?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, AI Assistant (read-only), a passive QR collar tag, a public emergency profile, and our free Toxicity Checker and Calorie Calculator — all without a credit card. Paid plans start at $4.99/mo when you need more pets or advanced features.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can I really use the calculators without an account?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Absolutely. Our Toxicity Checker and Calorie & Life-Stage Calculator work right on this page — no signup, no email, no credit card. They're veterinary-calibrated and always free.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>My dog has a sensitive stomach — how can PupFile help?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">The food log lets you track every brand, recipe, and ingredient your dog eats alongside GI symptoms like vomit and stool changes. Over time, the timeline reveals which foods correlate with good or bad days. Share the full picture with your vet instead of guessing.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>How does the QR collar tag work if my dog gets lost?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Order a durable PupFile QR tag for their collar (or print your own). If someone finds your dog, they tap the QR with their phone camera — no app download needed. They see your dog's emergency profile and can share their GPS location with you. You get an instant alert with coordinates. Passive tags are included in the Free plan; active tags with real-time GPS alerts are available in Starter.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can my sitter use PupFile without creating an account?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Yes. Generate a Sitter Magic Link from your dashboard and send it to anyone — they can view care instructions, log meals and meds, and mark tasks complete without signing up, downloading an app, or texting you for details. The link expires automatically.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>What data does the AI Assistant see?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">The AI only sees the logs and data for the pet you're currently viewing — recent meals, medications, symptoms, and notes. It never has access to your personal information, email, billing details, or other pets unless you switch to them. We never train on your data, and AI reports strip identifiable information before processing.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can multiple people care for the same dog?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Yes. Co-parent sync lets you invite a partner, family member, or fellow owner to share care duties. Everything they log appears on your timeline in real time — no more "did you feed him?" messages. Starter includes up to 2 co-parents; Pro has unlimited.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can I cancel anytime?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Absolutely. There are no contracts or lock-ins. If you're on a paid plan, you can cancel from your dashboard and it takes effect at the end of your billing cycle. Your data stays yours — you can export it or keep using the Free plan.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>How is my dog's data protected?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">All data is encrypted in transit and at rest. We never sell or share your information with third parties. Co-parents only see shared pets. Sitters only see active care instructions. QR scanners see zero personal data. Your dog's health record belongs to you — full stop.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>What if I have more questions?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Email us at <a href="mailto:hello@pupfile.com" style="color:var(--orange-600);font-weight:600">hello@pupfile.com</a> or use the chat bubble on this page. Real humans, not bots — and we actually own dogs.</div>
         </div>
       </div>
     </div>
@@ -1275,6 +1439,8 @@
       <div class="footer-links">
         <a href="#benefits">Features</a>
         <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="/contact">Contact</a>
         <a href="#tools">Free Tools</a>
         <a href="#privacy">Privacy</a>
         <a href="/privacy">Privacy Policy</a>
@@ -1440,23 +1606,27 @@
       const cg = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" class="check-green"/></svg>';
       const co = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" class="check-orange"/></svg>';
 
-c.innerHTML = `
+ c.innerHTML = `
         <div class="pricing-card plan-free">
-          <div class="plan-name">Starter</div>
+          <div class="plan-name">Free</div>
           <div class="plan-price">$0<span class="period">${m}</span></div>
           <p class="plan-desc">1 pet &middot; Forever free</p>
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${cg}<span>1 Pet Profile</span></li>
+            <li>${cg}<span>Timeline Logging — last 7 days</span></li>
+            <li>${cg}<span>Meal, Meds &amp; Walk Logging</span></li>
             <li>${cg}<span>AI Assistant (read-only)</span></li>
+            <li>${cg}<span>Passive QR Collar Tag</span></li>
+            <li>${cg}<span>Public Emergency Profile</span></li>
             <li>${cg}<span>Free Toxicity &amp; Calorie Tools</span></li>
-            <li>${cg}<span>7-Day Timeline Logging</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-secondary">Get Started</a>
         </div>
 
-        <div class="pricing-card">
-          <div class="plan-name">Basic</div>
+        <div class="pricing-card featured">
+          <div class="plan-badge">Most Popular</div>
+          <div class="plan-name">Starter</div>
           <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$59.88' : ''}</div>
           <div class="plan-price">${isYearly ? '$44' : '$4.99'}<span class="period">${m}</span></div>
           <p class="plan-desc">Up to 2 Pets · Save $16/yr</p>
@@ -1464,45 +1634,33 @@ c.innerHTML = `
           <ul class="plan-features">
             <li>${co}<span>Up to 2 Pets</span></li>
             <li>${co}<span>Unlimited Log History</span></li>
-            <li>${co}<span>AI Assistant (read-only)</span></li>
-            <li>${co}<span>Passive QR Collar Tags</span></li>
-            <li>${co}<span>Public Emergency Profile</span></li>
-          </ul>
-          <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Start Basic</a>
-        </div>
-
-        <div class="pricing-card featured">
-          <div class="plan-badge">Most Popular</div>
-          <div class="plan-name">Family</div>
-          <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$119.88' : ''}</div>
-          <div class="plan-price">${isYearly ? '$89' : '$9.99'}<span class="period">${m}</span></div>
-          <p class="plan-desc">Up to 4 Pets · Save $31/yr</p>
-          <div class="plan-divider"></div>
-          <ul class="plan-features">
-            <li>${co}<span>Up to 4 Pets</span></li>
-            <li>${co}<span>AI Assistant (full logging)</span></li>
-            <li>${co}<span>Active QR + GPS Alerts</span></li>
-            <li>${co}<span>Co-parent Sync (3 users)</span></li>
-            <li>${co}<span>Sitter Magic Links &amp; Care Plans</span></li>
+            <li>${co}<span>Food Log (all types)</span></li>
             <li>${co}<span>Symptom &amp; Grooming Tracking</span></li>
+            <li>${co}<span>Medication &amp; Vaccine Reminders</span></li>
+            <li>${co}<span>Co-parent Sync (2 users)</span></li>
+            <li>${co}<span>Sitter Magic Links &amp; Care Plans</span></li>
+            <li>${co}<span>Active QR + GPS Alerts</span></li>
+            <li>${co}<span>AI Assistant (full logging)</span></li>
           </ul>
-          <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Start Family</a>
+          <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Start Starter</a>
         </div>
 
         <div class="pricing-card plan-pro">
           <div class="plan-name">Pro</div>
-          <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$203.88' : ''}</div>
-          <div class="plan-price">${isYearly ? '$149' : '$16.99'}<span class="period">${m}</span></div>
-          <p class="plan-desc">Unlimited Pets · Save $55/yr</p>
+          <div class="plan-original ${isYearly ? 'show' : ''}">${isYearly ? '$119.88' : ''}</div>
+          <div class="plan-price">${isYearly ? '$89' : '$9.99'}<span class="period">${m}</span></div>
+          <p class="plan-desc">Unlimited Pets · Save $31/yr</p>
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${co}<span>Unlimited Pets</span></li>
             <li>${co}<span>AI Vet-Prep Reports (PDF)</span></li>
-            <li>${co}<span>AI Assistant (full logging)</span></li>
             <li>${co}<span>Weight Tracking &amp; Trend Charts</span></li>
             <li>${co}<span>Vet Records &amp; Document Storage</span></li>
             <li>${co}<span>Food Inventory &amp; Restock Alerts</span></li>
+            <li>${co}<span>Heat Cycle Tracker</span></li>
+            <li>${co}<span>Multi-Pet Household Overview</span></li>
             <li>${co}<span>Unlimited Co-parents &amp; Priority Support</span></li>
+            <li>${co}<span>Sitter Handover Summary Email</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Go Pro</a>
         </div>
@@ -1519,6 +1677,11 @@ c.innerHTML = `
       document.querySelector('.sidebar-overlay')?.classList.remove('active');
     }
     // sidebar toggle is already bound via onclick on the button
+
+    /* --- FAQ Toggle --- */
+    function toggleFaq(el) {
+      el.parentElement.classList.toggle('open');
+    }
 
     /* --- Init --- */
     document.addEventListener('DOMContentLoaded', () => {

@@ -132,7 +132,30 @@ CREATE INDEX IF NOT EXISTS idx_reminders_user ON public.reminders(user_id);
 CREATE INDEX IF NOT EXISTS idx_reminders_sent ON public.reminders(sent);
 
 -- =============================================
--- 9. ENABLE RLS ON ALL NEW TABLES
+-- 9. TASKS
+-- =============================================
+CREATE TABLE IF NOT EXISTS public.tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  pet_id UUID NOT NULL REFERENCES public.pets(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  date TEXT NOT NULL,
+  time TEXT DEFAULT '',
+  assigned_to UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  assigned_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  sitter_name TEXT DEFAULT '',
+  status TEXT DEFAULT 'pending',
+  priority TEXT DEFAULT 'normal',
+  category TEXT DEFAULT 'general',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_pet ON public.tasks(pet_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_user ON public.tasks(user_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_status ON public.tasks(status);
+
+-- =============================================
+-- 10. ENABLE RLS ON ALL NEW TABLES
 -- =============================================
 ALTER TABLE public.vaccinations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.weight_logs ENABLE ROW LEVEL SECURITY;
@@ -142,9 +165,10 @@ ALTER TABLE public.food_inventory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.heat_cycles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.vet_records ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reminders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;
 
 -- =============================================
--- 10. RLS POLICIES — Uses is_admin() helper
+-- 11. RLS POLICIES — Uses is_admin() helper
 --      (from supabase-fix-rls-recursion.sql)
 -- =============================================
 
@@ -202,8 +226,19 @@ CREATE POLICY "Users CRUD own reminders" ON public.reminders FOR ALL USING (auth
 DROP POLICY IF EXISTS "Admin reminders" ON public.reminders;
 CREATE POLICY "Admin reminders" ON public.reminders FOR ALL USING (is_admin()) WITH CHECK (is_admin());
 
+-- TASKS
+DROP POLICY IF EXISTS "Users CRUD own tasks" ON public.tasks;
+CREATE POLICY "Users CRUD own tasks" ON public.tasks FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admin tasks" ON public.tasks;
+CREATE POLICY "Admin tasks" ON public.tasks FOR ALL USING (is_admin()) WITH CHECK (is_admin());
+
+-- Coparents can view and complete tasks assigned to them
+DROP POLICY IF EXISTS "Coparent view tasks" ON public.tasks;
+CREATE POLICY "Coparent view tasks" ON public.tasks FOR SELECT USING (auth.uid() = assigned_to);
+DROP POLICY IF EXISTS "Coparent update tasks" ON public.tasks;
+CREATE POLICY "Coparent update tasks" ON public.tasks FOR UPDATE USING (auth.uid() = assigned_to) WITH CHECK (auth.uid() = assigned_to);
 
 -- =============================================
--- 11. VERIFY
+-- 12. VERIFY
 -- =============================================
 SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename;

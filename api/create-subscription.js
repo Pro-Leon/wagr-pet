@@ -43,9 +43,7 @@ export default async function handler(req, res) {
       basic_monthly: 'PLN_x7yn9h54irimq96',
       basic_yearly: 'PLN_omjluu4cllyzgyd',
       family_monthly: 'PLN_38n01fa6kxbk9vn',
-      family_yearly: 'PLN_3r0edwfqim3uixw',
-      pro_monthly: 'PLN_wlpu3bvnyl5x7di',
-      pro_yearly: 'PLN_bdr7x2i4rkb4cod'
+      family_yearly: 'PLN_3r0edwfqim3uixw'
     };
 
     const planCode = planCodes[plan];

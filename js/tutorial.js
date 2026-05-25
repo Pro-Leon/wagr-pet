@@ -12,13 +12,13 @@ const Tutorial = (() => {
     { id: 'tab-timeline', title: 'The full Timeline', body: 'Every log grouped by date \u2014 your complete history in one scrollable feed.', tab: 'timeline' },
     { id: 'tab-food', title: 'Food & nutrition log', body: 'Log every meal, portion, and ingredient. Track calories and nutritional breakdown over time.', tab: 'food' },
     { id: 'tab-symptoms', title: 'Symptom tracker', body: 'GI, cardio, dermatology, test results \u2014 structured for vets. Generate consistency charts and severity trends.', tab: 'symptoms' },
-    { id: 'tab-ai', title: 'AI Vet-Prep Reports \u2728', body: 'One tap compiles 30 days of meals, meds, symptoms, and notes into a clinical summary your vet can actually use.', tab: 'ai', tier: 'pro' },
+    { id: 'tab-ai', title: 'AI Vet-Prep Reports \u2728', body: 'One tap compiles 30 days of meals, meds, symptoms, and notes into a clinical summary your vet can actually use.', tab: 'ai', tier: 'family' },
     { id: 'tab-qr', title: 'QR Emergency Tags', body: 'A QR code for their collar. Anyone who finds them taps it with their phone and you get their GPS location instantly.', tab: 'qr' },
-    { id: 'tab-sitter', title: 'Sitter Magic Links \ud83d\udd17', body: 'Secure expiring link for sitters \u2014 no account needed, no app download. They log everything in real time.', tab: 'sitter', tier: 'family' },
-    { id: 'tab-coparent', title: 'Co-parent sync', body: 'Invite family members to log and view in real time. Never wonder \u201cdid you feed him?\u201d again.', tab: 'coparent', tier: 'family' },
+    { id: 'tab-sitter', title: 'Sitter Magic Links \ud83d\udd17', body: 'Secure expiring link for sitters \u2014 no account needed, no app download. They log everything in real time.', tab: 'sitter', tier: 'basic' },
+    { id: 'tab-coparent', title: 'Co-parent sync', body: 'Invite family members to log and view in real time. Never wonder \u201cdid you feed him?\u201d again.', tab: 'coparent', tier: 'basic' },
   ];
 
-  const TIER_ORDER = ['starter', 'basic', 'family', 'pro'];
+  const TIER_ORDER = ['starter', 'basic', 'family'];
 
   let state = {
     active: false,
@@ -42,7 +42,7 @@ const Tutorial = (() => {
   function getTierBadge(requiredTier) {
     if (!requiredTier) return '';
     if (userHasTier(requiredTier)) return '';
-    var label = requiredTier === 'pro' ? 'PRO FEATURE' : 'FAMILY+';
+    var label = requiredTier === 'family' ? 'PRO FEATURE' : 'STARTER+';
     return '<span class="tutorial-tier-badge ' + requiredTier + '">' + label + '</span>';
   }
 

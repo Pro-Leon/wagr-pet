@@ -60,7 +60,7 @@ BEGIN
     'starter_users', (SELECT count(*) FROM public.profiles WHERE tier = 'starter'),
     'basic_users', (SELECT count(*) FROM public.profiles WHERE tier = 'basic'),
     'family_users', (SELECT count(*) FROM public.profiles WHERE tier = 'family'),
-    'pro_users', (SELECT count(*) FROM public.profiles WHERE tier = 'pro'),
+    'legacy_pro_users', (SELECT count(*) FROM public.profiles WHERE tier = 'pro'),
     'logs_today', (SELECT count(*) FROM public.pet_logs WHERE created_at >= CURRENT_DATE),
     'logs_7d', (SELECT count(*) FROM public.pet_logs WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'),
     'logs_30d', (SELECT count(*) FROM public.pet_logs WHERE created_at >= CURRENT_DATE - INTERVAL '30 days'),

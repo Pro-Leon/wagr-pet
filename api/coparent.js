@@ -57,10 +57,10 @@ export default async function handler(req, res) {
         .single();
 
       const tier = profile?.tier || 'starter';
-      const maxCoparents = tier === 'pro' ? Infinity : tier === 'family' ? 3 : 0;
+      const maxCoparents = tier === 'family' ? Infinity : tier === 'basic' ? 2 : 0;
 
       if (maxCoparents === 0) {
-        return res.status(403).json({ error: 'Your plan does not support co-parents. Upgrade to Family or Pro.' });
+        return res.status(403).json({ error: 'Your plan does not support co-parents. Upgrade to Starter or Pro.' });
       }
 
       const { count: existingCount } = await supabase

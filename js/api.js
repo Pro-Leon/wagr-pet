@@ -591,6 +591,9 @@ async function generateVetReport(petId, options = {}) {
     includeTests = true,
     includeDerma = true,
     includeGrooming = true,
+    includeWeight = true,
+    includeInventory = true,
+    includeVetRecords = true,
     days = 30
   } = options;
 
@@ -684,6 +687,62 @@ async function generateVetReport(petId, options = {}) {
     if (filtered.length) {
       reportSections.push('## ✂️ Grooming\n' + 
         filtered.map(l => `- [${new Date(l.appointment_date).toLocaleDateString()}] ${l.groomer_name || 'N/A'} at ${l.location || 'N/A'} — ${l.services_performed?.join(', ') || 'services recorded'}${l.notes ? ' — ' + l.notes : ''}`).join('\n')
+      );
+    }
+  }
+
+  if (includeWeight) {
+    const weightLogs = await getWeightLogs(petId, 100);
+    const filtered = weightLogs.filter(l => {
+      const d = new Date(l.logged_at);
+      return (Date.now() - d.getTime()) / (1000*60*60*24) <= days;
+    });
+    if (filtered.length) {
+      var values = filtered.map(function(l) { return parseFloat(l.weight_kg); });
+      var current = values[values.length - 1];
+      var min = Math.min.apply(null, values);
+      var max = Math.max.apply(null, values);
+      var avg = values.reduce(function(a, b) { return a + b; }, 0) / values.length;
+      var change = values.length >= 2 ? current - values[values.length - 2] : 0;
+      reportSections.push('## ⚖️ Weight Tracking\n' +
+        filtered.map(function(l) { return '- [' + new Date(l.logged_at).toLocaleDateString() + '] ' + l.weight_kg + ' kg' + (l.notes ? ' — ' + l.notes : ''); }).join('\n') +
+        '\n\n**Summary:** Current: ' + current.toFixed(2) + ' kg, Min: ' + min.toFixed(2) + ' kg, Max: ' + max.toFixed(2) + ' kg, Avg: ' + avg.toFixed(2) + ' kg' +
+        (values.length >= 2 ? ', Last change: ' + (change >= 0 ? '+' : '') + change.toFixed(2) + ' kg' : '')
+      );
+    }
+  }
+
+  if (includeInventory) {
+    var inventory = await getFoodInventory(petId);
+    var lowStock = inventory.filter(function(i) { return parseFloat(i.quantity) <= parseFloat(i.restock_threshold || 1); });
+    if (inventory.length) {
+      reportSections.push('## 📦 Food Inventory\n' +
+        inventory.map(function(i) {
+          var isLow = parseFloat(i.quantity) <= parseFloat(i.restock_threshold || 1);
+          var emptyDate = i.estimated_empty_date ? new Date(i.estimated_empty_date + 'T00:00:00') : null;
+          var daysLeft = emptyDate ? Math.ceil((emptyDate - new Date()) / (1000 * 60 * 60 * 24)) : null;
+          return '- ' + i.item_name + ' (' + i.category + '): ' + i.quantity + ' ' + i.unit +
+            (daysLeft !== null ? ' — est. ' + (daysLeft <= 0 ? 'EXPIRED' : daysLeft + ' days left') : '') +
+            (isLow ? ' ⚠️ LOW STOCK' : '') +
+            (i.notes ? ' — ' + i.notes : '');
+        }).join('\n') +
+        (lowStock.length ? '\n\n**⚠️ Items needing restock:** ' + lowStock.map(function(i) { return i.item_name; }).join(', ') : '')
+      );
+    }
+  }
+
+  if (includeVetRecords) {
+    var vetRecords = await getVetRecords(petId);
+    if (vetRecords.length) {
+      var typeLabels = { lab: 'Lab Results', prescription: 'Prescription', vaccine: 'Vaccination', xray: 'X-Ray / Imaging', surgery: 'Surgery', exam: 'Exam Notes', referral: 'Referral', other: 'Other' };
+      reportSections.push('## 🏥 Vet Records\n' +
+        vetRecords.map(function(r) {
+          var label = typeLabels[r.record_type] || r.record_type;
+          var d = new Date(r.uploaded_at);
+          return '- [' + d.toLocaleDateString() + '] ' + r.file_name + ' (' + label + ')' +
+            (r.notes ? ' — ' + r.notes : '') +
+            (r.file_url ? ' — [View Document](' + r.file_url + ')' : '');
+        }).join('\n')
       );
     }
   }
@@ -802,9 +861,7 @@ async function openPaystackCheckout(email, plan, onSuccess) {
     basic_monthly: 'PLN_x7yn9h54irimq96',
     basic_yearly: 'PLN_omjluu4cllyzgyd',
     family_monthly: 'PLN_38n01fa6kxbk9vn',
-    family_yearly: 'PLN_3r0edwfqim3uixw',
-    pro_monthly: 'PLN_wlpu3bvnyl5x7di',
-    pro_yearly: 'PLN_bdr7x2i4rkb4cod'
+    family_yearly: 'PLN_3r0edwfqim3uixw'
   };
 
   const handler = PaystackPop.setup({
@@ -1525,6 +1582,48 @@ async function addVetRecord(record) {
 async function deleteVetRecord(id) {
   const { error } = await db()
     .from('vet_records')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
+}
+
+/* ========== TASKS ========== */
+
+async function getTasks(petId) {
+  const { data, error } = await db()
+    .from('tasks')
+    .select('*')
+    .eq('pet_id', petId)
+    .order('date', { ascending: false })
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+async function addTask(task) {
+  const { data, error } = await db()
+    .from('tasks')
+    .insert(task)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function updateTask(id, updates) {
+  const { data, error } = await db()
+    .from('tasks')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function deleteTask(id) {
+  const { error } = await db()
+    .from('tasks')
     .delete()
     .eq('id', id);
   if (error) throw error;

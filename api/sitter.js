@@ -52,8 +52,8 @@ export default async function handler(req, res) {
       .single();
 
     const tier = profile?.tier || 'starter';
-    if (!['family', 'pro'].includes(tier)) {
-      return res.status(403).json({ error: 'Sitter links require the Family plan or higher.' });
+    if (!['basic', 'family'].includes(tier)) {
+      return res.status(403).json({ error: 'Sitter links require the Starter plan or higher.' });
     }
 
     const multipliers = { hours: 1, days: 24, weeks: 168, months: 720 };
@@ -229,6 +229,43 @@ export default async function handler(req, res) {
       .limit(50);
     if (error) return res.status(500).json({ error: error.message });
     return res.status(200).json({ logs: data || [] });
+  }
+
+  /* --- Get tasks (for sitter view) --- */
+  if (req.method === 'GET' && action === 'tasks') {
+    const { petId, token: sitterToken } = req.query;
+    if (!petId || !sitterToken) return res.status(400).json({ error: 'Missing petId or token' });
+
+    const pet = await validateSitterToken(sitterToken, petId);
+    if (!pet) return res.status(403).json({ error: 'Invalid sitter token' });
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('pet_id', petId)
+      .order('date', { ascending: false })
+      .limit(50);
+    if (error) return res.status(500).json({ error: error.message });
+    return res.status(200).json({ tasks: data || [] });
+  }
+
+  /* --- Sitter complete task --- */
+  if (req.method === 'POST' && action === 'complete_task') {
+    const { taskId, token: sitterToken, sitter_name } = req.body || {};
+    if (!taskId || !sitterToken) return res.status(400).json({ error: 'Missing taskId or token' });
+
+    const pet = await validateSitterToken(sitterToken, null);
+    if (!pet) return res.status(403).json({ error: 'Invalid sitter token' });
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .update({ status: 'done', sitter_name: sitter_name || 'Sitter' })
+      .eq('id', taskId)
+      .eq('pet_id', pet.id)
+      .select()
+      .single();
+    if (error) return res.status(500).json({ error: error.message });
+    return res.status(200).json({ task: data });
   }
 
   /* --- Sitter log entry --- */

@@ -46,7 +46,7 @@ export default async function handler(req, res) {
     .single();
 
   const tier = profile?.tier || 'starter';
-  if (tier !== 'pro') {
+  if (tier !== 'family') {
     return res.status(403).json({ error: 'AI Vet Reports are available on the Pro plan.' });
   }
 

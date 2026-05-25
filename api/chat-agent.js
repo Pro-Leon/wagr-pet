@@ -49,10 +49,7 @@ export default async function handler(req, res) {
     .single();
 
   const tier = profile?.tier || 'starter';
-  if (tier === 'starter') {
-    return res.status(403).json({ error: 'Upgrade to Basic or higher to use the AI Assistant.' });
-  }
-  const canLog = ['family', 'pro'].includes(tier);
+  const canLog = ['basic', 'family'].includes(tier);
 
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();

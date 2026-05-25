@@ -127,62 +127,55 @@ function renderPricingCards(containerId = 'pricing-cards') {
 
   container.innerHTML = `
     <div class="pricing-card plan-free">
-      <div class="plan-name">Starter</div>
+      <div class="plan-name">Free</div>
       <div class="plan-price">$0<span class="period">/mo</span></div>
       <div class="plan-desc">1 pet &middot; Forever free</div>
       <ul class="plan-features">
         <li>${ck}<span>1 Pet Profile</span></li>
-        <li>${ck}<span>Toxicity & Calorie Calculators</span></li>
-        <li>${ck}<span>7-Day Timeline Logging</span></li>
-        <li>${ck}<span>Meal, Meds & Bathroom Logs</span></li>
-        <li>${ck}<span>Activity Streak</span></li>
+        <li>${ck}<span>Timeline Logging — last 7 days</span></li>
+        <li>${ck}<span>Meal, Meds & Walk Logging</span></li>
+        <li>${ck}<span>AI Assistant — read-only</span></li>
+        <li>${ck}<span>Passive QR Collar Tag</span></li>
+        <li>${ck}<span>Public Emergency Profile</span></li>
+        <li>${ck}<span>Toxicity & Calorie Tools</span></li>
       </ul>
       <button class="btn btn-secondary w-full" onclick="closeAllModals()">Current Plan</button>
     </div>
     <div class="pricing-card featured">
       <div class="plan-badge">Popular</div>
-      <div class="plan-name">Basic</div>
+      <div class="plan-name">Starter</div>
       <div class="plan-price">$4.99<span class="period">/mo</span></div>
       <div class="plan-desc">Up to 2 Pets</div>
       <ul class="plan-features">
         <li>${ck}<span>Up to 2 Pet Profiles</span></li>
         <li>${ck}<span>Unlimited Log History</span></li>
         <li>${ck}<span>Food Log (all types)</span></li>
-        <li>${ck}<span>Passive QR Collar Tags</span></li>
-        <li>${ck}<span>Public Emergency Profile</span></li>
+        <li>${ck}<span>Symptom & Grooming Tracking</span></li>
+        <li>${ck}<span>Medication & Vaccine Reminders</span></li>
+        <li>${ck}<span>Co-parent Sync (2 users)</span></li>
+        <li>${ck}<span>Sitter Magic Links & Care Plans</span></li>
+        <li>${ck}<span>Active QR + GPS Alerts</span></li>
+        <li>${ck}<span>AI Assistant — full logging</span></li>
       </ul>
       <button class="btn btn-primary w-full" onclick="handleSubscribe('basic')">Upgrade</button>
     </div>
     <div class="pricing-card">
-      <div class="plan-name">Family</div>
-      <div class="plan-price">$9.99<span class="period">/mo</span></div>
-      <div class="plan-desc">Up to 4 Pets</div>
-      <ul class="plan-features">
-        <li>${ck}<span>Up to 4 Pets</span></li>
-        <li>${ck}<span>Co-parent Sync (3 users)</span></li>
-        <li>${ck}<span>Active QR + GPS Alerts</span></li>
-        <li>${ck}<span>Sitter Magic Links & Care Plans</span></li>
-        <li>${ck}<span>Symptom Tracking</span></li>
-        <li>${ck}<span>Grooming Appointments</span></li>
-        <li>${ck}<span>Medication & Vaccine Reminders</span></li>
-      </ul>
-      <button class="btn btn-primary w-full" onclick="handleSubscribe('family')">Upgrade</button>
-    </div>
-    <div class="pricing-card plan-pro">
       <div class="plan-name">Pro</div>
-      <div class="plan-price">$16.99<span class="period">/mo</span></div>
+      <div class="plan-price">$9.99<span class="period">/mo</span></div>
       <div class="plan-desc">Unlimited Pets</div>
       <ul class="plan-features">
         <li>${ck}<span>Unlimited Pets</span></li>
         <li>${ck}<span>AI Vet-Prep Reports (PDF)</span></li>
-        <li>${ck}<span>Unlimited Co-parent Users</span></li>
-        <li>${ck}<span>Sitter Handover Summary Email</span></li>
         <li>${ck}<span>Weight Tracking & Trend Charts</span></li>
         <li>${ck}<span>Vet Records & Document Storage</span></li>
         <li>${ck}<span>Food Inventory & Restock Alerts</span></li>
+        <li>${ck}<span>Heat Cycle Tracker</span></li>
+        <li>${ck}<span>Multi-Pet Household Overview</span></li>
+        <li>${ck}<span>Unlimited Co-parents</span></li>
+        <li>${ck}<span>Sitter Handover Summary Email</span></li>
         <li>${ck}<span>Priority Support</span></li>
       </ul>
-      <button class="btn btn-primary w-full" onclick="handleSubscribe('pro')">Go Pro</button>
+      <button class="btn btn-primary w-full" onclick="handleSubscribe('family')">Get Pro</button>
     </div>
   `;
 }

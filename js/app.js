@@ -90,45 +90,46 @@ const AppState = {
   },
 
   /* --- Tier Config --- */
-  _tierLevels: { starter: 0, basic: 1, family: 2, pro: 3 },
+  _tierLevels: { starter: 0, basic: 1, family: 2 },
 
   /* --- Check Feature Access --- */
   canAccess(feature) {
     const featureTiers = {
       'timeline': 'starter',
-      'pet_notes': 'basic',
-      'food_log': 'family',
-      'qr_passive': 'basic',
-      'public_emergency_profile': 'basic',
-      'support_tickets': 'basic',
-      'food_analysis': 'basic',
+      'tasks': 'starter',
+      'pet_notes': 'starter',
+      'food_log': 'basic',
+      'qr_passive': 'starter',
+      'public_emergency_profile': 'starter',
+      'support_tickets': 'starter',
+      'food_analysis': 'starter',
       'multiple_pets': 'basic',
-      'coparent_sync': 'family',
-      'location_alert': 'family',
-      'sitter_link': 'family',
-      'care_plans': 'family',
-      'symptom_tracking': 'family',
-      'grooming': 'family',
-      'medication_reminders': 'family',
-      'feeding_schedules': 'family',
-      'chat_assistant': 'basic',
-      'ai_report': 'pro',
-      'unlimited_coparent': 'pro',
-      'sitter_handover_email': 'pro',
-      'weight_tracking': 'pro',
-      'vet_records': 'pro',
-      'heat_cycle': 'pro',
-      'multi_pet_overview': 'pro',
-      'food_inventory': 'pro',
-      'priority_support': 'pro',
-      'unlimited_pets': 'pro',
+      'coparent_sync': 'basic',
+      'location_alert': 'basic',
+      'sitter_link': 'basic',
+      'care_plans': 'basic',
+      'symptom_tracking': 'basic',
+      'grooming': 'basic',
+      'medication_reminders': 'basic',
+      'feeding_schedules': 'basic',
+      'chat_assistant': 'starter',
+      'ai_report': 'family',
+      'unlimited_coparent': 'family',
+      'sitter_handover_email': 'family',
+      'weight_tracking': 'family',
+      'vet_records': 'family',
+      'heat_cycle': 'family',
+      'multi_pet_overview': 'family',
+      'food_inventory': 'family',
+      'priority_support': 'family',
+      'unlimited_pets': 'family',
     };
     const required = featureTiers[feature] || 'starter';
     return (this._tierLevels[this.tier] || 0) >= (this._tierLevels[required] || 0);
   },
 
   canWrite() {
-    return ['family', 'pro'].includes(this.tier);
+    return ['basic', 'family'].includes(this.tier);
   },
 
   canAccessTimeline() {
@@ -143,16 +144,15 @@ const AppState = {
 
   /* --- Max Pets --- */
   maxPets() {
-    if (this.tier === 'pro') return Infinity;
-    if (this.tier === 'family') return 4;
+    if (this.tier === 'family') return Infinity;
     if (this.tier === 'basic') return 2;
     return 1;
   },
 
   /* --- Max co-parents --- */
   maxCoparents() {
-    if (this.tier === 'pro') return Infinity;
-    if (this.tier === 'family') return 3;
+    if (this.tier === 'family') return Infinity;
+    if (this.tier === 'basic') return 2;
     return 0;
   }
 };

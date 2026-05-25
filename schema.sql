@@ -16,7 +16,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     email TEXT NOT NULL,
-    tier TEXT DEFAULT 'starter' CHECK (tier IN ('starter', 'basic', 'family', 'pro')),
+    tier TEXT DEFAULT 'starter' CHECK (tier IN ('starter', 'basic', 'family')),
     is_admin BOOLEAN DEFAULT false,
     subscription_code TEXT,
     subscription_status TEXT DEFAULT 'none',

@@ -131,8 +131,6 @@ async function handlePaystackEvent(event) {
       'PLN_omjluu4cllyzgyd': 'basic_yearly',
       'PLN_38n01fa6kxbk9vn': 'family_monthly',
       'PLN_3r0edwfqim3uixw': 'family_yearly',
-      'PLN_wlpu3bvnyl5x7di': 'pro_monthly',
-      'PLN_bdr7x2i4rkb4cod': 'pro_yearly',
     };
     planType = codeToPlan[planCode];
   }
@@ -146,8 +144,6 @@ async function handlePaystackEvent(event) {
     'basic_yearly': 'basic',
     'family_monthly': 'family',
     'family_yearly': 'family',
-    'pro_monthly': 'pro',
-    'pro_yearly': 'pro',
   };
 
   const tier = tierMap[planType];

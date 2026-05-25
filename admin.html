@@ -578,10 +578,9 @@
             <input type="text" class="search-input" id="user-search" placeholder="Search by email..." oninput="debounceSearchUsers()">
             <select class="filter-select" id="user-tier-filter" onchange="loadUsers()">
               <option value="">All tiers</option>
-              <option value="starter">Starter</option>
-              <option value="basic">Basic</option>
-              <option value="family">Family</option>
-              <option value="pro">Pro</option>
+              <option value="starter">Free</option>
+              <option value="basic">Starter</option>
+              <option value="family">Pro</option>
             </select>
           </div>
           <button class="btn btn-primary btn-sm" onclick="loadUsers()">Refresh</button>
@@ -751,10 +750,9 @@
       <div class="input-group" style="margin-bottom:16px">
         <label>New Tier</label>
         <select class="input-field" id="tier-modal-select">
-          <option value="starter">Starter</option>
-          <option value="basic">Basic</option>
-          <option value="family">Family</option>
-          <option value="pro">Pro</option>
+          <option value="starter">Free</option>
+          <option value="basic">Starter</option>
+          <option value="family">Pro</option>
         </select>
       </div>
       <div class="flex gap-2" style="justify-content:flex-end">
@@ -1039,10 +1037,11 @@
         return;
       }
 
+      const tierNames = { starter: 'Free', basic: 'Starter', family: 'Pro' };
       body.innerHTML = users.map(u => `
         <tr>
           <td style="font-weight:500">${escapeHtml(u.email)}</td>
-          <td><span class="tier-${u.tier}" style="font-weight:500;text-transform:capitalize">${u.tier}</span></td>
+          <td><span class="tier-${u.tier}" style="font-weight:500">${tierNames[u.tier] || u.tier}</span></td>
           <td>${u.is_admin ? '<span style="color:#dc2626;font-weight:600;font-size:0.75rem">YES</span>' : '—'}</td>
           <td>${u.pet_count}</td>
           <td>${u.log_count}</td>
@@ -1082,7 +1081,7 @@
           document.getElementById('detail-user-title').textContent = profile.email;
           info.innerHTML = `
             <div class="detail-item"><label>Email</label><div class="val">${escapeHtml(profile.email)}</div></div>
-            <div class="detail-item"><label>Tier</label><div class="val tier-${profile.tier}" style="text-transform:capitalize">${profile.tier}</div></div>
+            <div class="detail-item"><label>Tier</label><div class="val tier-${profile.tier}">${tierNames[profile.tier] || profile.tier}</div></div>
             <div class="detail-item"><label>Admin</label><div class="val">${profile.is_admin ? 'Yes' : 'No'}</div></div>
             <div class="detail-item"><label>Paystack Code</label><div class="val" style="font-size:0.8rem;color:var(--text-secondary)">${profile.paystack_customer_code || '—'}</div></div>
             <div class="detail-item"><label>Joined</label><div class="val">${new Date(profile.created_at).toLocaleString()}</div></div>
