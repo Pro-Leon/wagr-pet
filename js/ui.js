@@ -132,12 +132,14 @@ function renderPricingCards(containerId = 'pricing-cards') {
       <div class="plan-desc">1 pet &middot; Forever free</div>
       <ul class="plan-features">
         <li>${ck}<span>1 Pet Profile</span></li>
+        <li>${ck}<span>Daily Tasks &amp; Reminders</span></li>
+        <li>${ck}<span>Pet Notes &amp; Journal</span></li>
         <li>${ck}<span>Timeline Logging — last 7 days</span></li>
-        <li>${ck}<span>Meal, Meds & Walk Logging</span></li>
-        <li>${ck}<span>AI Assistant — read-only</span></li>
+        <li>${ck}<span>Meal, Meds &amp; Walk Logging</span></li>
+        <li>${ck}<span>AI Assistant — 3 free queries</span></li>
         <li>${ck}<span>Passive QR Collar Tag</span></li>
         <li>${ck}<span>Public Emergency Profile</span></li>
-        <li>${ck}<span>Toxicity & Calorie Tools</span></li>
+        <li>${ck}<span>Toxicity &amp; Calorie Tools</span></li>
       </ul>
       <button class="btn btn-secondary w-full" onclick="closeAllModals()">Current Plan</button>
     </div>
@@ -150,10 +152,11 @@ function renderPricingCards(containerId = 'pricing-cards') {
         <li>${ck}<span>Up to 2 Pet Profiles</span></li>
         <li>${ck}<span>Unlimited Log History</span></li>
         <li>${ck}<span>Food Log (all types)</span></li>
-        <li>${ck}<span>Symptom & Grooming Tracking</span></li>
-        <li>${ck}<span>Medication & Vaccine Reminders</span></li>
+        <li>${ck}<span>Symptom &amp; Grooming Tracking</span></li>
+        <li>${ck}<span>Medication &amp; Reminders</span></li>
+        <li>${ck}<span>Feeding Schedules &amp; Reminders</span></li>
         <li>${ck}<span>Co-parent Sync (2 users)</span></li>
-        <li>${ck}<span>Sitter Magic Links & Care Plans</span></li>
+        <li>${ck}<span>Sitter Magic Links &amp; Care Plans</span></li>
         <li>${ck}<span>Active QR + GPS Alerts</span></li>
         <li>${ck}<span>AI Assistant — full logging</span></li>
       </ul>

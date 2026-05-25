@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PupFile — Your Dog's Complete Health Record</title>
-  <meta name="description" content="Track meals, medications, symptoms, and vet records. AI vet reports, QR emergency tags, co-parent sync, and sitter magic links — one dashboard for your dog's entire health history.">
-  <meta name="keywords" content="dog care app, pet health tracker, dog medication reminder, pet care dashboard, dog food calculator, AI vet report, pet QR tag">
+  <meta name="description" content="Track meals, medications, symptoms, grooming, and vet records. AI vet reports, QR emergency tags, co-parent sync, sitter magic links, and daily tasks — one dashboard for your dog's entire health history.">
+  <meta name="keywords" content="dog care app, pet health tracker, dog medication reminder, pet care dashboard, dog food calculator, AI vet report, pet QR tag, dog symptom tracker, pet grooming log">
   <meta name="author" content="PupFile">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://pupfile.com">
@@ -19,7 +19,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="PupFile — Your Dog's Complete Health Record">
-  <meta property="og:description" content="AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and symptom tracking — one dashboard for everything your dog needs.">
+  <meta property="og:description" content="Track meals, meds, symptoms, grooming, and tasks. AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and more — one dashboard for everything your dog needs.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://pupfile.com">
   <meta property="og:site_name" content="PupFile">
@@ -27,7 +27,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="PupFile — Your Dog's Complete Health Record">
-  <meta name="twitter:description" content="AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and symptom tracking — one dashboard for everything your dog needs.">
+  <meta name="twitter:description" content="Track meals, meds, symptoms, grooming, and tasks. AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync — one dashboard for everything your dog needs.">
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -37,7 +37,7 @@
     "name": "PupFile",
     "applicationCategory": "Health",
     "operatingSystem": "Web",
-    "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, symptom tracking, and daily care logging.",
+    "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, symptom tracking, grooming logging, daily tasks, pet notes, and care logging.",
     "offers": [
       { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free tier" },
       { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "description": "Starter monthly" },
@@ -57,7 +57,7 @@
         "name": "Is PupFile free?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, AI Assistant (read-only), a passive QR collar tag, a public emergency profile, and free Toxicity Checker and Calorie Calculator — all without a credit card."
+          "text": "Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, daily tasks, pet notes, AI Assistant (3 free queries), a passive QR collar tag, a public emergency profile, and free Toxicity Checker and Calorie Calculator — all without a credit card."
         }
       },
       {
@@ -1141,6 +1141,11 @@
           <p>Track GI issues, skin changes, energy levels, and more. The timeline correlates symptoms with meals and meds so you can spot patterns — and show your vet a complete picture instead of guessing when it started.</p>
         </div>
         <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="clipboard-check" style="width:24px;height:24px"></i></div>
+          <h3>Never forget a pill, walk, or feeding again</h3>
+          <p>Create daily tasks and reminders for yourself, co-parents, and sitters. Popup alerts and email reminders keep everyone on the same schedule — no more "did you feed him?" texts.</p>
+        </div>
+        <div class="benefit-card">
           <div class="bc-icon"><i data-lucide="lock" style="width:24px;height:24px"></i></div>
           <h3>Your data is private. Full stop.</h3>
           <p>This is your dog's health record — it belongs to you. All data is encrypted and never sold. Privacy isn't a feature, it's the foundation.</p>
@@ -1161,7 +1166,7 @@
           <div class="tc-stars">★★★★★</div>
           <div class="tc-text">"The sitter link saved our weekend trip. Our sitter logged everything — meals, meds, walks — without downloading a single thing. I could see it all from the airport. Total peace of mind."</div>
           <div class="tc-author">Marcus T., owner of Rex (Labrador)</div>
-          <div class="tc-role">Family plan</div>
+          <div class="tc-role">Starter plan</div>
         </div>
         <div class="testimonial-card">
           <div class="tc-stars">★★★★★</div>
@@ -1173,7 +1178,7 @@
           <div class="tc-stars">★★★★★</div>
           <div class="tc-text">"Co-parent sync caught us — my partner gave the morning meds, and I saw it on the timeline before I double-dosed. If you have multiple people caring for your dog, this is non-negotiable."</div>
           <div class="tc-author">Jenna L., owner of Bailey (Beagle)</div>
-          <div class="tc-role">Family plan</div>
+          <div class="tc-role">Starter plan</div>
         </div>
       </div>
     </div>
@@ -1216,8 +1221,11 @@
           </thead>
           <tbody>
             <tr><td>Pet Profiles</td><td>1</td><td>2</td><td>Unlimited</td></tr>
-            <tr><td>AI Assistant</td><td>Read-only</td><td>Full logging</td><td>Full logging</td></tr>
+            <tr><td>AI Assistant</td><td>3 free queries</td><td>Full AI Chat</td><td>Full AI Chat</td></tr>
             <tr><td>Timeline Logging</td><td>7 days</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Daily Tasks &amp; Reminders</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Pet Notes &amp; Journal</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>In-App Support Tickets</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
             <tr><td>Food Log (all types)</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
             <tr><td>Feeding Schedule Templates</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
             <tr><td>QR Emergency Tags</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
@@ -1293,7 +1301,7 @@
             <span>Is PupFile free?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
-          <div class="faq-a">Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, AI Assistant (read-only), a passive QR collar tag, a public emergency profile, and our free Toxicity Checker and Calorie Calculator — all without a credit card. Paid plans start at $4.99/mo when you need more pets or advanced features.</div>
+          <div class="faq-a">Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, daily tasks, pet notes, AI Assistant (3 free queries), a passive QR collar tag, a public emergency profile, and our free Toxicity Checker and Calorie Calculator — all without a credit card. Paid plans start at $4.99/mo when you need more pets or advanced features.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">
@@ -1614,9 +1622,11 @@
           <div class="plan-divider"></div>
           <ul class="plan-features">
             <li>${cg}<span>1 Pet Profile</span></li>
+            <li>${cg}<span>Daily Tasks &amp; Reminders</span></li>
+            <li>${cg}<span>Pet Notes &amp; Journal</span></li>
             <li>${cg}<span>Timeline Logging — last 7 days</span></li>
             <li>${cg}<span>Meal, Meds &amp; Walk Logging</span></li>
-            <li>${cg}<span>AI Assistant (read-only)</span></li>
+            <li>${cg}<span>AI Assistant — 3 free queries</span></li>
             <li>${cg}<span>Passive QR Collar Tag</span></li>
             <li>${cg}<span>Public Emergency Profile</span></li>
             <li>${cg}<span>Free Toxicity &amp; Calorie Tools</span></li>
@@ -1636,11 +1646,12 @@
             <li>${co}<span>Unlimited Log History</span></li>
             <li>${co}<span>Food Log (all types)</span></li>
             <li>${co}<span>Symptom &amp; Grooming Tracking</span></li>
-            <li>${co}<span>Medication &amp; Vaccine Reminders</span></li>
+            <li>${co}<span>Medication &amp; Reminders</span></li>
+            <li>${co}<span>Feeding Schedules &amp; Reminders</span></li>
             <li>${co}<span>Co-parent Sync (2 users)</span></li>
             <li>${co}<span>Sitter Magic Links &amp; Care Plans</span></li>
             <li>${co}<span>Active QR + GPS Alerts</span></li>
-            <li>${co}<span>AI Assistant (full logging)</span></li>
+            <li>${co}<span>AI Assistant — full logging</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Start Starter</a>
         </div>
