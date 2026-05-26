@@ -9,8 +9,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 
 function cors(res, req) {
   const origin = req?.headers?.origin;
-  const allowedOrigins = ['https://pupfile.com', 'http://localhost:3000', 'http://localhost:5173'];
-  if (origin && !allowedOrigins.includes(origin)) return false;
+  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:')) return false;
   res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');

@@ -10,8 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 
 function cors(res, req) {
   const origin = req?.headers?.origin;
-  const allowedOrigins = ['https://pupfile.com', 'http://localhost:3000', 'http://localhost:5173'];
-  if (origin && !allowedOrigins.includes(origin)) return false;
+  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:')) return false;
   res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -57,7 +56,7 @@ export default async function handler(req, res) {
         .single();
 
       const tier = profile?.tier || 'starter';
-      const maxCoparents = tier === 'family' ? Infinity : tier === 'basic' ? 2 : 0;
+      const maxCoparents = (tier === 'family' || tier === 'pro') ? Infinity : tier === 'basic' ? 2 : 0;
 
       if (maxCoparents === 0) {
         return res.status(403).json({ error: 'Your plan does not support co-parents. Upgrade to Starter or Pro.' });

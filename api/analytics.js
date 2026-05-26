@@ -14,8 +14,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const origin = req.headers.origin;
-  const allowedOrigins = ['https://pupfile.com', 'http://localhost:3000', 'http://localhost:5173'];
-  if (origin && !allowedOrigins.includes(origin)) {
+  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:')) {
     return res.status(403).json({ error: 'Origin not allowed' });
   }
   res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');
