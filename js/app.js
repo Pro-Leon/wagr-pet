@@ -90,7 +90,7 @@ const AppState = {
   },
 
   /* --- Tier Config --- */
-  _tierLevels: { starter: 0, basic: 1, family: 2 },
+  _tierLevels: { starter: 0, basic: 1, family: 2, pro: 2 },
 
   /* --- Check Feature Access --- */
   canAccess(feature) {
@@ -129,7 +129,7 @@ const AppState = {
   },
 
   canWrite() {
-    return ['basic', 'family'].includes(this.tier);
+    return ['basic', 'family', 'pro'].includes(this.tier);
   },
 
   canAccessTimeline() {
@@ -144,14 +144,14 @@ const AppState = {
 
   /* --- Max Pets --- */
   maxPets() {
-    if (this.tier === 'family') return Infinity;
+    if (this.tier === 'family' || this.tier === 'pro') return Infinity;
     if (this.tier === 'basic') return 2;
     return 1;
   },
 
   /* --- Max co-parents --- */
   maxCoparents() {
-    if (this.tier === 'family') return Infinity;
+    if (this.tier === 'family' || this.tier === 'pro') return Infinity;
     if (this.tier === 'basic') return 2;
     return 0;
   }
