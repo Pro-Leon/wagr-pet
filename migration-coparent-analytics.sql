@@ -93,7 +93,7 @@ END $$;
 -- CO-PARENT FUNCTIONS
 -- ========================================
 CREATE OR REPLACE FUNCTION accept_co_parent_invite(invite_token TEXT, accepting_user_id UUID)
-RETURNS TABLE (pet_id UUID, pet_name TEXT, owner_email TEXT)
+RETURNS TABLE (out_pet_id UUID, pet_name TEXT, owner_email TEXT)
 LANGUAGE plpgsql SECURITY DEFINER
 AS $$
 DECLARE
@@ -114,7 +114,7 @@ BEGIN
     ON CONFLICT (pet_id, user_id) DO NOTHING;
 
     RETURN QUERY
-    SELECT p.id, p.name::TEXT, u.email::TEXT
+    SELECT inv.pet_id, p.name::TEXT, u.email::TEXT
     FROM pets p
     JOIN auth.users u ON u.id = p.user_id
     WHERE p.id = inv.pet_id;

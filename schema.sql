@@ -364,7 +364,7 @@ CREATE POLICY "Owner can delete invites" ON co_parent_invites
 
 -- SECURITY DEFINER function to accept an invite (used by the serverless API)
 CREATE OR REPLACE FUNCTION accept_co_parent_invite(invite_token TEXT, accepting_user_id UUID)
-RETURNS TABLE (pet_id UUID, pet_name TEXT, owner_email TEXT)
+RETURNS TABLE (out_pet_id UUID, pet_name TEXT, owner_email TEXT)
 LANGUAGE plpgsql SECURITY DEFINER
 AS $$
 DECLARE
@@ -389,7 +389,7 @@ BEGIN
 
     -- Return pet info
     RETURN QUERY
-    SELECT p.id, p.name::TEXT, u.email::TEXT
+    SELECT inv.pet_id, p.name::TEXT, u.email::TEXT
     FROM pets p
     JOIN auth.users u ON u.id = p.user_id
     WHERE p.id = inv.pet_id;

@@ -96,7 +96,7 @@ export default async function handler(req, res) {
     const { data, error } = await supabase.rpc('accept_co_parent_invite', { invite_token: inviteToken, accepting_user_id: user.id });
     if (error) return res.status(500).json({ error: error.message.includes('Invite not found') ? 'Invite not found, already used, or expired.' : error.message });
     if (!data || data.length === 0) return res.status(404).json({ error: 'Invite not valid.' });
-    return res.status(200).json({ success: true, petId: data[0].pet_id, petName: data[0].pet_name, ownerEmail: data[0].owner_email });
+    return res.status(200).json({ success: true, petId: data[0].out_pet_id, petName: data[0].pet_name, ownerEmail: data[0].owner_email });
   }
 
   /* ========== SITTER LINK ACTIONS ========== */
