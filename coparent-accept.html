@@ -120,6 +120,21 @@
         return;
       }
 
+      // Validate the invite and get pet name
+      try {
+        const apiBase = window.location.origin;
+        const res = await fetch(apiBase + '/api/share?action=coparent_validate&token=' + encodeURIComponent(inviteToken));
+        const data = await res.json();
+        if (!res.ok || !data.valid) {
+          showError(data.error || 'Invite not found, already used, or expired.');
+          return;
+        }
+        invitePetName = data.petName || 'Pet';
+      } catch (e) {
+        showError('Could not verify invite. Check the link or try again later.');
+        return;
+      }
+
       // Check if user is logged in
       const user = await getCurrentUser();
       if (user) {
@@ -129,7 +144,8 @@
         document.getElementById('invite-text').textContent = 'You\'ve been invited to co-parent a pet!';
         document.getElementById('invite-detail').style.display = 'block';
         document.getElementById('invite-detail').innerHTML = `
-          Logged in as <strong>${escapeHtml(user.email)}</strong>
+          Invited to co-parent <strong>${escapeHtml(invitePetName)}</strong><br>
+          <span style="font-size:0.78rem;color:var(--text-muted)">Logged in as ${escapeHtml(user.email)}</span>
         `;
         document.getElementById('invite-accept-btn').style.display = 'block';
       } else {
@@ -144,7 +160,7 @@
         signupBtn.href = '/auth?mode=signup&redirect=' + encodeURIComponent('/coparent?token=' + inviteToken);
         signupBtn.style.display = 'block';
         document.getElementById('invite-detail').style.display = 'block';
-        document.getElementById('invite-detail').innerHTML = `Invited to co-parent <strong>${escapeHtml(invitePetName || 'a pet')}</strong>`;
+        document.getElementById('invite-detail').innerHTML = `Invited to co-parent <strong>${escapeHtml(invitePetName)}</strong>`;
       }
     });
 
@@ -178,6 +194,7 @@
       document.getElementById('invite-detail').style.display = 'none';
       document.getElementById('invite-accept-btn').style.display = 'none';
       document.getElementById('invite-login-btn').style.display = 'none';
+      document.getElementById('invite-signup-btn').style.display = 'none';
       document.getElementById('invite-error').style.display = 'block';
       document.getElementById('invite-error-text').textContent = message;
     }

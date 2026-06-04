@@ -1202,7 +1202,7 @@
             <div id="qr-active" style="display:none">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
                 <div class="card" style="padding:24px;text-align:center">
-                  <div id="qr-canvas" style="margin-bottom:12px;display:flex;justify-content:center"></div>
+                  <div id="qr-container" style="margin-bottom:12px;display:flex;justify-content:center"></div>
                   <div style="font-size:0.72rem;color:var(--text-muted);word-break:break-all;margin-bottom:8px" id="qr-url"></div>
                   <div style="display:flex;gap:6px;justify-content:center">
                     <button class="btn btn-secondary btn-sm" onclick="downloadQR()">
@@ -6811,11 +6811,11 @@ if (!hasPet) {
       btn.className = 'btn btn-sm btn-primary';
     });
 
+    let _qrDataUrl = null;
     let _qrPromise = null;
-    let _generatedCanvas = null;
     function generateQR() {
       if (!AppState.activePet) return;
-      const container = document.getElementById('qr-canvas');
+      const container = document.getElementById('qr-container');
       const urlEl = document.getElementById('qr-url');
       if (!container) return;
       const url = `${window.location.origin}/p/${AppState.activePet.id}`;
@@ -6824,21 +6824,20 @@ if (!hasPet) {
 
       if (typeof window.QRCode === 'undefined' || !_libsReady.qrcode) { _qrPromise = null; return; }
 
-      const canvas = document.createElement('canvas');
-      canvas.width = 200; canvas.height = 200;
-      _generatedCanvas = null;
-
+      _qrDataUrl = null;
       _qrPromise = new Promise(function(resolve, reject) {
-        QRCode.toCanvas(canvas, url, { width: 200, margin: 2, color: { dark: '#000', light: '#fff' } }, function(err, c) {
-          if (err) { container.innerHTML = '<p style="font-size:0.78rem;color:var(--text-muted)">Could not generate QR code.</p>'; reject(err); return; }
-          resolve(c || canvas);
+        QRCode.toDataURL(url, { width: 200, margin: 2, color: { dark: '#000', light: '#fff' } }, function(err, dataUrl) {
+          if (err) { reject(err); return; }
+          resolve(dataUrl);
         });
       });
 
-      _qrPromise.then(function(finishedCanvas) {
-        _generatedCanvas = finishedCanvas;
-        container.appendChild(finishedCanvas);
-      }).catch(function() {});
+      _qrPromise.then(function(dataUrl) {
+        _qrDataUrl = dataUrl;
+        container.innerHTML = '<img id="qr-image" src="' + dataUrl + '" style="width:200px;height:200px;border-radius:6px" />';
+      }).catch(function() {
+        container.innerHTML = '<p style="font-size:0.78rem;color:var(--text-muted)">Could not generate QR code.</p>';
+      });
     }
 
     function viewEmergencyPassport() {
@@ -6847,19 +6846,17 @@ if (!hasPet) {
     }
 
     async function downloadQR() {
-      var target = _generatedCanvas;
-      if (!target && _qrPromise) {
-        try { target = await _qrPromise; } catch (e) { showToast('Could not generate QR code.', 'error'); return; }
+      var dataUrl = _qrDataUrl;
+      if (!dataUrl && _qrPromise) {
+        try { dataUrl = await _qrPromise; } catch (e) { showToast('Could not generate QR code.', 'error'); return; }
       }
-      if (!target) { showToast('Generate the QR code first.', 'error'); return; }
-      target.toBlob(function(blob) {
-        var link = document.createElement('a');
-        link.download = 'pupfile-' + (AppState.activePet?.name || 'pet').replace(/\s+/g, '-').toLowerCase() + '-qr.png';
-        link.href = URL.createObjectURL(blob);
-        document.body.appendChild(link);
-        link.click();
-        setTimeout(function() { document.body.removeChild(link); URL.revokeObjectURL(link.href); }, 100);
-      });
+      if (!dataUrl) { showToast('Generate the QR code first.', 'error'); return; }
+      var link = document.createElement('a');
+      link.download = 'pupfile-' + (AppState.activePet?.name || 'pet').replace(/\s+/g, '-').toLowerCase() + '-qr.png';
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(function() { document.body.removeChild(link); }, 100);
     }
 
     function saveEmergencyProfile() {

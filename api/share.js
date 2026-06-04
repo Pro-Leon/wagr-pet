@@ -68,6 +68,21 @@ export default async function handler(req, res) {
     return res.status(200).json({ inviteUrl: `${origin}/coparent?token=${token}`, token, petName: pet.name, expiresAt: invite.expires_at });
   }
 
+  if (action === 'coparent_validate') {
+    const token = req.method === 'GET' ? req.query.token : (req.body?.token || '');
+    if (!token) return res.status(400).json({ error: 'Missing token' });
+    const { data: invite } = await supabase
+      .from('co_parent_invites')
+      .select('id, pet_id, used, expires_at')
+      .eq('token', token)
+      .maybeSingle();
+    if (!invite) return res.status(404).json({ error: 'Invite not found.' });
+    if (invite.used) return res.status(400).json({ error: 'Invite has already been used.' });
+    if (new Date(invite.expires_at) < new Date()) return res.status(400).json({ error: 'Invite has expired.' });
+    const { data: pet } = await supabase.from('pets').select('name').eq('id', invite.pet_id).single();
+    return res.status(200).json({ valid: true, petName: pet?.name || 'Pet', petId: invite.pet_id });
+  }
+
   if (action === 'coparent_accept') {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(401).json({ error: 'Missing authorization' });

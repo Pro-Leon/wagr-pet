@@ -136,6 +136,22 @@ async function removeCoparent(petId, userId) {
   if (error) throw error;
 }
 
+async function getCoparentPets(userId) {
+  const { data: entries, error: entriesErr } = await db()
+    .from('co_parents')
+    .select('pet_id')
+    .eq('user_id', userId);
+  if (entriesErr) throw entriesErr;
+  if (!entries || entries.length === 0) return [];
+  const petIds = entries.map(e => e.pet_id);
+  const { data: pets, error: petsErr } = await db()
+    .from('pets')
+    .select('*')
+    .in('id', petIds);
+  if (petsErr) throw petsErr;
+  return pets || [];
+}
+
 /* --- Paystack Checkout --- */
 async function openPaystackCheckout(email, plan, onSuccess) {
   const user = AppState.user;
