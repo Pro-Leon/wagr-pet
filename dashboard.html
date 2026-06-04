@@ -902,9 +902,35 @@
     #modal-pricing .pricing-card .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
 
     /* --- Travel Readiness --- */
-    .readiness-bar-track { background: var(--bg-tertiary,#eee); }
+    #travel-passport-header { position:relative; }
+    #travel-passport-header .passport-photo-area { width:56px;height:56px;border-radius:50%;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer;border:2px dashed var(--border-color);transition:border-color 0.2s;position:relative; }
+    #travel-passport-header .passport-photo-area:hover { border-color:var(--orange-400); }
+    #travel-passport-header .passport-photo-area img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    #travel-passport-header .passport-photo-area .photo-placeholder { width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-muted); }
+    #travel-passport-header .passport-photo-area .photo-placeholder svg { width:22px;height:22px; }
+
+    .readiness-bar-track { background: var(--bg-tertiary,#eee); border-radius:99px;overflow:hidden; }
     [data-theme="dark"] .readiness-bar-track { background: rgba(255,255,255,0.08); }
-    #travel-readiness-card .readiness-score-num { transition: color 0.3s ease; }
+    .readiness-bar-fill { height:100%;border-radius:99px;transition:width 0.6s ease; }
+
+    .readiness-priority-group { margin-bottom:14px; }
+    .readiness-priority-group .group-header { display:flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-color); }
+    .readiness-priority-group .group-header svg { width:14px;height:14px; }
+    .readiness-item { display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:0.8rem;margin-bottom:4px; }
+    .readiness-item.item-ready { background:rgba(22,163,74,0.06);color:#16a34a; }
+    .readiness-item.item-missing { background:rgba(220,38,38,0.04);color:#dc2626; }
+    .readiness-item.item-optional { background:var(--bg-tertiary);color:var(--text-secondary); }
+    .readiness-item .item-icon { width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    .readiness-item .item-icon svg { width:16px;height:16px; }
+    .readiness-item .item-label { flex:1; }
+    .readiness-item .item-date { font-size:0.7rem;opacity:0.7; }
+
+    #travel-success-state { text-align:center;padding:24px 20px; }
+    #travel-success-state .success-icon { width:48px;height:48px;border-radius:50%;background:rgba(22,163,74,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 12px; }
+    #travel-success-state .success-icon svg { width:26px;height:26px;stroke:#16a34a; }
+    #travel-success-state h3 { font-size:1.05rem;font-weight:700;color:#16a34a;margin:0 0 4px; }
+    #travel-success-state p { font-size:0.8rem;color:var(--text-muted);margin:0 0 2px; }
+    #travel-success-state .checked-date { font-size:0.72rem;color:var(--text-secondary); }
 
     /* --- Travel Expiry --- */
     #travel-expiry-list > div { transition: opacity 0.2s; }
@@ -912,10 +938,21 @@
     /* --- Country Requirements --- */
     #travel-country-details > div { animation: fadeIn 0.2s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .country-score-bar { margin-top:10px;padding:10px 12px;background:var(--bg-tertiary);border-radius:8px;display:flex;align-items:center;justify-content:space-between; }
+    .country-score-bar .csb-label { font-size:0.78rem;color:var(--text-secondary); }
+    .country-score-bar .csb-value { font-size:0.9rem;font-weight:700; }
 
     /* --- Travel Doc Cards --- */
     .travel-doc-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: transform 0.15s, box-shadow 0.15s; }
     #travel-packet-card:hover { box-shadow: 0 4px 20px rgba(234,88,12,0.15); transition: box-shadow 0.2s; }
+
+    .travel-doc-icon { width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px; }
+    .travel-doc-icon svg { width:24px;height:24px;stroke:var(--orange-500); }
+
+    /* --- Travel Passport QR --- */
+    #travel-qr-canvas { width:140px;height:140px;display:flex;align-items:center;justify-content:center;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden; }
+    [data-theme="dark"] #travel-qr-canvas { background:#fff; }
+    #travel-qr-canvas canvas { width:140px;height:140px; }
   </style>
 </head>
 <body>
@@ -1785,7 +1822,7 @@
 
         <!-- ===== TRAVEL TAB ===== -->
         <div class="tab-content" id="tab-travel">
-          <div class="timeline-header"><h2>🐾 Dog Passport</h2></div>
+          <div class="timeline-header"><h2><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Dog Passport</h2></div>
           <div id="travel-section">
 
             <!-- LOCKED STATE -->
@@ -1810,28 +1847,36 @@
               <p>Generate professional travel documents for boarding, airlines, and international travel — populated with your pet's data. Each document includes QR verification, a unique document ID, and the PupFile Verified badge.</p>
               <div class="lf-preview">
                 <div class="preview-row">
-                  <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">📦</div>
+                  <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#16a34a" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  </div>
                   <div>
                     <div class="preview-title">Complete Travel Packet</div>
                     <div class="preview-meta">Cover page + all documents in one PDF</div>
                   </div>
                 </div>
                 <div class="preview-row">
-                  <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">💉</div>
+                  <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#16a34a" stroke-width="2"><path d="M10.5 4.5L3 12l5 5 7.5-7.5"/><path d="M10.5 4.5L16 10"/><path d="M18 6l-6 6"/><path d="M14.5 2.5L21 9"/></svg>
+                  </div>
                   <div>
                     <div class="preview-title">Vaccination Record</div>
                     <div class="preview-meta">All vaccines with dates &amp; next due</div>
                   </div>
                 </div>
                 <div class="preview-row">
-                  <div style="width:32px;height:32px;background:#eff6ff;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">🩺</div>
+                  <div style="width:32px;height:32px;background:#eff6ff;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2563eb" stroke-width="2"><path d="M19 14c1.5-2.5 2-5 2-5"/><path d="M5 14c-1.5-2.5-2-5-2-5"/><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+                  </div>
                   <div>
                     <div class="preview-title">Health Certificate</div>
                     <div class="preview-meta">Vet exam &amp; health declaration</div>
                   </div>
                 </div>
                 <div class="preview-row">
-                  <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">✈️</div>
+                  <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#dc2626" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2H17"/><path d="m16 6 2-2"/><path d="m14 8 2-2"/><path d="M22 7v2l-5 5"/><path d="M2 22h10"/><path d="M17 22h4"/><path d="M5 14a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                  </div>
                   <div>
                     <div class="preview-title">Airline Travel Form</div>
                     <div class="preview-meta">Carrier dimensions &amp; health affirmation</div>
@@ -1852,37 +1897,80 @@
             <!-- ACTIVE STATE -->
             <div id="travel-active" style="display:none">
 
-              <!-- Travel Readiness Score -->
-              <div class="card" style="margin-bottom:16px;padding:20px" id="travel-readiness-card">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                  <h3 style="font-size:0.9rem;font-weight:600;margin:0">Travel Readiness Score</h3>
-                  <span class="readiness-score-num" id="readiness-score" style="font-size:1.4rem;font-weight:800;color:var(--orange-500)">0%</span>
+              <!-- Pet Identity + Photo Card -->
+              <div class="card" style="margin-bottom:16px;padding:20px" id="travel-passport-header">
+                <div style="display:flex;align-items:center;gap:16px">
+                  <div class="passport-photo-area" id="travel-photo-area" onclick="document.getElementById('travel-photo-input').click()" title="Upload pet photo">
+                    <div class="photo-placeholder" id="travel-photo-placeholder">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                    </div>
+                    <img id="travel-photo-img" style="display:none" alt="pet photo">
+                  </div>
+                  <input type="file" id="travel-photo-input" accept="image/*" style="display:none" onchange="handlePetPhotoUpload(this)">
+                  <div style="flex:1">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <h3 style="font-size:1.05rem;font-weight:700;margin:0" id="travel-passport-name">Getting Started</h3>
+                      <span id="travel-passport-readiness-badge" style="font-size:0.65rem;padding:2px 8px;border-radius:99px;font-weight:600;background:var(--bg-tertiary);color:var(--text-muted)"></span>
+                    </div>
+                    <div style="font-size:0.8rem;color:var(--text-muted);margin-top:2px" id="travel-passport-meta">Complete your Dog Passport</div>
+                    <div style="margin-top:8px">
+                      <div class="readiness-bar-track" style="height:5px;max-width:240px">
+                        <div class="readiness-bar-fill" id="readiness-bar-fill" style="width:0%;background:var(--orange-500)"></div>
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;max-width:240px;margin-top:4px">
+                        <span style="font-size:0.68rem;color:var(--text-muted)" id="readiness-fraction">0 of 10 complete</span>
+                        <span style="font-size:0.72rem;font-weight:700;color:var(--orange-500)" id="readiness-score">0%</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="readiness-bar-track" id="readiness-bar-track" style="height:8px;background:#eee;border-radius:99px;overflow:hidden;margin-bottom:12px">
-                  <div class="readiness-bar-fill" id="readiness-bar-fill" style="height:100%;width:0%;border-radius:99px;background:var(--orange-500);transition:width 0.6s ease"></div>
+              </div>
+
+              <!-- Readiness Score / Success State -->
+              <div class="card" style="margin-bottom:16px;padding:16px 20px" id="travel-readiness-card">
+                <div id="travel-readiness-body"></div>
+                <div id="travel-success-state" style="display:none">
+                  <div class="success-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  </div>
+                  <h3>PASSPORT READY</h3>
+                  <p>Buddy is cleared for travel.</p>
+                  <div class="checked-date" id="travel-success-date">Last checked: —</div>
                 </div>
-                <div id="readiness-details" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.78rem"></div>
               </div>
 
               <!-- Expiry Monitoring -->
               <div class="card" style="margin-bottom:16px;padding:16px 20px" id="travel-expiry-card">
-                <h3 style="font-size:0.9rem;font-weight:600;margin:0 0 12px">Travel Status</h3>
+                <h3 style="font-size:0.82rem;font-weight:600;margin:0 0 10px;display:flex;align-items:center;gap:6px">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Expiry Monitoring
+                </h3>
                 <div id="travel-expiry-list" style="display:grid;gap:8px"></div>
               </div>
 
-              <!-- Country Requirements -->
+              <!-- Destination Requirements -->
               <div class="card" style="margin-bottom:16px;padding:16px 20px">
-                <h3 style="font-size:0.9rem;font-weight:600;margin:0 0 8px">Destination Requirements</h3>
-                <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 10px">Select a country to see what's required for entry</p>
+                <h3 style="font-size:0.82rem;font-weight:600;margin:0 0 4px;display:flex;align-items:center;gap:6px">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Destination Requirements
+                </h3>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 10px">Select a country to see what's required and your pet's readiness</p>
                 <select class="input-field" id="travel-country-select" onchange="showCountryRequirements()" style="margin-bottom:10px">
                   <option value="">— Select destination —</option>
                 </select>
                 <div id="travel-country-details"></div>
+                <div class="country-score-bar" id="travel-country-score-bar" style="display:none">
+                  <span class="csb-label">Travel Ready for Destination</span>
+                  <span class="csb-value" id="travel-country-score">0%</span>
+                </div>
               </div>
 
-              <!-- Travel Profile -->
+              <!-- Travel Profile Form -->
               <div class="card" style="margin-bottom:16px;padding:16px 20px">
-                <h3 style="font-size:0.9rem;font-weight:600;margin:0 0 12px">Pet Travel Profile</h3>
+                <h3 style="font-size:0.82rem;font-weight:600;margin:0 0 12px;display:flex;align-items:center;gap:6px">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Travel Profile
+                </h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                   <div class="input-group">
                     <label>Microchip Number</label>
@@ -1902,53 +1990,75 @@
                 </div>
               </div>
 
+              <!-- QR Passport Card -->
+              <div class="card" style="margin-bottom:16px;padding:20px;text-align:center;background:linear-gradient(135deg,#FFF9F6,#fff);border:2px solid var(--orange-200);border-radius:var(--radius-lg)" id="travel-passport-qr-card">
+                <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--orange-500)"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                  <h3 style="font-size:0.9rem;font-weight:700;margin:0;color:var(--orange-600)">Passport QR</h3>
+                </div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 14px">Share this pet's emergency passport</p>
+                <div id="travel-qr-canvas"></div>
+                <div style="margin-top:10px;display:flex;gap:8px;justify-content:center">
+                  <button class="btn btn-sm" onclick="generateTravelPassportQR()">Generate QR</button>
+                  <button class="btn btn-sm btn-primary" onclick="downloadTravelPassportQR()" id="travel-qr-download-btn" disabled>Download QR</button>
+                </div>
+              </div>
+
               <!-- Travel Packet Download -->
-              <div class="card" style="margin-bottom:16px;padding:24px;text-align:center;background:linear-gradient(135deg,#FFF9F6,#fff);border:2px solid var(--orange-500);border-radius:var(--radius-lg)" id="travel-packet-card">
-                <div style="font-size:2rem;margin-bottom:8px">📦</div>
-                <h3 style="font-size:1rem;font-weight:700;margin:0 0 4px;color:var(--orange-600)">Download Complete Travel Packet</h3>
-                <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 16px">Cover page + all documents in one professional PDF</p>
-                <button class="btn btn-primary" style="font-size:0.95rem;padding:12px 36px" onclick="generateTravelPacket()">Download Travel Packet</button>
+              <div class="card" style="margin-bottom:16px;padding:20px 24px;background:linear-gradient(135deg,#FFF9F6,#fff);border:2px solid var(--orange-500);border-radius:var(--radius-lg)" id="travel-packet-card">
+                <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--orange-600)"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <h3 style="font-size:0.92rem;font-weight:700;margin:0;color:var(--orange-600)">Complete Travel Packet</h3>
+                </div>
+                <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 14px">Cover page + all documents in one professional PDF</p>
+                <button class="btn btn-primary" style="font-size:0.9rem;padding:10px 32px" onclick="generateTravelPacket()">Download Packet</button>
               </div>
 
               <!-- Individual Documents -->
-              <h3 style="font-size:0.85rem;font-weight:600;margin:0 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em">Individual Documents</h3>
+              <h3 style="font-size:0.82rem;font-weight:600;margin:0 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Documents
+              </h3>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-                <div class="card travel-doc-card" onclick="generateTravelDoc('vaccination_record')" style="cursor:pointer;text-align:center;padding:20px">
-                  <div style="font-size:1.5rem;margin-bottom:8px">💉</div>
-                  <div style="font-weight:600;font-size:0.85rem">Vaccination Record</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">QR-verified with next due dates</div>
+                <div class="card travel-doc-card" onclick="generateTravelDoc('vaccination_record')" style="cursor:pointer;text-align:center;padding:16px 12px">
+                  <div class="travel-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 4.5L3 12l5 5 7.5-7.5"/><path d="M10.5 4.5L16 10"/><path d="M18 6l-6 6"/><path d="M14.5 2.5L21 9"/></svg></div>
+                  <div style="font-weight:600;font-size:0.82rem">Vaccination Record</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">QR-verified with due dates</div>
                 </div>
-                <div class="card travel-doc-card" onclick="generateTravelDoc('health_certificate')" style="cursor:pointer;text-align:center;padding:20px">
-                  <div style="font-size:1.5rem;margin-bottom:8px">🩺</div>
-                  <div style="font-weight:600;font-size:0.85rem">Health Certificate</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Vet section, exam &amp; declaration</div>
+                <div class="card travel-doc-card" onclick="generateTravelDoc('health_certificate')" style="cursor:pointer;text-align:center;padding:16px 12px">
+                  <div class="travel-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.5-2.5 2-5 2-5"/><path d="M5 14c-1.5-2.5-2-5-2-5"/><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></div>
+                  <div style="font-weight:600;font-size:0.82rem">Health Certificate</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">Vet exam &amp; declaration</div>
                 </div>
-                <div class="card travel-doc-card" onclick="generateTravelDoc('airline_form')" style="cursor:pointer;text-align:center;padding:20px;opacity:0.5" id="travel-airline-card">
-                  <div style="font-size:1.5rem;margin-bottom:8px">✈️</div>
-                  <div style="font-weight:600;font-size:0.85rem">Airline Travel Form</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Carrier &amp; health affirmation</div>
-                  <div style="font-size:0.65rem;color:var(--orange-500);font-weight:600;margin-top:4px" id="travel-airline-badge">Pro Feature</div>
+                <div class="card travel-doc-card" onclick="generateTravelDoc('airline_form')" style="cursor:pointer;text-align:center;padding:16px 12px;opacity:0.5" id="travel-airline-card">
+                  <div class="travel-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2H17"/><path d="m16 6 2-2"/><path d="m14 8 2-2"/><path d="M22 7v2l-5 5"/><path d="M2 22h10"/><path d="M17 22h4"/><path d="M5 14a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg></div>
+                  <div style="font-weight:600;font-size:0.82rem">Airline Travel Form</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">Carrier &amp; health affirmation</div>
+                  <div style="font-size:0.62rem;color:var(--orange-500);font-weight:600;margin-top:4px" id="travel-airline-badge">Pro Feature</div>
                 </div>
-                <div class="card travel-doc-card" onclick="generateTravelDoc('boarding_form')" style="cursor:pointer;text-align:center;padding:20px">
-                  <div style="font-size:1.5rem;margin-bottom:8px">🏠</div>
-                  <div style="font-weight:600;font-size:0.85rem">Boarding Form</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Kennel requirements &amp; care plan</div>
+                <div class="card travel-doc-card" onclick="generateTravelDoc('boarding_form')" style="cursor:pointer;text-align:center;padding:16px 12px">
+                  <div class="travel-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+                  <div style="font-weight:600;font-size:0.82rem">Boarding Form</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">Kennel &amp; care plan</div>
                 </div>
-                <div class="card travel-doc-card" onclick="generateTravelDoc('international')" style="cursor:pointer;text-align:center;padding:20px;opacity:0.5" id="travel-international-card">
-                  <div style="font-size:1.5rem;margin-bottom:8px">🌍</div>
-                  <div style="font-weight:600;font-size:0.85rem">International Docs</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Country-specific checklist &amp; forms</div>
-                  <div style="font-size:0.65rem;color:var(--orange-500);font-weight:600;margin-top:4px" id="travel-international-badge">Pro Feature</div>
+                <div class="card travel-doc-card" onclick="generateTravelDoc('international')" style="cursor:pointer;text-align:center;padding:16px 12px;opacity:0.5" id="travel-international-card">
+                  <div class="travel-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+                  <div style="font-weight:600;font-size:0.82rem">International Docs</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">Country-specific forms</div>
+                  <div style="font-size:0.62rem;color:var(--orange-500);font-weight:600;margin-top:4px" id="travel-international-badge">Pro Feature</div>
                 </div>
-                <div class="card travel-doc-card" onclick="generateTravelDoc('emergency_card')" style="cursor:pointer;text-align:center;padding:20px">
-                  <div style="font-size:1.5rem;margin-bottom:8px">🆘</div>
-                  <div style="font-weight:600;font-size:0.85rem">Emergency Card</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Redesigned with QR &amp; contacts</div>
+                <div class="card travel-doc-card" onclick="generateTravelDoc('emergency_card')" style="cursor:pointer;text-align:center;padding:16px 12px">
+                  <div class="travel-doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                  <div style="font-weight:600;font-size:0.82rem">Emergency Card</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">QR &amp; contacts</div>
                 </div>
               </div>
 
               <!-- Generated Docs History -->
-              <h3 style="font-size:0.85rem;font-weight:600;margin:0 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em">Recently Generated</h3>
+              <h3 style="font-size:0.82rem;font-weight:600;margin:0 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Recently Generated
+              </h3>
               <div id="travel-docs-history"></div>
             </div>
           </div>
@@ -3252,6 +3362,39 @@
         </div>
         <button type="submit" class="btn btn-primary w-full" id="task-submit-btn">Save Task</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Travel Doc Preview Modal -->
+  <div class="modal-overlay" id="modal-travel-doc-preview">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-header">
+        <h3 id="travel-doc-preview-title">Document Preview</h3>
+        <button class="btn-icon" onclick="closeModal('modal-travel-doc-preview')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex flex-col" style="padding:4px 0;gap:16px">
+        <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--bg-tertiary);border-radius:10px">
+          <div style="width:44px;height:44px;border-radius:10px;background:var(--orange-100);display:flex;align-items:center;justify-content:center;flex-shrink:0" id="travel-doc-preview-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:0.9rem" id="travel-doc-preview-name">Vaccination Record</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px" id="travel-doc-preview-meta">For Buddy · QR-verified</div>
+          </div>
+        </div>
+        <div style="padding:0 20px;font-size:0.82rem;color:var(--text-secondary);line-height:1.6" id="travel-doc-preview-desc">
+          This document contains your pet's vaccination history with dates, next due dates, and vet information. Includes a QR verification code and unique document ID.
+        </div>
+        <div style="padding:0 20px 16px;display:flex;gap:10px">
+          <button class="btn btn-secondary" style="flex:1" onclick="closeModal('modal-travel-doc-preview')">Close</button>
+          <button class="btn btn-primary" style="flex:2" id="travel-doc-download-btn" onclick="confirmTravelDocDownload()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -4868,35 +5011,41 @@ if (!hasPet) {
     function calculateTravelReadiness(pet, vaccinations) {
       var items = [];
       var total = 0;
-      // Microchip (15 pts)
-      if (pet.microchip && pet.microchip.trim()) { total += 15; items.push({ label:'Microchip', status:'done', pct:100 }); }
-      else { items.push({ label:'Microchip', status:'missing', pct:0 }); }
-      // Rabies vaccine (20 pts)
-      var hasRabies = vaccinations.some(function(v){ return v.vaccine_name && v.vaccine_name.toLowerCase().indexOf('rabies') !== -1; });
-      if (hasRabies) { total += 20; items.push({ label:'Rabies Vaccine', status:'done', pct:100 }); }
-      else { items.push({ label:'Rabies Vaccine', status:'missing', pct:0 }); }
-      // Core vaccines (15 pts)
-      var coreCount = vaccinations.filter(function(v){ return v.vaccine_name && (v.vaccine_name.toLowerCase().indexOf('dhpp') !== -1 || v.vaccine_name.toLowerCase().indexOf('distemper') !== -1 || v.vaccine_name.toLowerCase().indexOf('parvo') !== -1 || v.vaccine_name.toLowerCase().indexOf('bordetella') !== -1); }).length;
-      var corePts = Math.min(coreCount, 3) / 3 * 15;
-      total += corePts;
-      items.push({ label:'Core Vaccines (' + Math.min(coreCount, 3) + '/3)', status:coreCount >= 3 ? 'done' : coreCount > 0 ? 'partial' : 'missing', pct:Math.round(corePts/15*100) });
-      // Titer test (10 pts)
-      if (pet.rabies_titer_date) { total += 10; items.push({ label:'Rabies Titer', status:'done', pct:100 }); }
-      else { items.push({ label:'Rabies Titer', status:'missing', pct:0 }); }
-      // Emergency contact (10 pts)
-      if (pet.emergency_contact_name && pet.emergency_contact_phone) { total += 10; items.push({ label:'Emergency Contact', status:'done', pct:100 }); }
-      else { items.push({ label:'Emergency Contact', status:'missing', pct:0 }); }
-      // Vet info (10 pts)
-      if (pet.primary_vet_name) { total += 10; items.push({ label:'Veterinarian', status:'done', pct:100 }); }
-      else { items.push({ label:'Veterinarian', status:'missing', pct:0 }); }
-      // Passport (10 pts)
-      if (pet.international_passport && pet.international_passport.trim()) { total += 10; items.push({ label:'Passport #', status:'done', pct:100 }); }
-      else { items.push({ label:'Passport #', status:'missing', pct:0 }); }
-      // Allergies/meds (10 pts)
-      if ((pet.allergies && pet.allergies.trim()) || (pet.medications && pet.medications.trim())) { total += 10; items.push({ label:'Medical Profile', status:'done', pct:100 }); }
-      else { items.push({ label:'Medical Profile', status:'missing', pct:0 }); }
+      var maxScore = 100;
+      var requiredCount = 0, doneRequired = 0;
+      var recCount = 0, doneRec = 0;
+      var optCount = 0, doneOpt = 0;
 
-      return { score: Math.round(total), maxScore: 100, items: items };
+      function addItem(label, priority, done, pts) {
+        var group = priority === 'required' ? 'required' : priority === 'recommended' ? 'recommended' : 'optional';
+        if (priority === 'required') { requiredCount++; if (done) doneRequired++; }
+        else if (priority === 'recommended') { recCount++; if (done) doneRec++; }
+        else { optCount++; if (done) doneOpt++; }
+        total += done ? pts : 0;
+        items.push({ label: label, priority: group, status: done ? 'done' : 'missing', pts: pts, pct: done ? 100 : 0 });
+      }
+
+      var hasRabies = vaccinations.some(function(v){ return v.vaccine_name && v.vaccine_name.toLowerCase().indexOf('rabies') !== -1; });
+      var coreNames = ['dhpp','distemper','parvo','bordetella'];
+      var coreCount = vaccinations.filter(function(v){ return v.vaccine_name && coreNames.some(function(n){ return v.vaccine_name.toLowerCase().indexOf(n) !== -1; }); }).length;
+      var coreDone = coreCount >= 3;
+
+      // Required
+      addItem('Microchip (ISO 11784/11785)', 'required', pet.microchip && pet.microchip.trim(), 20);
+      addItem('Rabies Vaccination', 'required', hasRabies, 20);
+      addItem('Core Vaccines (' + Math.min(coreCount, 3) + '/3)', 'required', coreDone, 15);
+
+      // Recommended
+      addItem('Emergency Contact', 'recommended', pet.emergency_contact_name && pet.emergency_contact_phone, 10);
+      addItem('Veterinarian on File', 'recommended', pet.primary_vet_name, 10);
+      addItem('Rabies Titer (FAVN)', 'recommended', pet.rabies_titer_date, 10);
+
+      // Optional
+      addItem('Passport Number', 'optional', pet.international_passport && pet.international_passport.trim(), 8);
+      addItem('Medical Profile (allergies/meds)', 'optional', (pet.allergies && pet.allergies.trim()) || (pet.medications && pet.medications.trim()), 7);
+
+      var score = Math.round(total);
+      return { score: score, maxScore: maxScore, items: items, requiredCount: requiredCount, doneRequired: doneRequired, recCount: recCount, doneRec: doneRec, optCount: optCount, doneOpt: doneOpt };
     }
 
     function renderTravelReadiness() {
@@ -4904,17 +5053,79 @@ if (!hasPet) {
       if (!pet) return;
       var result = calculateTravelReadiness(pet, travelVaccinations);
       var fill = document.getElementById('readiness-bar-fill');
-      var num = document.getElementById('readiness-score');
-      var details = document.getElementById('readiness-details');
-      if (fill) { fill.style.width = result.score + '%'; var hue = result.score >= 80 ? '#16a34a' : result.score >= 50 ? '#ea580c' : '#dc2626'; fill.style.background = hue; }
-      if (num) { num.textContent = result.score + '%'; var c = result.score >= 80 ? '#16a34a' : result.score >= 50 ? '#ea580c' : '#dc2626'; num.style.color = c; }
-      if (details) {
-        details.innerHTML = result.items.map(function(i) {
-          var icon = i.status === 'done' ? '✅' : i.status === 'partial' ? '⚠️' : '❌';
-          var c = i.status === 'done' ? '#16a34a' : i.status === 'partial' ? '#d97706' : '#dc2626';
-          return '<div style="display:flex;align-items:center;gap:4px;color:' + c + '"><span>' + icon + '</span><span>' + i.label + '</span></div>';
-        }).join('');
+      var scoreEl = document.getElementById('readiness-score');
+      var fractionEl = document.getElementById('readiness-fraction');
+      var bodyEl = document.getElementById('travel-readiness-body');
+      var successEl = document.getElementById('travel-success-state');
+      var badgeEl = document.getElementById('travel-passport-readiness-badge');
+      var metaEl = document.getElementById('travel-passport-meta');
+
+      if (fill) { fill.style.width = result.score + '%'; fill.style.background = result.score >= 80 ? '#16a34a' : result.score >= 50 ? '#ea580c' : '#dc2626'; }
+
+      var totalItems = result.items.length;
+      var doneItems = result.items.filter(function(i){ return i.status === 'done'; }).length;
+
+      if (scoreEl) { scoreEl.textContent = result.score + '%'; scoreEl.style.color = result.score >= 80 ? '#16a34a' : result.score >= 50 ? '#ea580c' : '#dc2626'; }
+      if (fractionEl) fractionEl.textContent = doneItems + ' of ' + totalItems + ' complete';
+      if (metaEl) metaEl.textContent = doneItems === 0 ? 'Complete your Dog Passport' : result.score + '% ready for travel';
+      if (badgeEl) {
+        if (result.score === 0) { badgeEl.textContent = 'Getting Started'; badgeEl.style.background = 'var(--bg-tertiary)'; badgeEl.style.color = 'var(--text-muted)'; }
+        else if (result.score >= 80) { badgeEl.textContent = 'Almost Ready'; badgeEl.style.background = 'rgba(22,163,74,0.12)'; badgeEl.style.color = '#16a34a'; }
+        else { badgeEl.textContent = 'In Progress'; badgeEl.style.background = 'rgba(234,88,12,0.1)'; badgeEl.style.color = '#ea580c'; }
       }
+
+      // Check for success state (100%)
+      if (successEl) {
+        if (result.score >= 100) {
+          successEl.style.display = 'block';
+          if (bodyEl) bodyEl.style.display = 'none';
+          var nameEl = document.getElementById('travel-passport-name');
+          if (nameEl) nameEl.textContent = pet.name || 'Buddy';
+          var dateEl = document.getElementById('travel-success-date');
+          if (dateEl) dateEl.textContent = 'Last checked: ' + new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+        } else {
+          successEl.style.display = 'none';
+          if (bodyEl) bodyEl.style.display = 'block';
+        }
+      }
+
+      if (!bodyEl) return;
+      var html = '';
+
+      // Required group
+      var requiredItems = result.items.filter(function(i){ return i.priority === 'required'; });
+      html += renderPriorityGroup('Required', requiredItems, 'required', result.doneRequired + '/' + result.requiredCount + ' required');
+
+      // Recommended group
+      var recItems = result.items.filter(function(i){ return i.priority === 'recommended'; });
+      html += renderPriorityGroup('Recommended', recItems, 'recommended', result.doneRec + '/' + result.recCount + ' recommended');
+
+      // Optional group
+      var optItems = result.items.filter(function(i){ return i.priority === 'optional'; });
+      html += renderPriorityGroup('Optional', optItems, 'optional', result.doneOpt + '/' + result.optCount + ' optional');
+
+      bodyEl.innerHTML = html;
+    }
+
+    function renderPriorityGroup(groupName, items, groupKey, countStr) {
+      return '<div class="readiness-priority-group">' +
+        '<div class="group-header">' +
+          (groupKey === 'required' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' : groupKey === 'recommended' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>') +
+          groupName +
+        '</div>' +
+        items.map(function(i) {
+          var cls = i.status === 'done' ? 'item-ready' : groupKey === 'optional' ? 'item-optional' : 'item-missing';
+          var iconSvg = i.status === 'done'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>'
+            : groupKey === 'optional'
+              ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+          return '<div class="readiness-item ' + cls + '">' +
+            '<span class="item-icon">' + iconSvg + '</span>' +
+            '<span class="item-label">' + i.label + '</span>' +
+          '</div>';
+        }).join('') +
+      '</div>';
     }
 
     /* --- Expiry Monitoring --- */
@@ -4936,7 +5147,7 @@ if (!hasPet) {
           if (v.next_due_date) {
             var d = daysUntil(v.next_due_date);
             if (d !== null) {
-              var label = escHtml(v.vaccine_name) + (v.vaccine_name.toLowerCase().indexOf('rabies') !== -1 ? ' 🦠' : '');
+              var label = escHtml(v.vaccine_name);
               var status = d <= 0 ? 'expired' : d <= 7 ? 'critical' : d <= 30 ? 'warning' : 'ok';
               items.push({ label: label, days: d, status: status, due: v.next_due_date });
             }
@@ -4962,10 +5173,16 @@ if (!hasPet) {
       list.innerHTML = items.map(function(i) {
         var colors = { ok:'#16a34a', warning:'#d97706', critical:'#dc2626', expired:'#991b1b' };
         var labels = { ok:'OK', warning:'Expiring soon', critical:'Expiring!', expired:'Expired' };
-        var icon = i.status === 'expired' ? '🔴' : i.status === 'critical' ? '🟠' : i.status === 'warning' ? '🟡' : '🟢';
+        var iconSvg = i.status === 'expired'
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+          : i.status === 'critical'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+            : i.status === 'warning'
+              ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>';
         return '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid ' + colors[i.status] + '">' +
           '<div style="display:flex;align-items:center;gap:6px;font-size:0.8rem">' +
-            '<span>' + icon + '</span>' +
+            '<span style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + iconSvg + '</span>' +
             '<span style="font-weight:500">' + i.label + '</span>' +
           '</div>' +
           '<div style="text-align:right">' +
@@ -4989,34 +5206,62 @@ if (!hasPet) {
     function showCountryRequirements() {
       var sel = document.getElementById('travel-country-select');
       var details = document.getElementById('travel-country-details');
+      var scoreBar = document.getElementById('travel-country-score-bar');
+      var scoreVal = document.getElementById('travel-country-score');
       if (!sel || !details) return;
       var val = sel.value;
-      if (!val || !COUNTRY_REQS[val]) { details.innerHTML = ''; return; }
+      if (!val || !COUNTRY_REQS[val]) { details.innerHTML = ''; if (scoreBar) scoreBar.style.display = 'none'; return; }
       var c = COUNTRY_REQS[val];
       var pet = AppState.activePet;
 
-      function check(condition) { return condition ? '✅' : '❌'; }
       function petHas(field) { return pet && pet[field] && pet[field].toString().trim() !== ''; }
 
       var hasMicrochip = petHas('microchip');
       var hasRabies = travelVaccinations.some(function(v){ return v.vaccine_name && v.vaccine_name.toLowerCase().indexOf('rabies') !== -1; });
       var hasTiter = petHas('rabies_titer_date');
-      var hasPassport = petHas('international_passport');
       var hasVet = petHas('primary_vet_name');
 
+      var totalReqs = 0, metReqs = 0;
+      var reqItems = [];
+
+      function addReq(label, required, met, icon) {
+        totalReqs++;
+        if (met) metReqs++;
+        reqItems.push({ label: label, required: required, met: met, icon: icon || null });
+      }
+
+      if (c.microchip) addReq('Microchip (ISO 11784/11785)', true, hasMicrochip);
+      addReq('Rabies Vaccination', c.rabies, hasRabies);
+      if (c.titer) addReq('Rabies Titer (FAVN)', true, hasTiter);
+      if (c.tapeworm) addReq('Tapeworm Treatment (1-5 days before entry)', true, false);
+      if (c.healthCert) addReq('Health Certificate (within 10 days)', true, hasVet);
+      if (c.defra) addReq('DEFRA-Endorsed Health Certificate', true, false);
+
+      var pct = totalReqs > 0 ? Math.round(metReqs / totalReqs * 100) : 0;
+
       details.innerHTML = '<div style="background:#f9fafb;border-radius:8px;padding:12px;font-size:0.82rem">' +
-        '<div style="font-weight:600;font-size:0.9rem;margin-bottom:8px">' + c.flag + ' ' + escHtml(c.name) + ' Requirements</div>' +
-        '<div style="display:grid;gap:4px">' +
-          '<div>' + check(c.microchip) + (c.microchip ? ' Microchip (ISO 11784/11785)' : ' Microchip') + ' <span style="color:' + (hasMicrochip ? '#16a34a' : '#dc2626') + ';font-size:0.72rem">' + (hasMicrochip ? '✓ Stored' : '— Not set') + '</span></div>' +
-          '<div>' + check(c.rabies) + (c.rabies ? ' Rabies Vaccination' : ' Rabies Vaccination') + ' <span style="color:' + (hasRabies ? '#16a34a' : '#dc2626') + ';font-size:0.72rem">' + (hasRabies ? '✓ Recorded' : '— Not recorded') + '</span></div>' +
-          (c.titer ? '<div>' + check(hasTiter) + ' Rabies Titer Test (FAVN) <span style="color:' + (hasTiter ? '#16a34a' : '#dc2626') + ';font-size:0.72rem">' + (hasTiter ? '✓ Done' : '— Needs test') + '</span></div>' : '') +
-          (c.tapeworm ? '<div>✅ Tapeworm Treatment (1-5 days before entry)</div>' : '') +
-          (c.healthCert ? '<div>✅ Health Certificate (within 10 days of travel) <span style="color:' + (hasVet ? '#16a34a' : '#d97706') + ';font-size:0.72rem">' + (hasVet ? '✓ Vet on file' : '— Add vet info') + '</span></div>' : '') +
-          (c.defra ? '<div>✅ DEFRA-Endorsed Health Certificate</div>' : '') +
+        '<div style="font-weight:600;font-size:0.9rem;margin-bottom:8px">' + c.flag + ' ' + escHtml(c.name) + '</div>' +
+        '<div style="display:grid;gap:5px">' +
+          reqItems.map(function(r) {
+            var cls = r.met ? 'item-ready' : 'item-missing';
+            var iconSvg = r.met
+              ? '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>'
+              : '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#dc2626" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+            return '<div style="display:flex;align-items:center;gap:6px;padding:4px 8px;border-radius:4px;background:' + (r.met ? 'rgba(22,163,74,0.04)' : 'rgba(220,38,38,0.03)') + '">' +
+              '<span style="width:18px;height:18px;display:flex;align-items:center;flex-shrink:0">' + iconSvg + '</span>' +
+              '<span style="font-size:0.8rem;color:' + (r.met ? '#16a34a' : '#dc2626') + '">' + escHtml(r.label) + '</span>' +
+            '</div>';
+          }).join('') +
         '</div>' +
         '<div style="margin-top:8px;padding:8px;background:#fff;border-radius:4px;font-size:0.78rem;color:var(--text-secondary)"><strong>Waiting period:</strong> ' + escHtml(c.waiting) + '</div>' +
         '<div style="margin-top:6px;font-size:0.72rem;color:var(--text-muted);font-style:italic">' + escHtml(c.notes) + '</div>' +
         '</div>';
+
+      if (scoreBar && scoreVal) {
+        scoreBar.style.display = 'flex';
+        scoreVal.textContent = pct + '%';
+        scoreVal.style.color = pct >= 80 ? '#16a34a' : pct >= 50 ? '#ea580c' : '#dc2626';
+      }
     }
 
     /* --- QR Helper --- */
@@ -5361,6 +5606,89 @@ if (!hasPet) {
         '</div>';
     }
 
+    /* --- Pet Photo Upload --- */
+    async function handlePetPhotoUpload(input) {
+      if (!input.files || !input.files.length) return;
+      var file = input.files[0];
+      if (file.size > 2 * 1024 * 1024) { showToast('Photo must be under 2 MB.', 'error'); return; }
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = document.getElementById('travel-photo-img');
+        var placeholder = document.getElementById('travel-photo-placeholder');
+        if (img) { img.src = e.target.result; img.style.display = 'block'; }
+        if (placeholder) placeholder.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+
+      try {
+        var fileName = 'pet_' + AppState.activePet.id + '_' + Date.now() + '.jpg';
+        var { data: uploadData, error: uploadError } = await supabase.storage.from('pet-photos').upload(fileName, file, { upsert: true, contentType: file.type });
+        if (uploadError) { showToast('Could not upload photo.', 'error'); return; }
+        var { data: urlData } = supabase.storage.from('pet-photos').getPublicUrl(fileName);
+        var photoUrl = urlData.publicUrl;
+        var updated = await updatePetTravelProfile(AppState.activePet.id, { photo_url: photoUrl });
+        Object.assign(AppState.activePet, updated);
+        showToast('Photo uploaded!', 'success');
+      } catch (err) { showToast(err.message || 'Upload failed.', 'error'); }
+    }
+
+    function initPetPhotoDisplay() {
+      var pet = AppState.activePet;
+      if (!pet) return;
+      var img = document.getElementById('travel-photo-img');
+      var placeholder = document.getElementById('travel-photo-placeholder');
+      if (pet.photo_url) {
+        if (img) { img.src = pet.photo_url; img.style.display = 'block'; }
+        if (placeholder) placeholder.style.display = 'none';
+      } else {
+        if (img) img.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'flex';
+      }
+      var nameEl = document.getElementById('travel-passport-name');
+      if (nameEl && pet.name) nameEl.textContent = pet.name;
+    }
+
+    /* --- Travel Passport QR --- */
+    var _travelQrPromise = null;
+
+    function generateTravelPassportQR() {
+      if (!AppState.activePet) return;
+      var container = document.getElementById('travel-qr-canvas');
+      if (!container) return;
+      var url = window.location.origin + '/p/' + AppState.activePet.id;
+      container.innerHTML = '';
+      if (typeof QRCode === 'undefined') { container.innerHTML = '<span style="font-size:0.72rem;color:var(--text-muted)">QR library not loaded</span>'; return; }
+      var canvas = document.createElement('canvas');
+      canvas.width = 140; canvas.height = 140;
+      _travelQrPromise = new Promise(function(resolve) {
+        QRCode.toCanvas(canvas, url, { width: 140, margin: 2, color: { dark: '#ea580c', light: '#fff' } }, function(err, c) {
+          if (err) { container.innerHTML = '<span style="font-size:0.72rem;color:var(--text-muted)">Error</span>'; resolve(null); return; }
+          container.appendChild(c || canvas);
+          document.getElementById('travel-qr-download-btn').disabled = false;
+          resolve(c || canvas);
+        });
+      });
+    }
+
+    async function downloadTravelPassportQR() {
+      var container = document.getElementById('travel-qr-canvas');
+      var existing = container.querySelector('canvas');
+      if (!existing && _travelQrPromise) { await _travelQrPromise; existing = container.querySelector('canvas'); }
+      if (!existing) { showToast('Generate the QR code first.', 'error'); return; }
+      existing.toBlob(function(blob) {
+        var link = document.createElement('a');
+        link.download = (AppState.activePet?.name || 'pet').replace(/\s+/g, '-').toLowerCase() + '-passport-qr.png';
+        link.href = URL.createObjectURL(blob);
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() { document.body.removeChild(link); URL.revokeObjectURL(link.href); }, 100);
+      });
+    }
+
+    /* --- Pending travel doc for modal preview --- */
+    var _pendingTravelDoc = null;
+
     /* --- Main Dispatch --- */
     async function generateTravelDoc(type) {
       if (type === 'international' && !AppState.canAccess('travel_docs_advanced')) {
@@ -5379,6 +5707,9 @@ if (!hasPet) {
       var docId = getDocId();
       var qrUrl = await getQRDataUrl('https://pupfile.com/verify/' + docId);
 
+      var title, html;
+      var iconName = type;
+
       switch (type) {
         case 'vaccination_record':
           if (!travelVaccinations.length) { showToast('No vaccination records found. Add some vaccinations first.', 'error'); return; }
@@ -5387,24 +5718,67 @@ if (!hasPet) {
             var due = v.next_due_date ? formatDate(v.next_due_date) : '—';
             return '<tr><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + escHtml(v.vaccine_name) + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + given + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + due + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + escHtml(v.vet_name || '—') + '</td></tr>';
           }).join('');
-          downloadTravelDocPdf('Vaccination Record', generateVaccinationRecord(pet, rows, qrUrl, docId), type);
+          title = 'Vaccination Record';
+          html = generateVaccinationRecord(pet, rows, qrUrl, docId);
           break;
         case 'health_certificate':
-          downloadTravelDocPdf('Health Certificate', generateHealthCertificate(pet, qrUrl, docId), type);
+          title = 'Health Certificate';
+          html = generateHealthCertificate(pet, qrUrl, docId);
           break;
         case 'airline_form':
-          downloadTravelDocPdf('Airline Pet Travel Form', generateAirlineForm(pet, qrUrl, docId), type);
+          title = 'Airline Pet Travel Form';
+          html = generateAirlineForm(pet, qrUrl, docId);
           break;
         case 'boarding_form':
-          downloadTravelDocPdf('Boarding/Kennel Form', generateBoardingForm(pet, qrUrl, docId), type);
+          title = 'Boarding / Kennel Form';
+          html = generateBoardingForm(pet, qrUrl, docId);
           break;
         case 'international':
-          downloadTravelDocPdf('International Travel Doc', generateInternationalDocs(pet, qrUrl, docId), type);
+          title = 'International Travel Document';
+          html = generateInternationalDocs(pet, qrUrl, docId);
           break;
         case 'emergency_card':
-          downloadTravelDocPdf('Emergency Card', generateEmergencyCard(pet, qrUrl, docId), type);
+          title = 'Emergency Card';
+          html = generateEmergencyCard(pet, qrUrl, docId);
           break;
       }
+
+      if (!title || !html) return;
+
+      _pendingTravelDoc = { title: title, html: html, docType: type };
+
+      var petName = pet.name || 'Pet';
+      var descs = {
+        vaccination_record: 'Complete vaccination history with dates, next due dates, vet information, and QR verification.',
+        health_certificate: 'Vet-signed health declaration including exam notes, microchip verification, and fitness-to-travel statement.',
+        airline_form: 'Airline-compliant pet travel form with carrier dimensions, health affirmation, and emergency contact.',
+        boarding_form: 'Kennel intake form with care instructions, feeding schedule, medication details, and emergency contacts.',
+        international: 'Country-specific international travel checklist and documentation requirements.',
+        emergency_card: 'Emergency passport with medical alerts, allergies, medications, QR code, and owner contact information.',
+      };
+
+      document.getElementById('travel-doc-preview-name').textContent = title;
+      document.getElementById('travel-doc-preview-meta').textContent = 'For ' + petName + ' \u00B7 QR-verified';
+      document.getElementById('travel-doc-preview-desc').textContent = descs[type] || 'Professional travel document with QR verification and unique document ID.';
+
+      var iconSvgs = {
+        vaccination_record: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><path d="M10.5 4.5L3 12l5 5 7.5-7.5"/><path d="M10.5 4.5L16 10"/><path d="M18 6l-6 6"/><path d="M14.5 2.5L21 9"/></svg>',
+        health_certificate: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><path d="M19 14c1.5-2.5 2-5 2-5"/><path d="M5 14c-1.5-2.5-2-5-2-5"/><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>',
+        airline_form: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2H17"/><path d="m16 6 2-2"/><path d="m14 8 2-2"/><path d="M22 7v2l-5 5"/><path d="M2 22h10"/><path d="M17 22h4"/><path d="M5 14a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>',
+        boarding_form: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+        international: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+        emergency_card: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--orange-600)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      };
+      document.getElementById('travel-doc-preview-icon').innerHTML = iconSvgs[type] || iconSvgs.vaccination_record;
+
+      openModal('modal-travel-doc-preview');
+    }
+
+    function confirmTravelDocDownload() {
+      if (!_pendingTravelDoc) { showToast('No document to download.', 'error'); return; }
+      closeModal('modal-travel-doc-preview');
+      downloadTravelDocPdf(_pendingTravelDoc.title, _pendingTravelDoc.html, _pendingTravelDoc.docType);
+      _pendingTravelDoc = null;
     }
 
     /* --- Travel Packet (Combined PDF) --- */
@@ -5444,6 +5818,7 @@ if (!hasPet) {
     /* --- Init & Data Loading --- */
     function initTravelTab() {
       if (!AppState.activePet) return;
+      initPetPhotoDisplay();
       loadTravelProfile();
       loadTravelVaccinations();
       loadTravelDocsHistory();
@@ -5499,10 +5874,11 @@ if (!hasPet) {
         }
         container.innerHTML = docs.map(function(d) {
           var date = new Date(d.generated_at).toLocaleDateString();
-          var icons = { vaccination_record:'💉', health_certificate:'🩺', airline_form:'✈️', boarding_form:'🏠', international:'🌍', emergency_card:'🆘', travel_packet:'📦' };
+          var icons = { vaccination_record:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 4.5L3 12l5 5 7.5-7.5"/><path d="M10.5 4.5L16 10"/><path d="M18 6l-6 6"/><path d="M14.5 2.5L21 9"/></svg>', health_certificate:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.5-2.5 2-5 2-5"/><path d="M5 14c-1.5-2.5-2-5-2-5"/><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>', airline_form:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2H17"/><path d="m16 6 2-2"/><path d="m14 8 2-2"/><path d="M22 7v2l-5 5"/><path d="M2 22h10"/><path d="M17 22h4"/><path d="M5 14a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>', boarding_form:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>', international:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>', emergency_card:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', travel_packet:'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' };
+          var fallbackIcon = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
           var labels = { vaccination_record:'Vaccination Record', health_certificate:'Health Certificate', airline_form:'Airline Form', boarding_form:'Boarding Form', international:'International Travel', emergency_card:'Emergency Card', travel_packet:'Travel Packet' };
           return '<div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
-            '<div><span style="margin-right:6px">' + (icons[d.doc_type] || '📄') + '</span>' +
+            '<div><span style="margin-right:6px;width:18px;height:18px;display:inline-flex;align-items:center;vertical-align:middle">' + (icons[d.doc_type] || fallbackIcon) + '</span>' +
             '<span style="font-weight:500;font-size:0.82rem">' + (labels[d.doc_type] || d.title) + '</span>' +
             '<span style="font-size:0.72rem;color:var(--text-muted);margin-left:6px">' + date + '</span></div>' +
             '<button class="btn btn-sm btn-ghost" onclick="deleteTravelDoc(\'' + d.id + '\')" style="color:#dc2626;font-size:0.72rem">Delete</button></div>';
@@ -7138,6 +7514,7 @@ if (!hasPet) {
   .vet-header { background:linear-gradient(135deg,#1a1a2e,#16213e); color:#fff; padding:28px 24px; }
   .vet-header-brand { display:flex; align-items:center; gap:14px; }
   .vet-header-icon { font-size:2rem; }
+  .vet-header-icon svg { width:32px;height:32px; }
   .vet-header h1 { font-size:1.15rem; font-weight:700; margin:0; line-height:1.3; }
   .vet-header p { font-size:0.82rem; margin:4px 0 0 0; opacity:0.8; }
   .vet-body { padding:20px 24px; }
@@ -7188,7 +7565,7 @@ if (!hasPet) {
   <div class="vet-card">
     <div class="vet-header">
       <div class="vet-header-brand">
-        <div class="vet-header-icon">🐾</div>
+        <div class="vet-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.5-2.5 2-5 2-5"/><path d="M5 14c-1.5-2.5-2-5-2-5"/><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg></div>
         <div>
           <h1>${clinicName || vetName}${clinicName ? ' · Updating ' + petName + "'s Records" : 'Updating ' + petName + "'s Records"}</h1>
           <p>${petName}${breed ? ' · ' + breed : ''} · ${vetName}${clinicName ? ' · ' + clinicName : ''}</p>
