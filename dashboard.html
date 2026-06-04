@@ -6806,6 +6806,7 @@ if (!hasPet) {
     });
 
     let _qrPromise = null;
+    let _generatedCanvas = null;
     function generateQR() {
       if (!AppState.activePet) return;
       const container = document.getElementById('qr-canvas');
@@ -6819,13 +6820,19 @@ if (!hasPet) {
 
       const canvas = document.createElement('canvas');
       canvas.width = 200; canvas.height = 200;
-      _qrPromise = new Promise(function(resolve) {
+      _generatedCanvas = null;
+
+      _qrPromise = new Promise(function(resolve, reject) {
         QRCode.toCanvas(canvas, url, { width: 200, margin: 2, color: { dark: '#000', light: '#fff' } }, function(err, c) {
-          if (err) { container.innerHTML = '<p style="font-size:0.78rem;color:var(--text-muted)">Could not generate QR code.</p>'; resolve(null); return; }
-          container.appendChild(c || canvas);
+          if (err) { container.innerHTML = '<p style="font-size:0.78rem;color:var(--text-muted)">Could not generate QR code.</p>'; reject(err); return; }
           resolve(c || canvas);
         });
       });
+
+      _qrPromise.then(function(finishedCanvas) {
+        _generatedCanvas = finishedCanvas;
+        container.appendChild(finishedCanvas);
+      }).catch(function() {});
     }
 
     function viewEmergencyPassport() {
@@ -6834,14 +6841,12 @@ if (!hasPet) {
     }
 
     async function downloadQR() {
-      var container = document.getElementById('qr-canvas');
-      var existingCanvas = container.querySelector('canvas');
-      if (!existingCanvas && _qrPromise) {
-        await _qrPromise;
-        existingCanvas = container.querySelector('canvas');
+      var target = _generatedCanvas;
+      if (!target && _qrPromise) {
+        try { target = await _qrPromise; } catch (e) { showToast('Could not generate QR code.', 'error'); return; }
       }
-      if (!existingCanvas) { showToast('Generate the QR code first.', 'error'); return; }
-      existingCanvas.toBlob(function(blob) {
+      if (!target) { showToast('Generate the QR code first.', 'error'); return; }
+      target.toBlob(function(blob) {
         var link = document.createElement('a');
         link.download = 'pupfile-' + (AppState.activePet?.name || 'pet').replace(/\s+/g, '-').toLowerCase() + '-qr.png';
         link.href = URL.createObjectURL(blob);
