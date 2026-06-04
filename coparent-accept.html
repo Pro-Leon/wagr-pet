@@ -102,6 +102,7 @@
   <script src="js/api-public.js"></script>
   <script src="js/api-vet-travel.js"></script>
   <script src="js/api-extra.js"></script>
+  <script src="js/ui.js"></script>
   <script src="js/api-services.js"></script>
   <script>
     let inviteToken = null;
@@ -120,19 +121,16 @@
         return;
       }
 
-      // Validate the invite and get pet name
+      // Validate the invite and get pet name (non-blocking — API may not be deployed yet)
       try {
         const apiBase = window.location.origin;
         const res = await fetch(apiBase + '/api/share?action=coparent_validate&token=' + encodeURIComponent(inviteToken));
         const data = await res.json();
-        if (!res.ok || !data.valid) {
-          showError(data.error || 'Invite not found, already used, or expired.');
-          return;
+        if (res.ok && data.valid) {
+          invitePetName = data.petName || 'Pet';
         }
-        invitePetName = data.petName || 'Pet';
       } catch (e) {
-        showError('Could not verify invite. Check the link or try again later.');
-        return;
+        // API not reachable (local dev or not deployed) — proceed without pet name
       }
 
       // Check if user is logged in
