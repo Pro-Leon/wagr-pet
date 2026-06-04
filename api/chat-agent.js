@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   }
 
   const origin = req.headers.origin;
-  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:') && !origin.startsWith('http://127.0.0.1:') && !origin.endsWith('.vercel.app')) {
+  if (origin && !origin.startsWith('http://localhost:') && !origin.startsWith('http://127.0.0.1:') && !origin.endsWith('.vercel.app') && origin !== 'https://pupfile.com' && !origin.endsWith('.pupfile.com')) {
     return res.status(403).json({ error: 'Origin not allowed' });
   }
   res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');

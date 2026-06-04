@@ -19,7 +19,7 @@ const VACCINE_INTERVALS = {
 
 function cors(res, req) {
   const origin = req?.headers?.origin;
-  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:') && !origin.startsWith('http://127.0.0.1:') && !origin.endsWith('.vercel.app')) return false;
+  if (origin && !origin.startsWith('http://localhost:') && !origin.startsWith('http://127.0.0.1:') && !origin.endsWith('.vercel.app') && origin !== 'https://pupfile.com' && !origin.endsWith('.pupfile.com')) return false;
   res.setHeader('Access-Control-Allow-Origin', origin || 'https://pupfile.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
