@@ -3140,7 +3140,13 @@
     })(0);
   </script>
   <script src="js/app.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/api-core.js"></script>
+  <script src="js/api-logs.js"></script>
+  <script src="js/api-health.js"></script>
+  <script src="js/api-public.js"></script>
+  <script src="js/api-vet-travel.js"></script>
+  <script src="js/api-extra.js"></script>
+  <script src="js/api-services.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/analytics.js"></script>
   <script src="js/tutorial.js"></script>
@@ -6564,7 +6570,7 @@ if (!hasPet) {
     /* --- Vet Upload Portal (when accessed via ?vettoken=) --- */
     async function handleVetUploadMode(token) {
       try {
-        const res = await fetch(window.location.origin + '/api/vet-link?action=verify&token=' + encodeURIComponent(token));
+        const res = await fetch(window.location.origin + '/api/vet?action=verify&token=' + encodeURIComponent(token));
         if (!res.ok) { showToast('Invalid or expired vet link.', 'error'); window.location.href = '/'; return; }
         const data = await res.json();
         const pet = data.pet;
@@ -6698,7 +6704,7 @@ if (!hasPet) {
     /* --- Sitter Mode --- */
     async function handleSitterMode(token) {
       try {
-        const res = await fetch(window.location.origin + '/api/sitter?action=verify&token=' + encodeURIComponent(token));
+        const res = await fetch(window.location.origin + '/api/share?action=verify&token=' + encodeURIComponent(token));
         if (!res.ok) { showToast('Invalid or expired sitter link.', 'error'); window.location.href = '/'; return; }
         const data = await res.json();
         const pet = data.pet;
@@ -6724,7 +6730,7 @@ if (!hasPet) {
         document.querySelector('.fab.support-fab')?.remove(); document.querySelector('.fab.ai-fab')?.remove();
         const main = document.querySelector('.dashboard-main');
         main.innerHTML = '<div style="padding:16px;border-bottom:1px solid var(--border-color);background:var(--bg-secondary)"><div class="flex items-center justify-between"><div><div style="font-size:0.85rem;font-weight:600">Sitting: ' + escapeHtml(petName) + '</div><div style="font-size:0.75rem;color:var(--text-secondary)">' + (petBreed || '') + '</div></div></div></div><div class="dashboard-content"><div class="quick-log-row"><button class="quick-log-btn" onclick="sitterLog(\'meal\')">Feed</button><button class="quick-log-btn" onclick="sitterLog(\'medication\')">Meds</button><button class="quick-log-btn" onclick="sitterLog(\'bathroom\')">Walk</button></div><div class="timeline-header"><h2>Timeline</h2></div><div id="timeline-feed"></div></div>';
-        const logsRes = await fetch(window.location.origin + '/api/sitter?action=logs&petId=' + encodeURIComponent(petId) + '&token=' + encodeURIComponent(sitterToken));
+        const logsRes = await fetch(window.location.origin + '/api/share?action=logs&petId=' + encodeURIComponent(petId) + '&token=' + encodeURIComponent(sitterToken));
         const logsData = await logsRes.json();
         const logs = logsData.logs || [];
         AppState.setLogs(logs); renderTimeline(logs);
@@ -6927,7 +6933,7 @@ if (!hasPet) {
       showToast('Opening payment portal...', 'info');
       try {
         const accessToken = await getAccessToken();
-        const res = await fetch((window.location.origin || 'https://pupfile.com') + '/api/manage-subscription', {
+        const res = await fetch((window.location.origin || 'https://pupfile.com') + '/api/payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + accessToken },
           body: JSON.stringify({ action: 'manage' }),
