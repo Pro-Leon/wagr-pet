@@ -70,6 +70,9 @@
           <a href="/auth" class="btn btn-primary w-full" id="invite-login-btn" style="display:none">
             Sign In to Accept
           </a>
+          <a href="/auth?mode=signup&redirect=/coparent?token=TOKEN_PLACEHOLDER" class="btn btn-secondary w-full" id="invite-signup-btn" style="display:none">
+            Create Account
+          </a>
           <div id="invite-success" style="display:none">
             <div style="margin-bottom:12px"><i data-lucide="party-popper" style="width:40px;height:40px;color:var(--orange-600)"></i></div>
             <h3>You're now a co-parent!</h3>
@@ -130,13 +133,18 @@
         `;
         document.getElementById('invite-accept-btn').style.display = 'block';
       } else {
-        // Not logged in — redirect to auth (with redirect back after signup)
+        // Not logged in — show signup and login options
         document.getElementById('invite-loading').style.display = 'none';
-        document.getElementById('invite-title').textContent = 'Sign in to accept';
-        document.getElementById('invite-text').textContent = 'You need a PupFile account to accept this co-parent invite.';
+        document.getElementById('invite-title').textContent = 'Create an account';
+        document.getElementById('invite-text').textContent = 'Create a free account or sign in to accept this co-parent invite.';
         const loginBtn = document.getElementById('invite-login-btn');
         loginBtn.href = '/auth?redirect=' + encodeURIComponent('/coparent?token=' + inviteToken);
         loginBtn.style.display = 'block';
+        const signupBtn = document.getElementById('invite-signup-btn');
+        signupBtn.href = '/auth?mode=signup&redirect=' + encodeURIComponent('/coparent?token=' + inviteToken);
+        signupBtn.style.display = 'block';
+        document.getElementById('invite-detail').style.display = 'block';
+        document.getElementById('invite-detail').innerHTML = `Invited to co-parent <strong>${escapeHtml(invitePetName || 'a pet')}</strong>`;
       }
     });
 

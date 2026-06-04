@@ -156,8 +156,18 @@ export default async function handler(req, res) {
     if (!vetToken) return res.status(400).json({ error: 'Missing token parameter' });
     const valid = await validateVetToken(vetToken);
     if (!valid) return res.status(404).json({ error: 'Invalid or expired vet link' });
+
+    const { data: vaccinations } = await supabase
+      .from('vaccinations').select('*').eq('pet_id', valid.pet.id)
+      .order('date_given', { ascending: false }).limit(5);
+    const { data: records } = await supabase
+      .from('vet_records').select('*').eq('pet_id', valid.pet.id)
+      .order('created_at', { ascending: false }).limit(5);
+
     return res.status(200).json({
-      pet: { ...valid.pet, vet_name: valid.link.vet_name, clinic_name: valid.link.clinic_name, link_id: valid.link.id }
+      pet: { ...valid.pet, vet_name: valid.link.vet_name, clinic_name: valid.link.clinic_name, link_id: valid.link.id },
+      recentVaccinations: vaccinations || [],
+      recentRecords: records || [],
     });
   }
 
@@ -205,6 +215,52 @@ export default async function handler(req, res) {
        </div>`
     );
     return res.status(200).json({ record: data });
+  }
+
+  /* --- Upload a file (for drag-and-drop upload) --- */
+  if (req.method === 'POST' && action === 'upload_file') {
+    const { token: vetToken, file_name, file_data, file_type, record_type, notes } = req.body || {};
+    if (!vetToken || !file_name || !file_data) return res.status(400).json({ error: 'Missing required fields' });
+    const validated = await validateVetToken(vetToken);
+    if (!validated) return res.status(403).json({ error: 'Invalid or expired vet link' });
+
+    let fileUrl = '';
+    try {
+      const buf = Buffer.from(file_data, 'base64');
+      const ext = file_type === 'application/pdf' ? 'pdf' : (file_type?.startsWith('image/') ? file_type.split('/')[1] : 'bin');
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('vet-uploads')
+        .upload(fileName, buf, { contentType: file_type || 'application/octet-stream', upsert: false });
+      if (uploadError) {
+        if (uploadError.message?.includes('bucket')) {
+          return res.status(500).json({ error: 'Storage not configured. Ask the site owner to create a "vet-uploads" Supabase Storage bucket.' });
+        }
+        throw uploadError;
+      }
+      const { data: { publicUrl } } = supabase.storage.from('vet-uploads').getPublicUrl(fileName);
+      fileUrl = publicUrl;
+    } catch (e) {
+      console.error('File upload error:', e);
+      return res.status(500).json({ error: 'Failed to upload file. Ensure Supabase Storage is configured.' });
+    }
+
+    const { data, error } = await supabase.from('vet_records').insert({
+      pet_id: validated.pet.id, user_id: validated.pet.user_id, file_name,
+      file_url: fileUrl, record_type: record_type || 'other', notes: notes || '',
+      uploaded_by_vet: true, vet_name: validated.link.vet_name,
+    }).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    await notifyOwner(validated,
+      `Vet uploaded a document for ${validated.pet.name}`,
+      `<p><strong>${validated.link.vet_name}</strong> has uploaded a new document for <strong>${validated.pet.name}</strong>.</p>
+       <div style="background:#f5f5f5;padding:16px;border-radius:8px;margin:12px 0">
+         <p><strong>Document:</strong> ${file_name}</p><p><strong>Type:</strong> ${record_type || 'Other'}</p>
+         ${notes ? `<p><strong>Notes:</strong> ${notes}</p>` : ''}
+         <p><a href="${fileUrl}" style="color:#ea580c">View Document</a></p>
+       </div>`
+    );
+    return res.status(200).json({ record: data, fileUrl });
   }
 
   return res.status(405).json({ error: 'Method or action not allowed' });

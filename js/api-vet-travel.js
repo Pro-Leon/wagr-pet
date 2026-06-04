@@ -82,6 +82,17 @@ async function uploadRecordViaVetLink(vetToken, fileName, fileUrl, recordType, n
   return data;
 }
 
+async function uploadFileViaVetLink(vetToken, fileName, fileData, fileType, recordType, notes) {
+  const res = await fetch(API_BASE + '/vet', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'upload_file', token: vetToken, file_name: fileName, file_data: fileData, file_type: fileType, record_type: recordType, notes }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to upload file');
+  return data;
+}
+
 /* --- Vaccinations --- */
 async function getVaccinations(petId) {
   const { data, error } = await db()

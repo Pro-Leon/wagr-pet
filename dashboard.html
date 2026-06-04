@@ -6352,15 +6352,24 @@ if (!hasPet) {
         var hasFile = rec.file_url && rec.file_url.trim() !== '';
         var escapedId = rec.id.replace(/'/g, "\\'");
 
+        var verifiedBadge = rec.uploaded_by_vet && rec.vet_name
+          ? '<span class="vet-verified-badge" style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:var(--radius-full);font-size:0.68rem;font-weight:600;background:#f0fdf4;color:#16a34a;margin-left:6px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Vet Verified</span>'
+          : '';
+        var verifiedBy = rec.uploaded_by_vet && rec.vet_name
+          ? '<div style="font-size:0.72rem;color:#16a34a;margin-top:4px">Uploaded by ' + escHtml(rec.vet_name) + '</div>'
+          : '';
+
         return '<div class="card vetrecord-card" style="padding:16px">' +
           '<div class="vetrecord-top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">' +
             '<div style="flex:1;min-width:0">' +
-              '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' +
+              '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">' +
                 '<span class="vr-type-badge" style="display:inline-block;padding:2px 10px;border-radius:var(--radius-full);font-size:0.7rem;font-weight:600;color:#fff;background:' + color + '">' + label + '</span>' +
                 '<span style="font-size:0.75rem;color:var(--text-muted)">' + dateStr + '</span>' +
+                verifiedBadge +
               '</div>' +
               '<div style="font-weight:600;font-size:0.92rem">' + escHtml(rec.file_name) + '</div>' +
               (rec.notes ? '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:4px">' + escHtml(rec.notes) + '</div>' : '') +
+              verifiedBy +
             '</div>' +
             '<div class="vr-actions" style="display:flex;gap:4px;flex-shrink:0">' +
               (hasFile ? '<a href="' + rec.file_url + '" target="_blank" class="btn btn-secondary btn-sm" style="text-decoration:none"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Open</a>' : '') +
@@ -6420,27 +6429,43 @@ if (!hasPet) {
       btn.className = 'btn btn-sm btn-primary';
     });
 
+    let _qrPromise = null;
     function generateQR() {
       if (!AppState.activePet) return;
-      const canvas = document.getElementById('qr-canvas');
+      const container = document.getElementById('qr-canvas');
       const urlEl = document.getElementById('qr-url');
-      if (!canvas) return;
+      if (!container) return;
       const url = `${window.location.origin}/p/${AppState.activePet.id}`;
       if (urlEl) urlEl.textContent = url;
-      canvas.innerHTML = '';
-      if (typeof QRCode !== 'undefined') {
-        QRCode.toCanvas(document.createElement('canvas'), url, { width: 200, margin: 2, color: { dark: '#000', light: '#fff' } }, (err, c) => { if (!err) canvas.appendChild(c); });
-      }
+      container.innerHTML = '';
+
+      if (typeof QRCode === 'undefined') { _qrPromise = null; return; }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 200; canvas.height = 200;
+      _qrPromise = new Promise(function(resolve) {
+        QRCode.toCanvas(canvas, url, { width: 200, margin: 2, color: { dark: '#000', light: '#fff' } }, function(err, c) {
+          if (err) { container.innerHTML = '<p style="font-size:0.78rem;color:var(--text-muted)">Could not generate QR code.</p>'; resolve(null); return; }
+          container.appendChild(c || canvas);
+          resolve(c || canvas);
+        });
+      });
     }
 
     function viewEmergencyPassport() {
       if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
       window.open(`${window.location.origin}/p/${AppState.activePet.id}`, '_blank');
     }
-    function downloadQR() {
-      var canvasEl = document.querySelector('#qr-canvas canvas');
-      if (!canvasEl) { showToast('Generate the QR code first.', 'error'); return; }
-      canvasEl.toBlob(function(blob) {
+
+    async function downloadQR() {
+      var container = document.getElementById('qr-canvas');
+      var existingCanvas = container.querySelector('canvas');
+      if (!existingCanvas && _qrPromise) {
+        await _qrPromise;
+        existingCanvas = container.querySelector('canvas');
+      }
+      if (!existingCanvas) { showToast('Generate the QR code first.', 'error'); return; }
+      existingCanvas.toBlob(function(blob) {
         var link = document.createElement('a');
         link.download = 'pupfile-' + (AppState.activePet?.name || 'pet').replace(/\s+/g, '-').toLowerCase() + '-qr.png';
         link.href = URL.createObjectURL(blob);
@@ -7078,126 +7103,313 @@ if (!hasPet) {
         const pet = data.pet;
         if (!pet) { showToast('Invalid or expired vet link.', 'error'); window.location.href = '/'; return; }
 
-        document.body.innerHTML = `
-          <div style="min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px;background:var(--bg-primary)">
-            <div class="card" style="max-width:600px;width:100%">
-              <div style="text-align:center;margin-bottom:24px">
-                <div style="font-size:2rem;margin-bottom:8px">🐾</div>
-                <h2 style="margin-bottom:4px">Vet Upload Portal</h2>
-                <p style="color:var(--text-secondary);font-size:0.9rem">Uploading records for <strong>${escHtml(pet.name)}</strong></p>
-                ${pet.breed ? `<p style="color:var(--text-muted);font-size:0.82rem">${escHtml(pet.breed)}</p>` : ''}
-                <div style="margin-top:8px;font-size:0.82rem;color:var(--text-muted)">
-                  Vet: ${escHtml(pet.vet_name)}${pet.clinic_name ? ' · ' + escHtml(pet.clinic_name) : ''}
-                </div>
-              </div>
+        const vetName = escHtml(pet.vet_name || 'Your Vet');
+        const clinicName = escHtml(pet.clinic_name || '');
+        const petName = escHtml(pet.name);
+        const breed = pet.breed ? escHtml(pet.breed) : '';
+        const recentVax = data.recentVaccinations || [];
+        const recentDocs = data.recentRecords || [];
 
-              <div style="border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px">
-                <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:16px">💉 Add Vaccination Record</h3>
-                <form id="vet-upload-vaccination-form">
-                  <input type="hidden" id="vuv-vet-token" value="${escHtml(token)}">
-                  <div class="input-group">
-                    <label>Vaccine Name</label>
-                    <input type="text" class="input-field" id="vuv-vaccine-name" placeholder="e.g. Rabies, DHPP, Bordetella" required>
-                  </div>
-                  <div style="display:flex;gap:12px;margin-top:12px">
-                    <div class="input-group" style="flex:1">
-                      <label>Date Given</label>
-                      <input type="date" class="input-field" id="vuv-date-given" required>
-                    </div>
-                    <div class="input-group" style="flex:1">
-                      <label>Next Due Date</label>
-                      <input type="date" class="input-field" id="vuv-next-due">
-                      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Auto-calculated if left blank</p>
-                    </div>
-                  </div>
-                  <div class="input-group" style="margin-top:12px">
-                    <label>Notes (optional)</label>
-                    <textarea class="input-field" id="vuv-notes" rows="2" placeholder="Any additional notes about this vaccination..."></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-full" style="margin-top:16px">Upload Vaccination Record</button>
-                </form>
-              </div>
-
-              <div style="border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:20px;margin-bottom:20px">
-                <h3 style="font-size:0.95rem;font-weight:600;margin-bottom:16px">📄 Add Medical Document</h3>
-                <form id="vet-upload-record-form">
-                  <input type="hidden" id="vur-vet-token" value="${escHtml(token)}">
-                  <div class="input-group">
-                    <label>Document Name</label>
-                    <input type="text" class="input-field" id="vur-file-name" placeholder="e.g. Lab Results - March 2026" required>
-                  </div>
-                  <div style="display:flex;gap:12px;margin-top:12px">
-                    <div class="input-group" style="flex:1">
-                      <label>Record Type</label>
-                      <select class="input-field" id="vur-record-type">
-                        <option value="lab">Lab Results</option>
-                        <option value="vaccine">Vaccination</option>
-                        <option value="prescription">Prescription</option>
-                        <option value="xray">X-Ray / Imaging</option>
-                        <option value="surgery">Surgery</option>
-                        <option value="exam">Exam Notes</option>
-                        <option value="referral">Referral</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    <div class="input-group" style="flex:1">
-                      <label>File URL (optional)</label>
-                      <input type="url" class="input-field" id="vur-file-url" placeholder="https://...">
-                      <p style="font-size:0.72rem;color:var(--text-muted);margin-top:2px">Link to uploaded document image/PDF</p>
-                    </div>
-                  </div>
-                  <div class="input-group" style="margin-top:12px">
-                    <label>Notes (optional)</label>
-                    <textarea class="input-field" id="vur-notes" rows="2" placeholder="Any notes about this document..."></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-full" style="margin-top:16px">Upload Document</button>
-                </form>
-              </div>
-
-              <div style="text-align:center;padding:12px;color:var(--text-muted);font-size:0.78rem;border-top:1px solid var(--border-color)">
-                Powered by <a href="https://pupfile.com" style="color:var(--orange-500);text-decoration:none">PupFile</a> · Secure upload portal
-              </div>
+        const recentRecordsHtml = [...recentVax.map(v => ({
+          type: 'vaccine',
+          label: escHtml(v.vaccine_name),
+          date: v.date_given,
+          vet: v.vet_name,
+        })), ...recentDocs.map(r => ({
+          type: 'record',
+          label: escHtml(r.file_name),
+          date: r.created_at ? r.created_at.split('T')[0] : '',
+          vet: r.vet_name,
+        }))].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5).map(item => `
+          <div class="vet-recent-item">
+            <div class="vet-recent-icon">${item.type === 'vaccine' ? '💉' : '📄'}</div>
+            <div class="vet-recent-info">
+              <div class="vet-recent-name">${item.label}</div>
+              <div class="vet-recent-meta">${formatDate(item.date)}${item.vet ? ' · ' + escHtml(item.vet) : ''}</div>
             </div>
-          </div>`;
+            <span class="vet-recent-badge">✓</span>
+          </div>
+        `).join('');
 
-        // Wire up vaccination form
-        document.getElementById('vet-upload-vaccination-form').addEventListener('submit', async function(e) {
+        document.body.innerHTML = `
+<style>
+  .vet-portal { min-height:100vh; background:#f8f9fa; display:flex; align-items:flex-start; justify-content:center; padding:24px; }
+  .vet-card { max-width:640px; width:100%; background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); overflow:hidden; }
+  .vet-header { background:linear-gradient(135deg,#1a1a2e,#16213e); color:#fff; padding:28px 24px; }
+  .vet-header-brand { display:flex; align-items:center; gap:14px; }
+  .vet-header-icon { font-size:2rem; }
+  .vet-header h1 { font-size:1.15rem; font-weight:700; margin:0; line-height:1.3; }
+  .vet-header p { font-size:0.82rem; margin:4px 0 0 0; opacity:0.8; }
+  .vet-body { padding:20px 24px; }
+  .vet-section { margin-bottom:24px; }
+  .vet-section-title { font-size:0.9rem; font-weight:700; color:#1a1a2e; margin:0 0 10px 0; display:flex; align-items:center; gap:6px; }
+  .vet-recent-item { display:flex; align-items:center; gap:10px; padding:10px 12px; background:#f8f9fa; border-radius:10px; margin-bottom:6px; }
+  .vet-recent-icon { font-size:1.1rem; width:28px; text-align:center; }
+  .vet-recent-info { flex:1; min-width:0; }
+  .vet-recent-name { font-size:0.85rem; font-weight:600; color:#1a1a2e; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vet-recent-meta { font-size:0.72rem; color:#6b7280; margin-top:1px; }
+  .vet-recent-badge { width:20px; height:20px; background:#16a34a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.65rem; flex-shrink:0; }
+  .vet-quick-grid { display:flex; flex-wrap:wrap; gap:8px; }
+  .vet-quick-btn { padding:10px 18px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; font-size:0.82rem; font-weight:600; color:#1a1a2e; cursor:pointer; transition:all 0.15s; }
+  .vet-quick-btn:hover { border-color:#ea580c; background:#fff7ed; color:#ea580c; }
+  .vet-quick-btn:active { transform:scale(0.97); }
+  .vet-quick-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .vet-field { margin-bottom:12px; }
+  .vet-field label { display:block; font-size:0.78rem; font-weight:600; color:#374151; margin-bottom:4px; }
+  .vet-field input,.vet-field select,.vet-field textarea { width:100%; padding:9px 12px; border:1px solid #d1d5db; border-radius:8px; font-size:0.85rem; background:#fff; box-sizing:border-box; }
+  .vet-field input:focus,.vet-field select:focus,.vet-field textarea:focus { outline:none; border-color:#ea580c; box-shadow:0 0 0 3px rgba(234,88,12,0.1); }
+  .vet-field textarea { resize:vertical; min-height:60px; font-family:inherit; }
+  .vet-field-row { display:flex; gap:12px; }
+  .vet-field-row > * { flex:1; }
+  .vet-upload-area { border:2px dashed #d1d5db; border-radius:12px; padding:20px; text-align:center; cursor:pointer; transition:all 0.15s; }
+  .vet-upload-area:hover,.vet-upload-area.dragover { border-color:#ea580c; background:#fff7ed; }
+  .vet-upload-area p { margin:4px 0 0 0; font-size:0.78rem; color:#6b7280; }
+  .vet-upload-btns { display:flex; gap:10px; justify-content:center; margin-top:12px; }
+  .vet-upload-btn { padding:10px 20px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; font-size:0.82rem; font-weight:600; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; gap:6px; }
+  .vet-upload-btn:hover { border-color:#ea580c; background:#fff7ed; color:#ea580c; }
+  .vet-upload-btn.pdf { color:#dc2626; } .vet-upload-btn.pdf:hover { border-color:#dc2626; background:#fef2f2; color:#dc2626; }
+  .vet-upload-btn.image { color:#2563eb; } .vet-upload-btn.image:hover { border-color:#2563eb; background:#eff6ff; color:#2563eb; }
+  .vet-btn-primary { width:100%; padding:11px; border:none; border-radius:10px; background:#ea580c; color:#fff; font-size:0.88rem; font-weight:700; cursor:pointer; transition:all 0.15s; }
+  .vet-btn-primary:hover { background:#d24a00; }
+  .vet-btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+  .vet-btn-primary:active { transform:scale(0.98); }
+  .vet-toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:#fff; padding:14px 24px; border-radius:12px; font-size:0.85rem; box-shadow:0 4px 20px rgba(0,0,0,0.2); z-index:9999; display:flex; align-items:center; gap:10px; animation:vetToastIn 0.25s ease; }
+  .vet-toast.success { border-left:4px solid #16a34a; }
+  .vet-toast.error { border-left:4px solid #dc2626; }
+  @keyframes vetToastIn { from { opacity:0; transform:translateX(-50%) translateY(16px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+  .vet-footer { text-align:center; padding:16px 24px; font-size:0.75rem; color:#9ca3af; border-top:1px solid #e5e7eb; }
+  .vet-footer a { color:#ea580c; text-decoration:none; }
+  .vet-divider { border:none; border-top:1px solid #e5e7eb; margin:20px 0; }
+  .vet-file-name { font-size:0.78rem; color:#6b7280; margin-top:6px; word-break:break-all; }
+  .vet-hint { font-size:0.72rem; color:#9ca3af; margin-top:2px; }
+  .vet-notif-badge { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; border-radius:20px; font-size:0.72rem; font-weight:600; background:#f0fdf4; color:#16a34a; }
+</style>
+<div class="vet-portal">
+  <div class="vet-card">
+    <div class="vet-header">
+      <div class="vet-header-brand">
+        <div class="vet-header-icon">🐾</div>
+        <div>
+          <h1>${clinicName || vetName}${clinicName ? ' · Updating ' + petName + "'s Records" : 'Updating ' + petName + "'s Records"}</h1>
+          <p>${petName}${breed ? ' · ' + breed : ''} · ${vetName}${clinicName ? ' · ' + clinicName : ''}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="vet-body">
+
+      ${recentRecordsHtml ? `
+      <div class="vet-section">
+        <div class="vet-section-title">📋 Recent Records</div>
+        ${recentRecordsHtml}
+      </div>
+      ` : ''}
+
+      <div class="vet-section">
+        <div class="vet-section-title">⚡ Quick Add Vaccine</div>
+        <div class="vet-quick-grid">
+          <button class="vet-quick-btn" data-quick-vax="DHPP">DHPP</button>
+          <button class="vet-quick-btn" data-quick-vax="Rabies">Rabies</button>
+          <button class="vet-quick-btn" data-quick-vax="Bordetella">Bordetella</button>
+          <button class="vet-quick-btn" data-quick-vax="Leptospirosis">Leptospirosis</button>
+          <button class="vet-quick-btn" data-quick-vax="Canine Influenza">Canine Influenza</button>
+        </div>
+      </div>
+
+      <hr class="vet-divider">
+
+      <div class="vet-section">
+        <div class="vet-section-title">💉 Add Vaccination Record</div>
+        <form id="vet-form-vax">
+          <div class="vet-field">
+            <label>Vaccine Name</label>
+            <input type="text" id="vf-vax-name" placeholder="e.g. Rabies, DHPP" required>
+          </div>
+          <div class="vet-field-row">
+            <div class="vet-field">
+              <label>Date Given</label>
+              <input type="date" id="vf-vax-date" required>
+            </div>
+            <div class="vet-field">
+              <label>Next Due Date <span class="vet-hint">(auto if blank)</span></label>
+              <input type="date" id="vf-vax-due">
+            </div>
+          </div>
+          <input type="hidden" id="vf-vax-token" value="${escHtml(token)}">
+          <button type="submit" class="vet-btn-primary">Upload Vaccination Record</button>
+        </form>
+      </div>
+
+      <hr class="vet-divider">
+
+      <div class="vet-section">
+        <div class="vet-section-title">📄 Upload Document</div>
+        <div class="vet-upload-area" id="vet-drop-zone">
+          <div style="font-size:1.8rem;margin-bottom:4px">📁</div>
+          <p style="font-weight:600;color:#374151">Drop file here or click to browse</p>
+          <p>PDF, PNG, JPG — any medical document</p>
+          <input type="file" id="vet-file-input" accept=".pdf,image/*" style="display:none">
+        </div>
+        <div id="vet-file-info"></div>
+        <div class="vet-upload-btns">
+          <button class="vet-upload-btn pdf" data-upload-type="pdf">📕 Upload PDF</button>
+          <button class="vet-upload-btn image" data-upload-type="image">🖼️ Upload Image</button>
+        </div>
+        <div class="vet-field" style="margin-top:12px">
+          <label>Document Name</label>
+          <input type="text" id="vf-doc-name" placeholder="e.g. Lab Results - March 2026">
+        </div>
+        <div class="vet-field-row">
+          <div class="vet-field">
+            <label>Type</label>
+            <select id="vf-doc-type">
+              <option value="lab">Lab Results</option>
+              <option value="vaccine">Vaccination</option>
+              <option value="prescription">Prescription</option>
+              <option value="xray">X-Ray / Imaging</option>
+              <option value="exam">Exam Notes</option>
+              <option value="referral">Referral</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="vet-field">
+            <label>Or paste URL</label>
+            <input type="url" id="vf-doc-url" placeholder="https://...">
+          </div>
+        </div>
+        <input type="hidden" id="vf-doc-token" value="${escHtml(token)}">
+        <button class="vet-btn-primary" id="vet-upload-doc-btn" style="margin-top:8px">Upload Document</button>
+      </div>
+
+      <hr class="vet-divider">
+
+      <div class="vet-section">
+        <div class="vet-section-title">📝 Clinical Notes</div>
+        <div class="vet-field">
+          <textarea id="vf-notes" rows="3" placeholder="Owner reported...&#10;Weight normal...&#10;Follow-up recommended...&#10;Medication prescribed..."></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="vet-footer">
+      Powered by <a href="https://pupfile.com">PupFile</a> · Secure upload portal
+    </div>
+  </div>
+</div>`;
+
+        function vetToast(msg, type) {
+          const existing = document.querySelector('.vet-toast');
+          if (existing) existing.remove();
+          const el = document.createElement('div');
+          el.className = 'vet-toast ' + (type || 'success');
+          el.innerHTML = (type === 'error' ? '❌' : '✓') + ' ' + msg;
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 4000);
+        }
+
+        function getToday() { return new Date().toISOString().split('T')[0]; }
+
+        // Quick vaccine buttons
+        document.querySelectorAll('[data-quick-vax]').forEach(btn => {
+          btn.addEventListener('click', async function() {
+            const name = this.dataset.quickVax;
+            const orig = this.textContent;
+            this.textContent = '...'; this.disabled = true;
+            try {
+              const result = await uploadVaccinationViaVetLink(token, name, getToday(), '', document.getElementById('vf-notes').value.trim());
+              vetToast('✓ ' + name + ' recorded! Next due: ' + result.next_due_date + '. ' + petName + "'s owner has been notified.", 'success');
+            } catch (err) { vetToast(err.message || 'Upload failed.', 'error'); }
+            this.textContent = orig; this.disabled = false;
+          });
+        });
+
+        // Vaccination form
+        document.getElementById('vet-form-vax').addEventListener('submit', async function(e) {
           e.preventDefault();
-          const btn = this.querySelector('button[type="submit"]');
+          const btn = this.querySelector('.vet-btn-primary');
           btn.disabled = true; btn.textContent = 'Uploading...';
           try {
             const result = await uploadVaccinationViaVetLink(
-              document.getElementById('vuv-vet-token').value,
-              document.getElementById('vuv-vaccine-name').value.trim(),
-              document.getElementById('vuv-date-given').value,
-              document.getElementById('vuv-next-due').value || null,
-              document.getElementById('vuv-notes').value.trim()
+              document.getElementById('vf-vax-token').value,
+              document.getElementById('vf-vax-name').value.trim(),
+              document.getElementById('vf-vax-date').value,
+              document.getElementById('vf-vax-due').value || null,
+              document.getElementById('vf-notes').value.trim()
             );
-            showToast('Vaccination record uploaded! Next due: ' + result.next_due_date, 'success');
+            vetToast('✓ ' + document.getElementById('vf-vax-name').value.trim() + ' recorded! Next due: ' + result.next_due_date + '. ' + petName + "'s owner has been notified.", 'success');
             this.reset();
-            document.getElementById('vuv-vet-token').value = token;
-          } catch (err) { showToast(err.message || 'Upload failed.', 'error'); }
+            document.getElementById('vf-vax-token').value = token;
+          } catch (err) { vetToast(err.message || 'Upload failed.', 'error'); }
           btn.disabled = false; btn.textContent = 'Upload Vaccination Record';
         });
 
-        // Wire up document form
-        document.getElementById('vet-upload-record-form').addEventListener('submit', async function(e) {
-          e.preventDefault();
-          const btn = this.querySelector('button[type="submit"]');
-          btn.disabled = true; btn.textContent = 'Uploading...';
+        // Upload PDF / Image buttons trigger file input
+        document.querySelectorAll('[data-upload-type]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const accept = this.dataset.uploadType === 'pdf' ? '.pdf' : 'image/*';
+            const input = document.getElementById('vet-file-input');
+            input.accept = accept;
+            input.click();
+          });
+        });
+
+        // Drop zone click
+        document.getElementById('vet-drop-zone').addEventListener('click', () => document.getElementById('vet-file-input').click());
+
+        // Drag-drop
+        const dropZone = document.getElementById('vet-drop-zone');
+        const fileInput = document.getElementById('vet-file-input');
+        let selectedFile = null;
+
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); });
+        fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+        function handleFile(file) {
+          if (!file) return;
+          selectedFile = file;
+          const isPdf = file.type === 'application/pdf';
+          const isImage = file.type.startsWith('image/');
+          if (!isPdf && !isImage) { vetToast('Please select a PDF or image file.', 'error'); return; }
+          const icon = isPdf ? '📕' : '🖼️';
+          document.getElementById('vet-file-info').innerHTML = '<div class="vet-file-name">' + icon + ' ' + escapeHtml(file.name) + ' (' + (file.size / 1024).toFixed(0) + ' KB)</div>';
+          if (!document.getElementById('vf-doc-name').value) {
+            document.getElementById('vf-doc-name').value = file.name.replace(/\.[^/.]+$/, '');
+          }
+        }
+
+        // Upload document button
+        document.getElementById('vet-upload-doc-btn').addEventListener('click', async function() {
+          const name = document.getElementById('vf-doc-name').value.trim();
+          const url = document.getElementById('vf-doc-url').value.trim();
+          const type = document.getElementById('vf-doc-type').value;
+          const notes = document.getElementById('vf-notes').value.trim();
+
+          if (!name && !selectedFile) { vetToast('Enter a document name or select a file.', 'error'); return; }
+
+          this.disabled = true; this.textContent = 'Uploading...';
           try {
-            await uploadRecordViaVetLink(
-              document.getElementById('vur-vet-token').value,
-              document.getElementById('vur-file-name').value.trim(),
-              document.getElementById('vur-file-url').value.trim(),
-              document.getElementById('vur-record-type').value,
-              document.getElementById('vur-notes').value.trim()
-            );
-            showToast('Document uploaded!', 'success');
-            this.reset();
-            document.getElementById('vur-vet-token').value = token;
-          } catch (err) { showToast(err.message || 'Upload failed.', 'error'); }
-          btn.disabled = false; btn.textContent = 'Upload Document';
+            if (selectedFile) {
+              const reader = new FileReader();
+              const base64 = await new Promise((resolve, reject) => {
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(selectedFile);
+              });
+              await uploadFileViaVetLink(token, name || selectedFile.name, base64, selectedFile.type, type, notes);
+              selectedFile = null;
+              document.getElementById('vet-file-info').innerHTML = '';
+            } else {
+              await uploadRecordViaVetLink(token, name, url, type, notes);
+            }
+            vetToast('✓ Document uploaded! ' + petName + "'s owner has been notified.", 'success');
+            document.getElementById('vf-doc-name').value = '';
+            document.getElementById('vf-doc-url').value = '';
+            fileInput.value = '';
+          } catch (err) { vetToast(err.message || 'Upload failed.', 'error'); }
+          this.disabled = false; this.textContent = 'Upload Document';
         });
 
       } catch (err) { showToast('Error loading vet upload portal.', 'error'); }

@@ -478,11 +478,11 @@
       try { initSupabase(); } catch(e) { console.error('Init failed:', e); }
 
       const params = new URLSearchParams(window.location.search);
-      if (params.get('mode') === 'signup') {
-        toggleAuthMode();
-      }
       redirectUrl = params.get('redirect') || null;
       isCoparentSignup = redirectUrl && redirectUrl.startsWith('/coparent');
+      if (params.get('mode') === 'signup' || isCoparentSignup) {
+        toggleAuthMode();
+      }
 
       checkSession();
       typeof lucide !== 'undefined' && lucide.createIcons();
@@ -697,7 +697,12 @@
       const weight = parseFloat(document.getElementById('signup-pet-weight').value) || null;
       const birthDate = document.getElementById('signup-pet-birth').value || null;
       const tier = signupTier || 'starter';
-      const btn = e.submitter || document.getElementById('signup-btn');
+      let btn = e.submitter;
+      if (!btn) {
+        const coBtn = document.getElementById('signup-btn-co');
+        if (isCoparentSignup && coBtn.style.display !== 'none' && coBtn.offsetParent !== null) btn = coBtn;
+        else btn = document.getElementById('signup-btn');
+      }
 
       if (!email || !password) { showAlert('Please fill in all fields.'); return; }
       if (password.length < 8) { showAlert('Password must be at least 8 characters.'); return; }

@@ -36,6 +36,15 @@ async function getPublicPetProfile(petId) {
       return { id: pet.id, name: pet.name, breed: pet.breed, medical_flags: pet.medical_flags, microchip: pet.microchip, allergies: pet.allergies, medications: pet.medications, emergency_contact_name: pet.emergency_contact_name, emergency_contact_phone: pet.emergency_contact_phone, primary_vet_name: pet.primary_vet_name, primary_vet_phone: pet.primary_vet_phone, owner_contact: profile?.email || '' };
     }
   } catch (e) {}
+  // Final fallback: Vercel API endpoint (bypasses RLS with service role key)
+  try {
+    const apiBase = window.location.origin;
+    const res = await fetch(apiBase + '/api/public?petId=' + encodeURIComponent(petId));
+    if (res.ok) {
+      const pet = await res.json();
+      if (pet && pet.id) return pet;
+    }
+  } catch (e) {}
   throw new Error('Pet profile not found');
 }
 
