@@ -3429,15 +3429,21 @@
   <script src="https://js.paystack.co/v2/inline.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
-    (function checkSupabase(attempts) {
-      if (typeof window.supabase !== 'undefined' && window.supabase.createClient) return;
-      if (attempts >= 20) {
+    var _libsReady = { supabase: false, qrcode: false };
+    (function checkLibs(attempts) {
+      if (typeof window.supabase !== 'undefined' && window.supabase.createClient) _libsReady.supabase = true;
+      if (typeof window.QRCode !== 'undefined') _libsReady.qrcode = true;
+      if (_libsReady.supabase && _libsReady.qrcode) return;
+      if (attempts >= 40) {
         document.addEventListener('DOMContentLoaded', () => {
-          document.querySelector('.dashboard-content').innerHTML = '<div style="text-align:center;padding:48px 24px"><h3>Could not load required libraries</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
+          var missing = [];
+          if (!_libsReady.supabase) missing.push('Supabase');
+          if (!_libsReady.qrcode) missing.push('QRCode');
+          document.querySelector('.dashboard-content').innerHTML = '<div style="text-align:center;padding:48px 24px"><h3>Could not load: ' + missing.join(', ') + '</h3><p style="color:#888;font-size:14px;margin-top:8px">Check your connection and reload.</p></div>';
         });
         return;
       }
-      setTimeout(function() { checkSupabase(attempts + 1); }, 100);
+      setTimeout(function() { checkLibs(attempts + 1); }, 100);
     })(0);
   </script>
   <script src="js/app.js"></script>
@@ -5270,7 +5276,7 @@ if (!hasPet) {
     function getQRDataUrl(text) {
       return new Promise(function(resolve) {
         if (qrDataUrlCache[text]) { resolve(qrDataUrlCache[text]); return; }
-        if (typeof QRCode !== 'undefined') {
+        if (typeof window.QRCode !== 'undefined' && _libsReady.qrcode) {
           QRCode.toDataURL(text, { width: 120, margin: 1, color: { dark: '#ea580c', light: '#fff' } }, function(err, url) {
             if (!err && url) qrDataUrlCache[text] = url;
             resolve(err ? '' : url);
@@ -5658,7 +5664,7 @@ if (!hasPet) {
       if (!container) return;
       var url = window.location.origin + '/p/' + AppState.activePet.id;
       container.innerHTML = '';
-      if (typeof QRCode === 'undefined') { container.innerHTML = '<span style="font-size:0.72rem;color:var(--text-muted)">QR library not loaded</span>'; return; }
+      if (typeof window.QRCode === 'undefined' || !_libsReady.qrcode) { container.innerHTML = '<span style="font-size:0.72rem;color:var(--text-muted)">QR library not loaded — reload the page</span>'; return; }
       var canvas = document.createElement('canvas');
       canvas.width = 140; canvas.height = 140;
       _travelQrPromise = new Promise(function(resolve) {
@@ -6816,7 +6822,7 @@ if (!hasPet) {
       if (urlEl) urlEl.textContent = url;
       container.innerHTML = '';
 
-      if (typeof QRCode === 'undefined') { _qrPromise = null; return; }
+      if (typeof window.QRCode === 'undefined' || !_libsReady.qrcode) { _qrPromise = null; return; }
 
       const canvas = document.createElement('canvas');
       canvas.width = 200; canvas.height = 200;
