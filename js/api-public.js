@@ -20,6 +20,22 @@ async function getPublicPetProfile(petId) {
       .single();
     if (!error && data) return data;
   } catch (e) {}
+  // Fallback: direct pets + profiles query
+  try {
+    const { data: pet, error: petErr } = await db()
+      .from('pets')
+      .select('id, name, breed, birth_date, weight_kg, medical_flags, microchip, color, allergies, medications, emergency_contact_name, emergency_contact_phone, primary_vet_name, primary_vet_phone, user_id')
+      .eq('id', petId)
+      .single();
+    if (!petErr && pet) {
+      const { data: profile } = await db()
+        .from('profiles')
+        .select('email')
+        .eq('id', pet.user_id)
+        .single();
+      return { id: pet.id, name: pet.name, breed: pet.breed, medical_flags: pet.medical_flags, microchip: pet.microchip, allergies: pet.allergies, medications: pet.medications, emergency_contact_name: pet.emergency_contact_name, emergency_contact_phone: pet.emergency_contact_phone, primary_vet_name: pet.primary_vet_name, primary_vet_phone: pet.primary_vet_phone, owner_contact: profile?.email || '' };
+    }
+  } catch (e) {}
   throw new Error('Pet profile not found');
 }
 

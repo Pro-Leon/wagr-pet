@@ -228,6 +228,7 @@ const Tutorial = (() => {
 
   function showCompletion() {
     try { localStorage.setItem('pupfile_tutorial_done', 'completed'); localStorage.removeItem('pupfile_tutorial_step'); } catch (e) {}
+    saveTutorialDone();
 
     state.tooltip.classList.add('tutorial-tooltip-enter');
     state.tooltip.classList.remove('tutorial-tooltip-visible');
@@ -268,7 +269,14 @@ const Tutorial = (() => {
 
   function skip() {
     try { localStorage.setItem('pupfile_tutorial_done', 'skipped'); localStorage.removeItem('pupfile_tutorial_step'); } catch (e) {}
+    saveTutorialDone();
     close();
+  }
+
+  function saveTutorialDone() {
+    if (typeof AppState !== 'undefined' && AppState.user && typeof updateProfile === 'function') {
+      updateProfile(AppState.user.id, { tutorial_completed: true }).catch(function() {});
+    }
   }
 
   function handleAction(e) {
@@ -373,6 +381,12 @@ const Tutorial = (() => {
     var savedStep;
     try { savedStep = localStorage.getItem('pupfile_tutorial_step'); } catch (e) { savedStep = null; }
 
+    // Check server-side flag (persists across devices)
+    if (!done && typeof AppState !== 'undefined' && AppState.profile?.tutorial_completed) {
+      try { localStorage.setItem('pupfile_tutorial_done', 'completed'); } catch (e) {}
+      done = 'completed';
+    }
+
     if (done && done !== '') return;
 
     var delay = savedStep !== null && savedStep !== '' ? 500 : 900;
@@ -404,5 +418,12 @@ const Tutorial = (() => {
 })();
 
 document.addEventListener('DOMContentLoaded', function () {
-  Tutorial.init();
+  // Wait for profile to load before checking tutorial
+  var checkInterval = setInterval(function () {
+    if (typeof AppState !== 'undefined' && AppState.profile) {
+      clearInterval(checkInterval);
+      Tutorial.init();
+    }
+  }, 200);
+  setTimeout(function () { clearInterval(checkInterval); }, 15000);
 });

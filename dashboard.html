@@ -900,6 +900,22 @@
     }
     #modal-pricing .pricing-card .btn.w-full { width: 100%; }
     #modal-pricing .pricing-card .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
+
+    /* --- Travel Readiness --- */
+    .readiness-bar-track { background: var(--bg-tertiary,#eee); }
+    [data-theme="dark"] .readiness-bar-track { background: rgba(255,255,255,0.08); }
+    #travel-readiness-card .readiness-score-num { transition: color 0.3s ease; }
+
+    /* --- Travel Expiry --- */
+    #travel-expiry-list > div { transition: opacity 0.2s; }
+
+    /* --- Country Requirements --- */
+    #travel-country-details > div { animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Travel Doc Cards --- */
+    .travel-doc-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: transform 0.15s, box-shadow 0.15s; }
+    #travel-packet-card:hover { box-shadow: 0 4px 20px rgba(234,88,12,0.15); transition: box-shadow 0.2s; }
   </style>
 </head>
 <body>
@@ -946,6 +962,7 @@
         <a href="#" data-tab="vetlinks" onclick="switchTab('vetlinks', this)"><svg viewBox="0 0 24 24"><path d="M10 2L7.5 2C6.12 2 5 3.12 5 4.5L5 19.5C5 20.88 6.12 22 7.5 22L16.5 22C17.88 22 19 20.88 19 19.5L19 8.5L14 2Z"/><path d="M14 2L14 8L19 8"/><path d="M9 13L11 15L15 11"/></svg> Vet Links</a>
         <a href="#" data-tab="vetrecords" onclick="switchTab('vetrecords', this)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Vet Records</a>
         <a href="#" data-tab="qr" onclick="switchTab('qr', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><line x1="3" y1="14" x2="7" y2="14"/></svg> QR Tags</a>
+        <a href="#" data-tab="emergency" onclick="switchTab('emergency', this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Emergency</a>
         <a href="#" id="assistant-sidebar-link" onclick="switchTab('assistant', this)" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/></svg> Assistant</a>
 
         <div class="nav-section-label">ACCOUNT</div>
@@ -1011,6 +1028,7 @@
           <a href="#" onclick="switchTab('sitter');closeMobileMenu()">Sitter Links</a>
           <a href="#" onclick="switchTab('coparent');closeMobileMenu()">Co-parents</a>
           <a href="#" onclick="switchTab('qr');closeMobileMenu()">QR Tags</a>
+          <a href="#" onclick="switchTab('emergency');closeMobileMenu()">Emergency</a>
           <a href="#" id="assistant-mobile-link" onclick="switchTab('assistant');closeMobileMenu()" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="10" width="18" height="12" rx="2"/><circle cx="12" cy="6" r="2"/><path d="M12 8v2"/></svg> Assistant</a>
 
           <div class="nav-section-label">ACCOUNT</div>
@@ -1142,7 +1160,7 @@
 
         <!-- ===== QR TAB ===== -->
         <div class="tab-content" id="tab-qr">
-          <div class="timeline-header"><h2>QR Emergency Tag</h2></div>
+          <div class="timeline-header"><h2>QR Tags</h2></div>
           <div id="qr-section">
             <div id="qr-active" style="display:none">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
@@ -1160,41 +1178,6 @@
                     </button>
                   </div>
                 </div>
-                <div class="card" style="padding:20px">
-                  <h3 style="font-size:0.85rem;font-weight:600;margin-bottom:10px">Emergency Profile</h3>
-                  <div class="input-group" style="margin-bottom:8px">
-                    <label style="font-size:0.72rem">Allergies</label>
-                    <input type="text" class="input-field" id="emr-allergies" placeholder="e.g. Chicken, pollen" style="font-size:0.8rem">
-                  </div>
-                  <div class="input-group" style="margin-bottom:8px">
-                    <label style="font-size:0.72rem">Medications</label>
-                    <input type="text" class="input-field" id="emr-medications" placeholder="e.g. Heartgard, Apoquel" style="font-size:0.8rem">
-                  </div>
-                  <div style="display:flex;gap:6px;margin-bottom:8px">
-                    <div class="input-group" style="flex:1">
-                      <label style="font-size:0.72rem">Emergency Contact</label>
-                      <input type="text" class="input-field" id="emr-emergency-name" placeholder="Name" style="font-size:0.8rem">
-                    </div>
-                    <div class="input-group" style="flex:1">
-                      <label style="font-size:0.72rem">Phone</label>
-                      <input type="tel" class="input-field" id="emr-emergency-phone" placeholder="Phone" style="font-size:0.8rem">
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:6px;margin-bottom:8px">
-                    <div class="input-group" style="flex:1">
-                      <label style="font-size:0.72rem">Primary Vet</label>
-                      <input type="text" class="input-field" id="emr-vet-name" placeholder="Vet name" style="font-size:0.8rem">
-                    </div>
-                    <div class="input-group" style="flex:1">
-                      <label style="font-size:0.72rem">Vet Phone</label>
-                      <input type="tel" class="input-field" id="emr-vet-phone" placeholder="Phone" style="font-size:0.8rem">
-                    </div>
-                  </div>
-                  <button class="btn btn-primary btn-sm w-full" onclick="saveEmergencyProfile()">Save Emergency Profile</button>
-                </div>
-              </div>
-
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
                 <div class="card" style="padding:16px;text-align:center">
                   <div style="font-size:1.2rem;margin-bottom:4px">🖨️</div>
                   <div style="font-weight:600;font-size:0.8rem;margin-bottom:4px">Print Collar Tag</div>
@@ -1281,6 +1264,131 @@
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Printable QR code for collar tags</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Live GPS location alerts when scanned</li>
                 <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Public profile with medical flags</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== EMERGENCY PROFILE TAB ===== -->
+        <div class="tab-content" id="tab-emergency">
+          <div class="timeline-header"><h2>Emergency Profile</h2></div>
+          <div id="emergency-section">
+            <div id="emergency-active" style="display:none">
+              <div class="card" style="padding:20px">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+                  <div style="width:48px;height:48px;border-radius:50%;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:1.3rem">🆘</div>
+                  <div>
+                    <h3 style="font-size:0.95rem;font-weight:600;margin:0">Medical Emergency Profile</h3>
+                    <p style="font-size:0.78rem;color:var(--text-muted);margin:2px 0 0">This information appears on your pet's public Emergency Passport</p>
+                  </div>
+                </div>
+                <div class="input-group" style="margin-bottom:10px">
+                  <label style="font-size:0.78rem;font-weight:500">Allergies</label>
+                  <input type="text" class="input-field" id="emr-allergies" placeholder="e.g. Chicken, pollen, flea bites" style="font-size:0.8rem">
+                </div>
+                <div class="input-group" style="margin-bottom:10px">
+                  <label style="font-size:0.78rem;font-weight:500">Medications</label>
+                  <input type="text" class="input-field" id="emr-medications" placeholder="e.g. Heartgard monthly, Apoquel 5.4mg" style="font-size:0.8rem">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                  <div class="input-group">
+                    <label style="font-size:0.78rem;font-weight:500">Emergency Contact Name</label>
+                    <input type="text" class="input-field" id="emr-emergency-name" placeholder="Name" style="font-size:0.8rem">
+                  </div>
+                  <div class="input-group">
+                    <label style="font-size:0.78rem;font-weight:500">Emergency Phone</label>
+                    <input type="tel" class="input-field" id="emr-emergency-phone" placeholder="Phone" style="font-size:0.8rem">
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+                  <div class="input-group">
+                    <label style="font-size:0.78rem;font-weight:500">Primary Veterinarian</label>
+                    <input type="text" class="input-field" id="emr-vet-name" placeholder="Vet name" style="font-size:0.8rem">
+                  </div>
+                  <div class="input-group">
+                    <label style="font-size:0.78rem;font-weight:500">Vet Phone</label>
+                    <input type="tel" class="input-field" id="emr-vet-phone" placeholder="Phone" style="font-size:0.8rem">
+                  </div>
+                </div>
+                <button class="btn btn-primary w-full" onclick="saveEmergencyProfile()">Save Emergency Profile</button>
+              </div>
+
+              <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="card" style="padding:16px;text-align:center">
+                  <div style="font-size:1.2rem;margin-bottom:4px">🔗</div>
+                  <div style="font-weight:600;font-size:0.8rem;margin-bottom:4px">View Public Passport</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:8px">See how your pet's profile looks to others</div>
+                  <button class="btn btn-secondary btn-sm w-full" onclick="viewEmergencyPassport()">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Open Passport
+                  </button>
+                </div>
+                <div class="card" style="padding:16px;text-align:center">
+                  <div style="font-size:1.2rem;margin-bottom:4px">🆘</div>
+                  <div style="font-weight:600;font-size:0.8rem;margin-bottom:4px">QR Collar Tag</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:8px">Generate a scannable tag for your pet's collar</div>
+                  <button class="btn btn-secondary btn-sm w-full" onclick="switchTab('qr')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><line x1="3" y1="14" x2="7" y2="14"/></svg>
+                    Go to QR Tags
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="emergency-no-pet" class="locked-feature" style="display:none">
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
+              <h3>Set up your pet's emergency profile</h3>
+              <p>Add a pet first, then configure allergies, medications, and emergency contacts.</p>
+            </div>
+            <div id="emergency-locked" class="locked-feature" style="display:none">
+              <span class="lock-emoji">
+                <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
+                  <g opacity="0.3" transform="translate(3,-1)">
+                    <ellipse cx="20" cy="30" rx="9" ry="7" fill="#c2410c"/>
+                    <ellipse cx="9" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="20" cy="10" rx="4" ry="5" fill="#c2410c"/>
+                    <ellipse cx="31" cy="15" rx="4" ry="5" fill="#c2410c"/>
+                  </g>
+                  <g>
+                    <ellipse cx="24" cy="30" rx="9" ry="7" fill="#ea580c"/>
+                    <ellipse cx="13" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="24" cy="10" rx="4" ry="5" fill="#ea580c"/>
+                    <ellipse cx="35" cy="15" rx="4" ry="5" fill="#ea580c"/>
+                  </g>
+                </svg>
+              </span>
+              <h3>Emergency Profile</h3>
+              <p>Set allergies, medications, emergency contacts, and vet info for your pet.</p>
+              <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="width:36px;height:36px;background:#fef2f2;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">🆘</div>
+                  <div>
+                    <div class="preview-title">Emergency Passport</div>
+                    <div class="preview-meta">Public profile with medical info &amp; contacts</div>
+                  </div>
+                </div>
+                <div class="lf-blur">
+                  <button class="btn btn-primary" onclick="openModal('modal-pricing')">See Plans — from $4.99/mo</button>
+                </div>
+              </div>
+              <ul class="perks">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Allergies &amp; medications on file</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Emergency contacts displayed on passport</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Vet information available to finders</li>
               </ul>
             </div>
           </div>
@@ -1677,8 +1785,10 @@
 
         <!-- ===== TRAVEL TAB ===== -->
         <div class="tab-content" id="tab-travel">
-          <div class="timeline-header"><h2>Travel Documents</h2></div>
+          <div class="timeline-header"><h2>🐾 Dog Passport</h2></div>
           <div id="travel-section">
+
+            <!-- LOCKED STATE -->
             <div id="travel-locked" class="locked-feature">
               <span class="lock-emoji">
                 <svg class="paw-icon" viewBox="0 0 60 40" fill="none">
@@ -1696,9 +1806,16 @@
                   </g>
                 </svg>
               </span>
-              <h3>Travel &amp; Boarding Documents</h3>
-              <p>Generate professional travel documents for boarding, airlines, and international travel — populated with your pet's data.</p>
+              <h3>The Digital Passport for Dogs</h3>
+              <p>Generate professional travel documents for boarding, airlines, and international travel — populated with your pet's data. Each document includes QR verification, a unique document ID, and the PupFile Verified badge.</p>
               <div class="lf-preview">
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">📦</div>
+                  <div>
+                    <div class="preview-title">Complete Travel Packet</div>
+                    <div class="preview-meta">Cover page + all documents in one PDF</div>
+                  </div>
+                </div>
                 <div class="preview-row">
                   <div style="width:32px;height:32px;background:#f0fdf4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">💉</div>
                   <div>
@@ -1707,34 +1824,65 @@
                   </div>
                 </div>
                 <div class="preview-row">
-                  <div style="width:32px;height:32px;background:#eff6ff;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">✈️</div>
+                  <div style="width:32px;height:32px;background:#eff6ff;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">🩺</div>
+                  <div>
+                    <div class="preview-title">Health Certificate</div>
+                    <div class="preview-meta">Vet exam &amp; health declaration</div>
+                  </div>
+                </div>
+                <div class="preview-row">
+                  <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">✈️</div>
                   <div>
                     <div class="preview-title">Airline Travel Form</div>
                     <div class="preview-meta">Carrier dimensions &amp; health affirmation</div>
                   </div>
                 </div>
-                <div class="preview-row">
-                  <div style="width:32px;height:32px;background:#fef2f2;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.8rem">🏠</div>
-                  <div>
-                    <div class="preview-title">Boarding/Kennel Form</div>
-                    <div class="preview-meta">Care instructions &amp; emergency contacts</div>
-                  </div>
-                </div>
-                <div class="lr-blur">
+                <div class="lf-blur">
                   <button class="btn btn-primary" onclick="openModal('modal-pricing')">Upgrade to Starter — $4.99/mo</button>
                 </div>
               </div>
               <ul class="perks">
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Vaccination record PDF — airline &amp; boarding ready</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Airline travel form with carrier specifications</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Boarding facility requirements &amp; care plan</li>
-                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> International travel pack (Pro feature)</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Travel Readiness Score — see if your pet is travel-ready</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Expiry monitoring — know when vaccines &amp; docs expire</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Country-specific travel requirements &amp; checklists</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> QR-verified documents with unique ID &amp; timestamps</li>
               </ul>
             </div>
+
+            <!-- ACTIVE STATE -->
             <div id="travel-active" style="display:none">
+
+              <!-- Travel Readiness Score -->
+              <div class="card" style="margin-bottom:16px;padding:20px" id="travel-readiness-card">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                  <h3 style="font-size:0.9rem;font-weight:600;margin:0">Travel Readiness Score</h3>
+                  <span class="readiness-score-num" id="readiness-score" style="font-size:1.4rem;font-weight:800;color:var(--orange-500)">0%</span>
+                </div>
+                <div class="readiness-bar-track" id="readiness-bar-track" style="height:8px;background:#eee;border-radius:99px;overflow:hidden;margin-bottom:12px">
+                  <div class="readiness-bar-fill" id="readiness-bar-fill" style="height:100%;width:0%;border-radius:99px;background:var(--orange-500);transition:width 0.6s ease"></div>
+                </div>
+                <div id="readiness-details" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:0.78rem"></div>
+              </div>
+
+              <!-- Expiry Monitoring -->
+              <div class="card" style="margin-bottom:16px;padding:16px 20px" id="travel-expiry-card">
+                <h3 style="font-size:0.9rem;font-weight:600;margin:0 0 12px">Travel Status</h3>
+                <div id="travel-expiry-list" style="display:grid;gap:8px"></div>
+              </div>
+
+              <!-- Country Requirements -->
+              <div class="card" style="margin-bottom:16px;padding:16px 20px">
+                <h3 style="font-size:0.9rem;font-weight:600;margin:0 0 8px">Destination Requirements</h3>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 10px">Select a country to see what's required for entry</p>
+                <select class="input-field" id="travel-country-select" onchange="showCountryRequirements()" style="margin-bottom:10px">
+                  <option value="">— Select destination —</option>
+                </select>
+                <div id="travel-country-details"></div>
+              </div>
+
               <!-- Travel Profile -->
-              <div class="card" style="margin-bottom:16px">
-                <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px">Pet Travel Profile</h3>
+              <div class="card" style="margin-bottom:16px;padding:16px 20px">
+                <h3 style="font-size:0.9rem;font-weight:600;margin:0 0 12px">Pet Travel Profile</h3>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                   <div class="input-group">
                     <label>Microchip Number</label>
@@ -1754,43 +1902,53 @@
                 </div>
               </div>
 
-              <!-- Generate Documents -->
+              <!-- Travel Packet Download -->
+              <div class="card" style="margin-bottom:16px;padding:24px;text-align:center;background:linear-gradient(135deg,#FFF9F6,#fff);border:2px solid var(--orange-500);border-radius:var(--radius-lg)" id="travel-packet-card">
+                <div style="font-size:2rem;margin-bottom:8px">📦</div>
+                <h3 style="font-size:1rem;font-weight:700;margin:0 0 4px;color:var(--orange-600)">Download Complete Travel Packet</h3>
+                <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 16px">Cover page + all documents in one professional PDF</p>
+                <button class="btn btn-primary" style="font-size:0.95rem;padding:12px 36px" onclick="generateTravelPacket()">Download Travel Packet</button>
+              </div>
+
+              <!-- Individual Documents -->
+              <h3 style="font-size:0.85rem;font-weight:600;margin:0 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em">Individual Documents</h3>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
                 <div class="card travel-doc-card" onclick="generateTravelDoc('vaccination_record')" style="cursor:pointer;text-align:center;padding:20px">
                   <div style="font-size:1.5rem;margin-bottom:8px">💉</div>
                   <div style="font-weight:600;font-size:0.85rem">Vaccination Record</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Formatted PDF of all vaccines</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">QR-verified with next due dates</div>
                 </div>
                 <div class="card travel-doc-card" onclick="generateTravelDoc('health_certificate')" style="cursor:pointer;text-align:center;padding:20px">
                   <div style="font-size:1.5rem;margin-bottom:8px">🩺</div>
                   <div style="font-weight:600;font-size:0.85rem">Health Certificate</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Veterinary health cert form</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Vet section, exam &amp; declaration</div>
                 </div>
-                <div class="card travel-doc-card" onclick="generateTravelDoc('airline_form')" style="cursor:pointer;text-align:center;padding:20px">
+                <div class="card travel-doc-card" onclick="generateTravelDoc('airline_form')" style="cursor:pointer;text-align:center;padding:20px;opacity:0.5" id="travel-airline-card">
                   <div style="font-size:1.5rem;margin-bottom:8px">✈️</div>
                   <div style="font-weight:600;font-size:0.85rem">Airline Travel Form</div>
                   <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Carrier &amp; health affirmation</div>
+                  <div style="font-size:0.65rem;color:var(--orange-500);font-weight:600;margin-top:4px" id="travel-airline-badge">Pro Feature</div>
                 </div>
                 <div class="card travel-doc-card" onclick="generateTravelDoc('boarding_form')" style="cursor:pointer;text-align:center;padding:20px">
                   <div style="font-size:1.5rem;margin-bottom:8px">🏠</div>
                   <div style="font-weight:600;font-size:0.85rem">Boarding Form</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Kennel requirements &amp; care</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Kennel requirements &amp; care plan</div>
                 </div>
                 <div class="card travel-doc-card" onclick="generateTravelDoc('international')" style="cursor:pointer;text-align:center;padding:20px;opacity:0.5" id="travel-international-card">
                   <div style="font-size:1.5rem;margin-bottom:8px">🌍</div>
-                  <div style="font-weight:600;font-size:0.85rem">International Travel</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Passport &amp; export docs</div>
+                  <div style="font-weight:600;font-size:0.85rem">International Docs</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Country-specific checklist &amp; forms</div>
                   <div style="font-size:0.65rem;color:var(--orange-500);font-weight:600;margin-top:4px" id="travel-international-badge">Pro Feature</div>
                 </div>
                 <div class="card travel-doc-card" onclick="generateTravelDoc('emergency_card')" style="cursor:pointer;text-align:center;padding:20px">
                   <div style="font-size:1.5rem;margin-bottom:8px">🆘</div>
                   <div style="font-weight:600;font-size:0.85rem">Emergency Card</div>
-                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Quick-reference for travel</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Redesigned with QR &amp; contacts</div>
                 </div>
               </div>
 
               <!-- Generated Docs History -->
-              <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:8px">Recently Generated</h3>
+              <h3 style="font-size:0.85rem;font-weight:600;margin:0 0 10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em">Recently Generated</h3>
               <div id="travel-docs-history"></div>
             </div>
           </div>
@@ -2813,7 +2971,7 @@
       <p class="step-label" id="vet-step-label">Step 1 of 3 — Vet Info</p>
 
       <!-- Step 1: Vet Info -->
-      <div class="sitter-wizard-step" data-step="1">
+      <div class="vet-wizard-step" data-step="1">
         <div class="input-group">
           <label>Vet / Clinic Name</label>
           <input type="text" class="input-field" id="vw-vet-name" placeholder="e.g. Dr. Sarah Johnson" required>
@@ -2829,7 +2987,7 @@
       </div>
 
       <!-- Step 2: Expiration -->
-      <div class="sitter-wizard-step" data-step="2" style="display:none">
+      <div class="vet-wizard-step" data-step="2" style="display:none">
         <div class="input-group">
           <label>Link Expires After</label>
           <div style="display:flex;gap:8px">
@@ -2851,7 +3009,7 @@
       </div>
 
       <!-- Step 3: Share -->
-      <div class="sitter-wizard-step" data-step="3" style="display:none">
+      <div class="vet-wizard-step" data-step="3" style="display:none">
         <div id="vw-result" style="display:none">
           <div class="sitter-link-box" style="margin-bottom:12px">
             <input type="text" id="vw-link-url" readonly>
@@ -3639,7 +3797,15 @@ if (!hasPet) {
       const qrNoPet = document.getElementById('qr-no-pet');
       if (!hasPet) { show(qrNoPet); hide(qrActive); hide(qrLocked); }
       else if (!AppState.canAccess('qr_passive')) { show(qrLocked); hide(qrActive); hide(qrNoPet); }
-      else { show(qrActive); hide(qrLocked); hide(qrNoPet); generateQR(); populateEmrFields(); }
+      else { show(qrActive); hide(qrLocked); hide(qrNoPet); generateQR(); }
+
+      // Emergency
+      const emActive = document.getElementById('emergency-active');
+      const emLocked = document.getElementById('emergency-locked');
+      const emNoPet = document.getElementById('emergency-no-pet');
+      if (!hasPet) { show(emNoPet); hide(emActive); hide(emLocked); }
+      else if (!AppState.canAccess('qr_passive')) { show(emLocked); hide(emActive); hide(emNoPet); }
+      else { show(emActive); hide(emLocked); hide(emNoPet); populateEmrFields(); }
 
       // AI
       const aiActive = document.getElementById('ai-active');
@@ -3676,17 +3842,15 @@ if (!hasPet) {
       const travelActive = document.getElementById('travel-active');
       if (AppState.canAccess('travel_docs')) { show(travelActive); hide(travelLocked); }
       else { hide(travelActive); show(travelLocked); }
-      const travelIntlCard = document.getElementById('travel-international-card');
-      const travelIntlBadge = document.getElementById('travel-international-badge');
-      if (travelIntlCard) {
-        if (AppState.canAccess('travel_docs_advanced')) {
-          travelIntlCard.style.opacity = '1';
-          if (travelIntlBadge) travelIntlBadge.style.display = 'none';
-        } else {
-          travelIntlCard.style.opacity = '0.5';
-          if (travelIntlBadge) travelIntlBadge.style.display = 'block';
-        }
+
+      function gatedStyle(id, access) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (AppState.canAccess(access)) { el.style.opacity = '1'; var b = el.querySelector('[id$="-badge"]'); if (b) b.style.display = 'none'; }
+        else { el.style.opacity = '0.5'; var b = el.querySelector('[id$="-badge"]'); if (b) b.style.display = 'block'; }
       }
+      gatedStyle('travel-airline-card', 'travel_docs_advanced');
+      gatedStyle('travel-international-card', 'travel_docs_advanced');
 
       // Food Inventory
       const invLocked = document.getElementById('inventory-locked');
@@ -3734,7 +3898,7 @@ if (!hasPet) {
       document.querySelectorAll('.tab-content').forEach(t => { t.classList.remove('active'); t.style.display = ''; });
       const te = document.getElementById('tab-' + tab); if (te) te.classList.add('active');
       if (tab === 'home') renderHomeTab();
-      if (['qr','ai','sitter','symptoms','grooming','travel','inventory','weight','vetrecords','vetlinks'].includes(tab)) updateFeatureAccess();
+      if (['qr','emergency','ai','sitter','symptoms','grooming','travel','inventory','weight','vetrecords','vetlinks'].includes(tab)) updateFeatureAccess();
       if (tab === 'settings') { refreshProfile().then(() => { updateUIForUser(); loadBillingInfo(); }); }
       if (tab === 'pets') renderPetsList();
       if (tab === 'timeline') handleTimelineTab();
@@ -3752,7 +3916,7 @@ if (!hasPet) {
       if (tab === 'support') { renderSupportTab(); }
       if (tab === 'assistant') { initChat(); document.querySelectorAll('.fab').forEach(b => b.style.display = 'none'); }
       else { document.querySelectorAll('.fab').forEach(b => b.style.display = ''); }
-      if (['qr','ai','sitter','coparent','symptoms','grooming','travel','support','assistant','inventory','weight','vetrecords','vetlinks','tasks'].includes(tab)) updateFeatureAccess();
+      if (['qr','emergency','ai','sitter','coparent','symptoms','grooming','travel','support','assistant','inventory','weight','vetrecords','vetlinks','tasks'].includes(tab)) updateFeatureAccess();
       // Track feature usage for analytics
       if (typeof trackFeature === 'function') trackFeature('tab_' + tab);
     }
@@ -3782,6 +3946,7 @@ if (!hasPet) {
         if (AppState.tier === 'starter') renderStarterTimelineBanner(AppState.logs);
         if (AppState.activeTab === 'food') renderFoodTab();
         if (AppState.activeTab === 'symptoms') renderSymptomsTab();
+        if (AppState.activeTab === 'emergency') populateEmrFields();
       }
     }
 
@@ -4681,19 +4846,621 @@ if (!hasPet) {
     /* ===== TRAVEL DOCUMENTS ===== */
     var travelVaccinations = [];
 
+    /* --- Country Travel Requirements --- */
+    var COUNTRY_REQS = {
+      'GB': { name:'United Kingdom', flag:'🇬🇧', microchip:true, rabies:true, titer:true, tapeworm:true, healthCert:true, defra:true, waiting:'21 days after rabies vaccination', notes:'Tapeworm treatment required 1-5 days before entry. DEFRA health certificate needed for non-EU pets.' },
+      'EU': { name:'European Union', flag:'🇪🇺', microchip:true, rabies:true, titer:true, tapeworm:true, healthCert:true, defra:false, waiting:'21 days after rabies vaccination', notes:'EU Pet Passport accepted for EU-resident pets. Tapeworm treatment 1-5 days before entry.' },
+      'AU': { name:'Australia', flag:'🇦🇺', microchip:true, rabies:true, titer:true, tapeworm:false, healthCert:true, defra:false, waiting:'180 days after rabies titer (strict)', notes:'Australia has the strictest import requirements. Import permit required. Quarantine may apply.' },
+      'NZ': { name:'New Zealand', flag:'🇳🇿', microchip:true, rabies:true, titer:true, tapeworm:false, healthCert:true, defra:false, waiting:'180 days after rabies titer', notes:'Import permit required. Quarantine of 10+ days typically required.' },
+      'JP': { name:'Japan', flag:'🇯🇵', microchip:true, rabies:true, titer:true, tapeworm:false, healthCert:true, defra:false, waiting:'180 days after rabies titer', notes:'Japan requires a 180-day waiting period after FAVN test. Pre-import quarantine 12+ hours.' },
+      'CA': { name:'Canada', flag:'🇨🇦', microchip:false, rabies:true, titer:false, tapeworm:false, healthCert:true, defra:false, waiting:'None', notes:'Rabies vaccine must be current. Health certificate within 48 hours of travel recommended.' },
+      'US': { name:'United States', flag:'🇺🇸', microchip:false, rabies:true, titer:false, tapeworm:false, healthCert:true, defra:false, waiting:'None (rabies must be current)', notes:'CDC requires rabies vaccination for dogs entering the US. Health certificate within 10 days.' },
+      'AE': { name:'UAE', flag:'🇦🇪', microchip:true, rabies:true, titer:true, tapeworm:false, healthCert:true, defra:false, waiting:'30 days after rabies vaccination', notes:'Import permit required. Rabies titer test mandatory. Microchip must be ISO compliant.' },
+      'SG': { name:'Singapore', flag:'🇸🇬', microchip:true, rabies:true, titer:true, tapeworm:false, healthCert:true, defra:false, waiting:'30 days after rabies titer', notes:'Import license required. Health certificate within 7 days of travel. Quarantine may apply.' },
+      'BR': { name:'Brazil', flag:'🇧🇷', microchip:true, rabies:true, titer:false, tapeworm:false, healthCert:true, defra:false, waiting:'30 days after rabies vaccination', notes:'Health certificate issued within 10 days. Must be translated to Portuguese.' },
+      'ZA': { name:'South Africa', flag:'🇿🇦', microchip:true, rabies:true, titer:true, tapeworm:false, healthCert:true, defra:false, waiting:'30 days after rabies vaccination', notes:'Import permit required. Rabies titer test mandatory for some countries.' },
+      'TH': { name:'Thailand', flag:'🇹🇭', microchip:true, rabies:true, titer:false, tapeworm:false, healthCert:true, defra:false, waiting:'21 days after rabies vaccination', notes:'Import permit required. Health certificate within 10 days of travel.' },
+      'MX': { name:'Mexico', flag:'🇲🇽', microchip:false, rabies:true, titer:false, tapeworm:false, healthCert:true, defra:false, waiting:'None (rabies must be current)', notes:'Health certificate issued within 15 days of travel.' },
+    };
+    var COUNTRY_KEYS = Object.keys(COUNTRY_REQS);
+
+    /* --- Travel Readiness Score --- */
+    function calculateTravelReadiness(pet, vaccinations) {
+      var items = [];
+      var total = 0;
+      // Microchip (15 pts)
+      if (pet.microchip && pet.microchip.trim()) { total += 15; items.push({ label:'Microchip', status:'done', pct:100 }); }
+      else { items.push({ label:'Microchip', status:'missing', pct:0 }); }
+      // Rabies vaccine (20 pts)
+      var hasRabies = vaccinations.some(function(v){ return v.vaccine_name && v.vaccine_name.toLowerCase().indexOf('rabies') !== -1; });
+      if (hasRabies) { total += 20; items.push({ label:'Rabies Vaccine', status:'done', pct:100 }); }
+      else { items.push({ label:'Rabies Vaccine', status:'missing', pct:0 }); }
+      // Core vaccines (15 pts)
+      var coreCount = vaccinations.filter(function(v){ return v.vaccine_name && (v.vaccine_name.toLowerCase().indexOf('dhpp') !== -1 || v.vaccine_name.toLowerCase().indexOf('distemper') !== -1 || v.vaccine_name.toLowerCase().indexOf('parvo') !== -1 || v.vaccine_name.toLowerCase().indexOf('bordetella') !== -1); }).length;
+      var corePts = Math.min(coreCount, 3) / 3 * 15;
+      total += corePts;
+      items.push({ label:'Core Vaccines (' + Math.min(coreCount, 3) + '/3)', status:coreCount >= 3 ? 'done' : coreCount > 0 ? 'partial' : 'missing', pct:Math.round(corePts/15*100) });
+      // Titer test (10 pts)
+      if (pet.rabies_titer_date) { total += 10; items.push({ label:'Rabies Titer', status:'done', pct:100 }); }
+      else { items.push({ label:'Rabies Titer', status:'missing', pct:0 }); }
+      // Emergency contact (10 pts)
+      if (pet.emergency_contact_name && pet.emergency_contact_phone) { total += 10; items.push({ label:'Emergency Contact', status:'done', pct:100 }); }
+      else { items.push({ label:'Emergency Contact', status:'missing', pct:0 }); }
+      // Vet info (10 pts)
+      if (pet.primary_vet_name) { total += 10; items.push({ label:'Veterinarian', status:'done', pct:100 }); }
+      else { items.push({ label:'Veterinarian', status:'missing', pct:0 }); }
+      // Passport (10 pts)
+      if (pet.international_passport && pet.international_passport.trim()) { total += 10; items.push({ label:'Passport #', status:'done', pct:100 }); }
+      else { items.push({ label:'Passport #', status:'missing', pct:0 }); }
+      // Allergies/meds (10 pts)
+      if ((pet.allergies && pet.allergies.trim()) || (pet.medications && pet.medications.trim())) { total += 10; items.push({ label:'Medical Profile', status:'done', pct:100 }); }
+      else { items.push({ label:'Medical Profile', status:'missing', pct:0 }); }
+
+      return { score: Math.round(total), maxScore: 100, items: items };
+    }
+
+    function renderTravelReadiness() {
+      var pet = AppState.activePet;
+      if (!pet) return;
+      var result = calculateTravelReadiness(pet, travelVaccinations);
+      var fill = document.getElementById('readiness-bar-fill');
+      var num = document.getElementById('readiness-score');
+      var details = document.getElementById('readiness-details');
+      if (fill) { fill.style.width = result.score + '%'; var hue = result.score >= 80 ? '#16a34a' : result.score >= 50 ? '#ea580c' : '#dc2626'; fill.style.background = hue; }
+      if (num) { num.textContent = result.score + '%'; var c = result.score >= 80 ? '#16a34a' : result.score >= 50 ? '#ea580c' : '#dc2626'; num.style.color = c; }
+      if (details) {
+        details.innerHTML = result.items.map(function(i) {
+          var icon = i.status === 'done' ? '✅' : i.status === 'partial' ? '⚠️' : '❌';
+          var c = i.status === 'done' ? '#16a34a' : i.status === 'partial' ? '#d97706' : '#dc2626';
+          return '<div style="display:flex;align-items:center;gap:4px;color:' + c + '"><span>' + icon + '</span><span>' + i.label + '</span></div>';
+        }).join('');
+      }
+    }
+
+    /* --- Expiry Monitoring --- */
+    function daysUntil(dateStr) {
+      if (!dateStr) return null;
+      var d = new Date(dateStr);
+      var now = new Date();
+      return Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+    }
+
+    function renderTravelExpiry() {
+      var pet = AppState.activePet;
+      var list = document.getElementById('travel-expiry-list');
+      if (!list) return;
+      var items = [];
+
+      if (travelVaccinations.length) {
+        travelVaccinations.forEach(function(v) {
+          if (v.next_due_date) {
+            var d = daysUntil(v.next_due_date);
+            if (d !== null) {
+              var label = escHtml(v.vaccine_name) + (v.vaccine_name.toLowerCase().indexOf('rabies') !== -1 ? ' 🦠' : '');
+              var status = d <= 0 ? 'expired' : d <= 7 ? 'critical' : d <= 30 ? 'warning' : 'ok';
+              items.push({ label: label, days: d, status: status, due: v.next_due_date });
+            }
+          }
+        });
+      }
+
+      // Health certificate expiry (if generated within last 10 days)
+      if (pet._lastHealthCert) {
+        var hcDays = daysUntil(pet._lastHealthCert);
+        if (hcDays !== null && hcDays >= -10) {
+          items.push({ label:'Health Certificate', days:10 + hcDays, status:10 + hcDays <= 0 ? 'expired' : 10 + hcDays <= 3 ? 'critical' : 'warning', due:pet._lastHealthCert });
+        }
+      }
+
+      if (!items.length) {
+        list.innerHTML = '<div style="font-size:0.78rem;color:var(--text-muted);text-align:center;padding:8px">Add vaccinations to see expiry tracking</div>';
+        return;
+      }
+
+      items.sort(function(a,b){ return a.days - b.days; });
+
+      list.innerHTML = items.map(function(i) {
+        var colors = { ok:'#16a34a', warning:'#d97706', critical:'#dc2626', expired:'#991b1b' };
+        var labels = { ok:'OK', warning:'Expiring soon', critical:'Expiring!', expired:'Expired' };
+        var icon = i.status === 'expired' ? '🔴' : i.status === 'critical' ? '🟠' : i.status === 'warning' ? '🟡' : '🟢';
+        return '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f9fafb;border-radius:6px;border-left:3px solid ' + colors[i.status] + '">' +
+          '<div style="display:flex;align-items:center;gap:6px;font-size:0.8rem">' +
+            '<span>' + icon + '</span>' +
+            '<span style="font-weight:500">' + i.label + '</span>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div style="font-size:0.78rem;font-weight:600;color:' + colors[i.status] + '">' + (i.status === 'expired' ? 'Expired' : i.days + ' days') + '</div>' +
+            '<div style="font-size:0.65rem;color:var(--text-muted)">' + labels[i.status] + '</div>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    /* --- Country Requirements UI --- */
+    function populateCountrySelect() {
+      var sel = document.getElementById('travel-country-select');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">— Select destination —</option>' +
+        COUNTRY_KEYS.map(function(k) {
+          var c = COUNTRY_REQS[k];
+          return '<option value="' + k + '">' + c.flag + ' ' + escHtml(c.name) + '</option>';
+        }).join('');
+    }
+
+    function showCountryRequirements() {
+      var sel = document.getElementById('travel-country-select');
+      var details = document.getElementById('travel-country-details');
+      if (!sel || !details) return;
+      var val = sel.value;
+      if (!val || !COUNTRY_REQS[val]) { details.innerHTML = ''; return; }
+      var c = COUNTRY_REQS[val];
+      var pet = AppState.activePet;
+
+      function check(condition) { return condition ? '✅' : '❌'; }
+      function petHas(field) { return pet && pet[field] && pet[field].toString().trim() !== ''; }
+
+      var hasMicrochip = petHas('microchip');
+      var hasRabies = travelVaccinations.some(function(v){ return v.vaccine_name && v.vaccine_name.toLowerCase().indexOf('rabies') !== -1; });
+      var hasTiter = petHas('rabies_titer_date');
+      var hasPassport = petHas('international_passport');
+      var hasVet = petHas('primary_vet_name');
+
+      details.innerHTML = '<div style="background:#f9fafb;border-radius:8px;padding:12px;font-size:0.82rem">' +
+        '<div style="font-weight:600;font-size:0.9rem;margin-bottom:8px">' + c.flag + ' ' + escHtml(c.name) + ' Requirements</div>' +
+        '<div style="display:grid;gap:4px">' +
+          '<div>' + check(c.microchip) + (c.microchip ? ' Microchip (ISO 11784/11785)' : ' Microchip') + ' <span style="color:' + (hasMicrochip ? '#16a34a' : '#dc2626') + ';font-size:0.72rem">' + (hasMicrochip ? '✓ Stored' : '— Not set') + '</span></div>' +
+          '<div>' + check(c.rabies) + (c.rabies ? ' Rabies Vaccination' : ' Rabies Vaccination') + ' <span style="color:' + (hasRabies ? '#16a34a' : '#dc2626') + ';font-size:0.72rem">' + (hasRabies ? '✓ Recorded' : '— Not recorded') + '</span></div>' +
+          (c.titer ? '<div>' + check(hasTiter) + ' Rabies Titer Test (FAVN) <span style="color:' + (hasTiter ? '#16a34a' : '#dc2626') + ';font-size:0.72rem">' + (hasTiter ? '✓ Done' : '— Needs test') + '</span></div>' : '') +
+          (c.tapeworm ? '<div>✅ Tapeworm Treatment (1-5 days before entry)</div>' : '') +
+          (c.healthCert ? '<div>✅ Health Certificate (within 10 days of travel) <span style="color:' + (hasVet ? '#16a34a' : '#d97706') + ';font-size:0.72rem">' + (hasVet ? '✓ Vet on file' : '— Add vet info') + '</span></div>' : '') +
+          (c.defra ? '<div>✅ DEFRA-Endorsed Health Certificate</div>' : '') +
+        '</div>' +
+        '<div style="margin-top:8px;padding:8px;background:#fff;border-radius:4px;font-size:0.78rem;color:var(--text-secondary)"><strong>Waiting period:</strong> ' + escHtml(c.waiting) + '</div>' +
+        '<div style="margin-top:6px;font-size:0.72rem;color:var(--text-muted);font-style:italic">' + escHtml(c.notes) + '</div>' +
+        '</div>';
+    }
+
+    /* --- QR Helper --- */
+    var qrDataUrlCache = {};
+
+    function getQRDataUrl(text) {
+      return new Promise(function(resolve) {
+        if (qrDataUrlCache[text]) { resolve(qrDataUrlCache[text]); return; }
+        if (typeof QRCode !== 'undefined') {
+          QRCode.toDataURL(text, { width: 120, margin: 1, color: { dark: '#ea580c', light: '#fff' } }, function(err, url) {
+            if (!err && url) qrDataUrlCache[text] = url;
+            resolve(err ? '' : url);
+          });
+        } else { resolve(''); }
+      });
+    }
+
+    function formatDate(d) {
+      return new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    }
+
+    function petInitial(pet) {
+      return (pet.name || 'P').charAt(0).toUpperCase();
+    }
+
+    function getDocId() {
+      var pid = (AppState.activePet && AppState.activePet.id) || '';
+      return 'PF-' + pid.substring(0, 6).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+    }
+
+    /* --- PDF Document Wrappers --- */
+    function docHeader(title, pet, docId, qrUrl, ownerName) {
+      var today = formatDate(new Date());
+      var n = escHtml(pet.name || 'Pet');
+      var initial = petInitial(pet);
+      var oName = escHtml(ownerName || AppState.user?.display_name || AppState.user?.email?.split('@')[0] || 'Pet Owner');
+
+      return '<div style="padding:30px 36px;font-family:Georgia,serif;font-size:10.5pt;line-height:1.6;color:#1a1a1a;background:#fff">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #ea580c">' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<svg width="28" height="28" viewBox="0 0 60 40" fill="none"><ellipse cx="24" cy="28" rx="8" ry="6" fill="#ea580c"/><ellipse cx="13" cy="14" rx="3.5" ry="4.5" fill="#ea580c"/><ellipse cx="24" cy="9" rx="3.5" ry="4.5" fill="#ea580c"/><ellipse cx="35" cy="14" rx="3.5" ry="4.5" fill="#ea580c"/></svg>' +
+            '<div><div style="font-size:12pt;font-weight:700;color:#ea580c;line-height:1.2">PupFile</div><div style="font-size:6.5pt;color:#999;letter-spacing:0.08em;text-transform:uppercase">Dog Passport</div></div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<div style="text-align:right;font-size:7pt;color:#888;line-height:1.5">' +
+              '<div>ID: ' + docId + '</div>' +
+              '<div>' + today + '</div>' +
+            '</div>' +
+            '<div style="width:48px;height:48px;border-radius:50%;background:var(--orange-100,#fef3c7);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:var(--orange-600,#ea580c);flex-shrink:0">' + initial + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<h1 style="font-size:14pt;font-weight:700;color:#1a1a1a;margin:0 0 12px;text-align:center">' + title + '</h1>' +
+        '<div style="font-size:8.5pt;color:#555;text-align:center;margin-bottom:16px">Prepared for <strong>' + n + '</strong> by <strong>' + oName + '</strong></div>';
+    }
+
+    function docFooter(qrUrl, docId) {
+      var qrSection = qrUrl ? '<div style="text-align:center"><img src="' + qrUrl + '" style="width:70px;height:70px" alt="QR"><div style="font-size:6pt;color:#999;margin-top:2px">Scan to verify · ' + docId + '</div></div>' : '';
+      return '<div style="margin-top:20px;padding:12px 0 0;border-top:2px solid #eee;display:flex;align-items:center;justify-content:space-between;font-size:6.5pt;color:#999">' +
+        '<div><div>PupFile — pupfile.com</div><div style="font-size:5.5pt;color:#ccc;margin-top:2px">' + docId + '</div></div>' +
+        qrSection +
+        '<div><span style="background:#f0fdf4;color:#16a34a;padding:3px 8px;border-radius:3px;font-weight:700;font-size:6pt;letter-spacing:0.03em">✓ VERIFIED BY PUPFILE</span></div>' +
+        '</div></div>';
+    }
+
+    function coverPage(pet, qrUrl, docId) {
+      var today = formatDate(new Date());
+      var n = escHtml(pet.name || 'Pet').toUpperCase();
+      var breed = escHtml(pet.breed || '');
+      var initial = petInitial(pet);
+      var oName = escHtml(AppState.user?.display_name || AppState.user?.email?.split('@')[0] || 'Pet Owner');
+      var qrSection = qrUrl ? '<img src="' + qrUrl + '" style="width:100px;height:100px;margin:12px auto;display:block" alt="QR">' : '';
+
+      return '<div style="padding:40px 48px;font-family:Georgia,serif;min-height:100vh;background:linear-gradient(180deg,#fff 0%,#FFF9F6 100%);color:#1a1a1a;display:flex;flex-direction:column;justify-content:center;text-align:center">' +
+        '<div style="margin-bottom:24px">' +
+          '<svg width="48" height="48" viewBox="0 0 60 40" fill="none" style="margin:0 auto 12px;display:block"><ellipse cx="24" cy="28" rx="8" ry="6" fill="#ea580c"/><ellipse cx="13" cy="14" rx="3.5" ry="4.5" fill="#ea580c"/><ellipse cx="24" cy="9" rx="3.5" ry="4.5" fill="#ea580c"/><ellipse cx="35" cy="14" rx="3.5" ry="4.5" fill="#ea580c"/></svg>' +
+          '<div style="font-size:10pt;font-weight:600;color:#ea580c;letter-spacing:0.15em;text-transform:uppercase">PupFile</div>' +
+        '</div>' +
+        '<div style="width:80px;height:80px;border-radius:50%;background:var(--orange-100,#fef3c7);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:700;color:var(--orange-600,#ea580c);margin:0 auto 20px">' + initial + '</div>' +
+        '<h1 style="font-size:22pt;font-weight:800;margin:0 0 4px;color:#1a1a1a">' + n + "'S TRAVEL PACKET</h1>" +
+        (breed ? '<div style="font-size:10pt;color:#888;margin-bottom:20px">' + breed + '</div>' : '') +
+        '<div style="width:100px;height:2px;background:#ea580c;margin:0 auto 20px"></div>' +
+        '<div style="font-size:9pt;color:#666;line-height:2">' +
+          '<div><strong>Prepared by:</strong> ' + oName + '</div>' +
+          '<div><strong>Generated:</strong> ' + today + '</div>' +
+          '<div><strong>Document ID:</strong> ' + docId + '</div>' +
+        '</div>' +
+        qrSection +
+        '<div style="margin-top:16px"><span style="background:#f0fdf4;color:#16a34a;padding:4px 12px;border-radius:4px;font-weight:700;font-size:8pt;letter-spacing:0.05em">✓ VERIFIED BY PUPFILE</span></div>' +
+        '<div style="margin-top:24px;font-size:7pt;color:#ccc">PupFile — The Digital Passport for Dogs · pupfile.com</div>' +
+        '</div>';
+    }
+
+    /* --- Document Generators --- */
+    function generateCoverPage(pet, qrUrl, docId) {
+      return coverPage(pet, qrUrl, docId);
+    }
+
+    function generateVaccinationRecord(pet, rows, qrUrl, docId) {
+      var breed = escHtml(pet.breed || '—');
+      var dob = pet.birth_date ? formatDate(pet.birth_date) : '—';
+      var chip = pet.microchip || '—';
+      var weight = pet.weight_kg ? pet.weight_kg + ' kg' : '—';
+      var oName = escHtml(AppState.user?.display_name || AppState.user?.email?.split('@')[0] || '');
+
+      return docHeader('Vaccination Record', pet, docId, qrUrl, oName) +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:9.5pt">' +
+          '<tr><td style="padding:3px 8px;color:#666;width:110px;border-bottom:1px solid #eee">Breed</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Date of Birth</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + dob + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Microchip</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
+        '</table>' +
+        '<table style="width:100%;border-collapse:collapse;font-size:9pt">' +
+          '<thead><tr style="background:#f5f5f5">' +
+            '<th style="padding:6px 8px;border:1px solid #ddd;text-align:left;font-weight:600">Vaccine</th>' +
+            '<th style="padding:6px 8px;border:1px solid #ddd;text-align:left;font-weight:600">Date Given</th>' +
+            '<th style="padding:6px 8px;border:1px solid #ddd;text-align:left;font-weight:600">Next Due</th>' +
+            '<th style="padding:6px 8px;border:1px solid #ddd;text-align:left;font-weight:600">Vet</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+        '</table>' +
+        docFooter(qrUrl, docId);
+    }
+
+    function generateHealthCertificate(pet, qrUrl, docId) {
+      var breed = escHtml(pet.breed || '—');
+      var dob = pet.birth_date ? formatDate(pet.birth_date) : '—';
+      var chip = pet.microchip || '—';
+      var weight = pet.weight_kg ? pet.weight_kg + ' kg' : '—';
+      var color = escHtml(pet.color || '—');
+      var oName = escHtml(AppState.user?.display_name || AppState.user?.email?.split('@')[0] || '');
+      var vetName = escHtml(pet.primary_vet_name || '___________________');
+      var vetPhone = escHtml(pet.primary_vet_phone || '___________________');
+      var lastVaccine = travelVaccinations.length ? travelVaccinations[0].vaccine_name + ' (' + formatDate(travelVaccinations[0].date_given) + ')' : '—';
+
+      return docHeader('Veterinary Health Certificate', pet, docId, qrUrl, oName) +
+        '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:8.5pt">' +
+          '<strong>Health Declaration</strong> — This certifies that the animal described below has been examined and appears to be in good health on this date.</div>' +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:9.5pt">' +
+          '<tr><td colspan="2" style="padding:4px 8px;background:#fafafa;font-weight:700;font-size:9pt;border-bottom:1px solid #ddd">Pet Information</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;width:120px;border-bottom:1px solid #eee">Name</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + escHtml(pet.name || '—') + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Species</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">Canine (Dog)</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Color / Markings</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + color + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Date of Birth</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + dob + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Microchip #</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Last Vaccination</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + lastVaccine + '</td></tr>' +
+          '<tr><td colspan="2" style="padding:4px 8px;background:#fafafa;font-weight:700;font-size:9pt;border-bottom:1px solid #ddd;border-top:8px solid #fff">Veterinarian Information</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Veterinarian</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + vetName + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Clinic / Phone</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + vetPhone + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">License #</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">___________________</td></tr>' +
+        '</table>' +
+        '<div style="margin-top:20px;border-top:1px solid #ddd;padding-top:16px">' +
+          '<div style="display:flex;justify-content:space-between;margin-top:36px">' +
+            '<div style="text-align:center;width:200px"><div style="border-top:1px solid #333;padding-top:4px;font-size:8pt">Veterinarian Signature</div></div>' +
+            '<div style="text-align:center;width:160px"><div style="border-top:1px solid #333;padding-top:4px;font-size:8pt">Date</div></div>' +
+          '</div>' +
+        '</div>' +
+        docFooter(qrUrl, docId);
+    }
+
+    function generateAirlineForm(pet, qrUrl, docId) {
+      var breed = escHtml(pet.breed || '—');
+      var weight = pet.weight_kg ? pet.weight_kg + ' kg (' + (pet.weight_kg * 2.205).toFixed(1) + ' lbs)' : '—';
+      var chip = pet.microchip || '—';
+      var oName = escHtml(AppState.user?.display_name || AppState.user?.email?.split('@')[0] || '');
+      var carrierLen = Math.max(48, Math.round((pet.weight_kg || 10) * 3 + 30));
+      var carrierWid = Math.max(32, Math.round((pet.weight_kg || 10) * 2 + 25));
+      var carrierHgt = Math.max(28, Math.round((pet.weight_kg || 10) * 1.5 + 20));
+
+      return docHeader('Airline Pet Travel Form', pet, docId, qrUrl, oName) +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9.5pt">' +
+          '<tr><td colspan="2" style="padding:4px 8px;background:#fafafa;font-weight:700;font-size:9pt;border-bottom:1px solid #ddd">Pet Information</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;width:120px;border-bottom:1px solid #eee">Name</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + escHtml(pet.name || '—') + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Microchip</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
+          '<tr><td colspan="2" style="padding:4px 8px;background:#fafafa;font-weight:700;font-size:9pt;border-bottom:1px solid #ddd;border-top:8px solid #fff">Carrier Requirements</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Recommended Size</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + carrierLen + ' × ' + carrierWid + ' × ' + carrierHgt + ' cm</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Carrier Type</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">Hard-sided, ventilated on ≥2 sides</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Ventilation</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">Mesh windows on 3+ sides recommended</td></tr>' +
+        '</table>' +
+        '<div style="background:#eff6ff;padding:10px 14px;border-radius:6px;font-size:8.5pt;margin-bottom:14px;border:1px solid #bfdbfe">' +
+          '<p style="font-weight:600;margin:0 0 4px;font-size:9pt">✈️ Airline Travel Checklist</p>' +
+          '<ul style="margin:0;padding-left:14px;line-height:1.8">' +
+            '<li>Check airline pet policy — most require 48+ hour advance booking</li>' +
+            '<li>Ensure carrier fits under the seat (cabin) or meets cargo requirements</li>' +
+            '<li>Attach food/water bowls to carrier door</li>' +
+            '<li>Include a familiar blanket or toy in the carrier</li>' +
+            '<li>Health certificate issued within 10 days of travel</li>' +
+            '<li>Proof of Rabies vaccination (must be current)</li>' +
+          '</ul>' +
+        '</div>' +
+        '<div style="font-size:8.5pt;color:#555;margin-bottom:12px">I affirm that the information above is accurate and that my pet is in good health for air travel.</div>' +
+        '<div style="margin-top:16px;border-top:1px solid #ddd;padding-top:12px">' +
+          '<div style="display:flex;justify-content:space-between;margin-top:28px">' +
+            '<div style="text-align:center;width:200px"><div style="border-top:1px solid #333;padding-top:4px;font-size:8pt">Owner Signature</div></div>' +
+            '<div style="text-align:center;width:160px"><div style="border-top:1px solid #333;padding-top:4px;font-size:8pt">Date</div></div>' +
+          '</div>' +
+        '</div>' +
+        docFooter(qrUrl, docId);
+    }
+
+    function generateBoardingForm(pet, qrUrl, docId) {
+      var breed = escHtml(pet.breed || '—');
+      var flags = escHtml(pet.medical_flags || 'None');
+      var chip = pet.microchip || '—';
+      var oName = escHtml(AppState.user?.display_name || AppState.user?.email?.split('@')[0] || '');
+      var vaccineList = travelVaccinations.length ? travelVaccinations.map(function(v) {
+        return escHtml(v.vaccine_name) + ' — ' + formatDate(v.date_given);
+      }).join('<br>') : 'No vaccinations on record';
+      var allergies = escHtml(pet.allergies || '___________');
+      var medications = escHtml(pet.medications || '___________');
+      var emName = escHtml(pet.emergency_contact_name || '___________');
+      var emPhone = escHtml(pet.emergency_contact_phone || '___________');
+      var vetName = escHtml(pet.primary_vet_name || '___________');
+      var vetPhone = escHtml(pet.primary_vet_phone || '___________');
+
+      return docHeader('Boarding / Kennel Form', pet, docId, qrUrl, oName) +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9.5pt">' +
+          '<tr><td style="padding:3px 8px;color:#666;width:120px;border-bottom:1px solid #eee">Pet Name</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + escHtml(pet.name || '—') + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Microchip #</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Medical Flags</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee;color:#dc2626">' + flags + '</td></tr>' +
+        '</table>' +
+        '<div style="background:#f9f9f9;padding:10px;border-radius:6px;margin-bottom:12px;font-size:8.5pt">' +
+          '<div style="font-weight:600;font-size:9pt;margin-bottom:4px">💉 Vaccination Record</div>' +
+          '<div>' + vaccineList + '</div>' +
+        '</div>' +
+        '<div style="font-size:9pt;font-weight:600;margin-bottom:6px">Care Instructions</div>' +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9pt">' +
+          '<tr><td style="padding:4px 8px;color:#666;width:120px;border-bottom:1px solid #eee">Feeding</td><td style="padding:4px 8px;font-weight:600;border-bottom:1px solid #eee">___________________</td></tr>' +
+          '<tr><td style="padding:4px 8px;color:#666;border-bottom:1px solid #eee">Medications</td><td style="padding:4px 8px;font-weight:600;border-bottom:1px solid #eee">' + medications + '</td></tr>' +
+          '<tr><td style="padding:4px 8px;color:#666;border-bottom:1px solid #eee">Exercise</td><td style="padding:4px 8px;font-weight:600;border-bottom:1px solid #eee">___________________</td></tr>' +
+          '<tr><td style="padding:4px 8px;color:#666;border-bottom:1px solid #eee">Allergies</td><td style="padding:4px 8px;font-weight:600;border-bottom:1px solid #eee">' + allergies + '</td></tr>' +
+        '</table>' +
+        '<div style="font-size:9pt;font-weight:600;margin-bottom:6px">Emergency Contacts</div>' +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9pt">' +
+          '<tr><td style="padding:4px 8px;color:#666;width:120px;border-bottom:1px solid #eee">Emergency Contact</td><td style="padding:4px 8px;font-weight:600;border-bottom:1px solid #eee">' + emName + ' — ' + emPhone + '</td></tr>' +
+          '<tr><td style="padding:4px 8px;color:#666;border-bottom:1px solid #eee">Veterinarian</td><td style="padding:4px 8px;font-weight:600;border-bottom:1px solid #eee">' + vetName + ' — ' + vetPhone + '</td></tr>' +
+        '</table>' +
+        docFooter(qrUrl, docId);
+    }
+
+    function generateInternationalDocs(pet, qrUrl, docId) {
+      var breed = escHtml(pet.breed || '—');
+      var dob = pet.birth_date ? formatDate(pet.birth_date) : '—';
+      var chip = pet.microchip || '—';
+      var titer = pet.rabies_titer_date ? formatDate(pet.rabies_titer_date) : '—';
+      var passport = pet.international_passport || '—';
+      var weight = pet.weight_kg ? pet.weight_kg + ' kg' : '—';
+      var oName = escHtml(AppState.user?.display_name || AppState.user?.email?.split('@')[0] || '');
+      var sel = document.getElementById('travel-country-select');
+      var destCode = sel ? sel.value : '';
+      var dest = destCode && COUNTRY_REQS[destCode] ? COUNTRY_REQS[destCode] : null;
+
+      var reqHtml = '';
+      if (dest) {
+        reqHtml = '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:8.5pt">' +
+          '<div style="font-weight:600;font-size:9pt;margin-bottom:6px">' + dest.flag + ' ' + escHtml(dest.name) + ' — Required Checklist</div>' +
+          '<div style="display:grid;gap:3px">' +
+            (dest.microchip ? '<div>✅ Microchip (ISO 11784/11785 compliant)</div>' : '') +
+            (dest.rabies ? '<div>✅ Rabies Vaccination (must be current)</div>' : '') +
+            (dest.titer ? '<div>✅ Rabies Titer Test (FAVN) — waiting period: ' + escHtml(dest.waiting) + '</div>' : '') +
+            (dest.tapeworm ? '<div>✅ Tapeworm Treatment (1-5 days before entry)</div>' : '') +
+            (dest.healthCert ? '<div>✅ Health Certificate (within 10 days of travel)</div>' : '') +
+            (dest.defra ? '<div>✅ APHA / DEFRA-Endorsed Health Certificate</div>' : '') +
+          '</div>' +
+          '<div style="margin-top:6px;font-size:7.5pt;color:#888;font-style:italic">' + escHtml(dest.notes) + '</div></div>';
+      }
+
+      return docHeader('International Travel Documentation', pet, docId, qrUrl, oName) +
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:14px;font-size:9.5pt">' +
+          '<tr><td style="padding:3px 8px;color:#666;width:130px;border-bottom:1px solid #eee">Pet Name</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + escHtml(pet.name || '—') + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Date of Birth</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + dob + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Microchip #</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Rabies Titer Date</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + titer + '</td></tr>' +
+          '<tr><td style="padding:3px 8px;color:#666;border-bottom:1px solid #eee">Passport #</td><td style="padding:3px 8px;font-weight:600;border-bottom:1px solid #eee">' + passport + '</td></tr>' +
+        '</table>' +
+        reqHtml +
+        (!dest ? '<div style="background:#f9f9f9;padding:10px 14px;border-radius:6px;font-size:8pt;margin-bottom:12px;border:1px solid #eee">' +
+          '<strong>General Checklist</strong>' +
+          '<ol style="margin:4px 0 0;padding-left:14px">' +
+            '<li>Microchip (ISO 11784/11785 compliant — 15 digits)</li>' +
+            '<li>Rabies vaccination (at least 21 days before travel, must be current)</li>' +
+            '<li>Rabies titer test (FAVN) — required by many countries</li>' +
+            '<li>Health certificate issued within 10 days of travel</li>' +
+            '<li>Check import permit / notification requirements</li>' +
+            '<li>Verify airline pet policies</li>' +
+          '</ol></div>' : '') +
+        '<div style="font-size:7.5pt;color:#888;font-style:italic;margin-bottom:8px">Always check the official government website of your destination for current regulations, as requirements may change.</div>' +
+        docFooter(qrUrl, docId);
+    }
+
+    function generateEmergencyCard(pet, qrUrl, docId) {
+      var petName = escHtml(pet.name || '—');
+      var breed = escHtml(pet.breed || '—');
+      var flags = escHtml(pet.medical_flags || 'None');
+      var chip = pet.microchip || '—';
+      var oName = escHtml(AppState.user?.display_name || 'Pet Owner');
+      var ownerEmail = escHtml(AppState.user?.email || '—');
+      var ownerPhone = escHtml(AppState.user?.phone || '—');
+      var allergies = escHtml(pet.allergies || 'None recorded');
+      var medications = escHtml(pet.medications || 'None recorded');
+      var emName = escHtml(pet.emergency_contact_name || '—');
+      var emPhone = escHtml(pet.emergency_contact_phone || '—');
+      var vetName = escHtml(pet.primary_vet_name || '—');
+      var vetPhone = escHtml(pet.primary_vet_phone || '—');
+      var initial = petInitial(pet);
+      var qrSection = qrUrl ? '<div style="text-align:center;margin:12px 0"><img src="' + qrUrl + '" style="width:90px;height:90px" alt="QR"><div style="font-size:6pt;color:#888;margin-top:2px">Scan to verify · ' + docId + '</div></div>' : '';
+
+      return '<div style="max-width:400px;margin:0 auto;font-family:Arial,sans-serif;font-size:9.5pt;line-height:1.5;color:#1a1a1a;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.12)">' +
+        '<div style="background:#dc2626;padding:14px 20px;text-align:center">' +
+          '<div style="font-size:22pt;font-weight:900;color:#fff;letter-spacing:0.05em">EMERGENCY</div>' +
+          '<div style="font-size:7pt;color:#fca5a5;margin-top:2px;letter-spacing:0.1em;text-transform:uppercase">Medical Alert — If found, contact immediately</div>' +
+        '</div>' +
+        '<div style="padding:16px 20px">' +
+          '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">' +
+            '<div style="width:56px;height:56px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#ea580c;flex-shrink:0">' + initial + '</div>' +
+            '<div><div style="font-size:16pt;font-weight:800">' + petName + '</div><div style="font-size:8pt;color:#888">' + breed + '</div></div>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;font-size:8.5pt">' +
+            '<div><span style="color:#888">Microchip:</span><br><strong>' + chip + '</strong></div>' +
+            '<div><span style="color:#888">Medical Flags:</span><br><strong style="color:#dc2626">' + flags + '</strong></div>' +
+          '</div>' +
+          '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:10px;margin-bottom:12px;font-size:8pt">' +
+            '<div style="font-weight:700;color:#dc2626;margin-bottom:4px;font-size:8.5pt">⚠️ Medical Information</div>' +
+            '<div><strong>Allergies:</strong> ' + allergies + '</div>' +
+            '<div><strong>Medications:</strong> ' + medications + '</div>' +
+          '</div>' +
+          '<div style="background:#f9fafb;border-radius:6px;padding:10px;font-size:8pt;margin-bottom:8px">' +
+            '<div style="font-weight:600;margin-bottom:4px">📞 Emergency Contacts</div>' +
+            '<div><strong>Owner:</strong> ' + oName + ' — ' + ownerEmail + '</div>' +
+            '<div><strong>Emergency:</strong> ' + emName + ' — ' + emPhone + '</div>' +
+            '<div><strong>Veterinarian:</strong> ' + vetName + ' — ' + vetPhone + '</div>' +
+          '</div>' +
+          qrSection +
+        '</div>' +
+        '<div style="background:#f5f5f5;padding:8px 16px;text-align:center;font-size:6.5pt;color:#999">PupFile — The Digital Passport for Dogs · pupfile.com</div>' +
+        '</div>';
+    }
+
+    /* --- Main Dispatch --- */
+    async function generateTravelDoc(type) {
+      if (type === 'international' && !AppState.canAccess('travel_docs_advanced')) {
+        showToast('International documents require the Pro plan.', 'error');
+        setTimeout(function() { openModal('modal-pricing'); }, 300);
+        return;
+      }
+      if (type === 'airline_form' && !AppState.canAccess('travel_docs_advanced')) {
+        showToast('Airline forms require the Pro plan.', 'error');
+        setTimeout(function() { openModal('modal-pricing'); }, 300);
+        return;
+      }
+
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var pet = AppState.activePet;
+      var docId = getDocId();
+      var qrUrl = await getQRDataUrl('https://pupfile.com/verify/' + docId);
+
+      switch (type) {
+        case 'vaccination_record':
+          if (!travelVaccinations.length) { showToast('No vaccination records found. Add some vaccinations first.', 'error'); return; }
+          var rows = travelVaccinations.map(function(v) {
+            var given = formatDate(v.date_given);
+            var due = v.next_due_date ? formatDate(v.next_due_date) : '—';
+            return '<tr><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + escHtml(v.vaccine_name) + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + given + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + due + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + escHtml(v.vet_name || '—') + '</td></tr>';
+          }).join('');
+          downloadTravelDocPdf('Vaccination Record', generateVaccinationRecord(pet, rows, qrUrl, docId), type);
+          break;
+        case 'health_certificate':
+          downloadTravelDocPdf('Health Certificate', generateHealthCertificate(pet, qrUrl, docId), type);
+          break;
+        case 'airline_form':
+          downloadTravelDocPdf('Airline Pet Travel Form', generateAirlineForm(pet, qrUrl, docId), type);
+          break;
+        case 'boarding_form':
+          downloadTravelDocPdf('Boarding/Kennel Form', generateBoardingForm(pet, qrUrl, docId), type);
+          break;
+        case 'international':
+          downloadTravelDocPdf('International Travel Doc', generateInternationalDocs(pet, qrUrl, docId), type);
+          break;
+        case 'emergency_card':
+          downloadTravelDocPdf('Emergency Card', generateEmergencyCard(pet, qrUrl, docId), type);
+          break;
+      }
+    }
+
+    /* --- Travel Packet (Combined PDF) --- */
+    async function generateTravelPacket() {
+      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
+      var pet = AppState.activePet;
+      var docId = getDocId();
+      var qrUrl = await getQRDataUrl('https://pupfile.com/verify/' + docId);
+      var oName = AppState.user?.display_name || AppState.user?.email?.split('@')[0] || 'Pet Owner';
+
+      showToast('Building your travel packet...', 'info');
+
+      var pages = [];
+      pages.push(generateCoverPage(pet, qrUrl, docId));
+
+      if (travelVaccinations.length) {
+        var rows = travelVaccinations.map(function(v) {
+          var given = formatDate(v.date_given);
+          var due = v.next_due_date ? formatDate(v.next_due_date) : '—';
+          return '<tr><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + escHtml(v.vaccine_name) + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + given + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + due + '</td><td style="padding:5px 8px;border:1px solid #ddd;font-size:9pt">' + escHtml(v.vet_name || '—') + '</td></tr>';
+        }).join('');
+        pages.push(generateVaccinationRecord(pet, rows, qrUrl, docId));
+      }
+
+      pages.push(generateHealthCertificate(pet, qrUrl, docId));
+      pages.push(generateBoardingForm(pet, qrUrl, docId));
+
+      if (AppState.canAccess('travel_docs_advanced')) {
+        pages.push(generateAirlineForm(pet, qrUrl, docId));
+        pages.push(generateInternationalDocs(pet, qrUrl, docId));
+      }
+
+      var html = pages.join('<div style="page-break-before:always"></div>');
+      downloadTravelDocPdf('Travel Packet', html, 'travel_packet');
+    }
+
+    /* --- Init & Data Loading --- */
     function initTravelTab() {
       if (!AppState.activePet) return;
       loadTravelProfile();
       loadTravelVaccinations();
       loadTravelDocsHistory();
+      populateCountrySelect();
+      renderTravelReadiness();
+      renderTravelExpiry();
     }
 
     async function loadTravelProfile() {
       var pet = AppState.activePet;
       if (!pet) return;
-      document.getElementById('travel-microchip').value = pet.microchip || '';
-      document.getElementById('travel-titer-date').value = pet.rabies_titer_date || '';
-      document.getElementById('travel-passport').value = pet.international_passport || '';
+      var microchip = document.getElementById('travel-microchip');
+      var titer = document.getElementById('travel-titer-date');
+      var passport = document.getElementById('travel-passport');
+      if (microchip) microchip.value = pet.microchip || '';
+      if (titer) titer.value = pet.rabies_titer_date || '';
+      if (passport) passport.value = pet.international_passport || '';
     }
 
     async function saveTravelProfile() {
@@ -4706,6 +5473,8 @@ if (!hasPet) {
       try {
         var updated = await updatePetTravelProfile(AppState.activePet.id, updates);
         Object.assign(AppState.activePet, updated);
+        renderTravelReadiness();
+        renderTravelExpiry();
         showToast('Travel profile saved!', 'success');
       } catch (err) { showToast(err.message || 'Could not save.', 'error'); }
     }
@@ -4713,6 +5482,9 @@ if (!hasPet) {
     async function loadTravelVaccinations() {
       try {
         travelVaccinations = await getVaccinations(AppState.activePet.id);
+        renderTravelReadiness();
+        renderTravelExpiry();
+        showCountryRequirements();
       } catch (e) { travelVaccinations = []; }
     }
 
@@ -4727,14 +5499,13 @@ if (!hasPet) {
         }
         container.innerHTML = docs.map(function(d) {
           var date = new Date(d.generated_at).toLocaleDateString();
-          var icons = { vaccination_record:'💉', health_certificate:'🩺', airline_form:'✈️', boarding_form:'🏠', international:'🌍', emergency_card:'🆘' };
-          var labels = { vaccination_record:'Vaccination Record', health_certificate:'Health Certificate', airline_form:'Airline Form', boarding_form:'Boarding Form', international:'International Travel', emergency_card:'Emergency Card' };
-          return '<div class="card" style="padding:12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
-            '<div><span style="margin-right:8px">' + (icons[d.doc_type] || '📄') + '</span>' +
-            '<span style="font-weight:500;font-size:0.85rem">' + (labels[d.doc_type] || d.title) + '</span>' +
-            '<span style="font-size:0.75rem;color:var(--text-muted);margin-left:8px">' + date + '</span></div>' +
-            '<div style="display:flex;gap:4px">' +
-            '<button class="btn btn-sm btn-ghost" onclick="deleteTravelDoc(\'' + d.id + '\')" style="color:#dc2626">Delete</button></div></div>';
+          var icons = { vaccination_record:'💉', health_certificate:'🩺', airline_form:'✈️', boarding_form:'🏠', international:'🌍', emergency_card:'🆘', travel_packet:'📦' };
+          var labels = { vaccination_record:'Vaccination Record', health_certificate:'Health Certificate', airline_form:'Airline Form', boarding_form:'Boarding Form', international:'International Travel', emergency_card:'Emergency Card', travel_packet:'Travel Packet' };
+          return '<div class="card" style="padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+            '<div><span style="margin-right:6px">' + (icons[d.doc_type] || '📄') + '</span>' +
+            '<span style="font-weight:500;font-size:0.82rem">' + (labels[d.doc_type] || d.title) + '</span>' +
+            '<span style="font-size:0.72rem;color:var(--text-muted);margin-left:6px">' + date + '</span></div>' +
+            '<button class="btn btn-sm btn-ghost" onclick="deleteTravelDoc(\'' + d.id + '\')" style="color:#dc2626;font-size:0.72rem">Delete</button></div>';
         }).join('');
       } catch (e) { container.innerHTML = '<p style="font-size:0.82rem;color:var(--text-muted)">Could not load history.</p>'; }
     }
@@ -4743,279 +5514,6 @@ if (!hasPet) {
       if (!confirm('Delete this document record?')) return;
       try { await deleteTravelDocument(id); showToast('Deleted.', 'info'); loadTravelDocsHistory(); }
       catch (err) { showToast(err.message, 'error'); }
-    }
-
-    function generateTravelDoc(type) {
-      if (type === 'international' && !AppState.canAccess('travel_docs_advanced')) {
-        showToast('International travel documents require the Pro plan.', 'error');
-        setTimeout(function() { openModal('modal-pricing'); }, 300);
-        return;
-      }
-      if (type === 'airline_form' && !AppState.canAccess('travel_docs_advanced')) {
-        showToast('Airline forms require the Pro plan.', 'error');
-        setTimeout(function() { openModal('modal-pricing'); }, 300);
-        return;
-      }
-
-      if (!AppState.activePet) { showToast('Select a pet first.', 'error'); return; }
-      var pet = AppState.activePet;
-
-      var docGenerators = {
-        vaccination_record: function() {
-          if (!travelVaccinations.length) { showToast('No vaccination records found. Add some vaccinations first.', 'error'); return null; }
-          var rows = travelVaccinations.map(function(v) {
-            var given = new Date(v.date_given).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-            var due = v.next_due_date ? new Date(v.next_due_date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
-            return '<tr><td style="padding:6px 10px;border:1px solid #ddd;font-size:10pt">' + escHtml(v.vaccine_name) + '</td><td style="padding:6px 10px;border:1px solid #ddd;font-size:10pt">' + given + '</td><td style="padding:6px 10px;border:1px solid #ddd;font-size:10pt">' + due + '</td><td style="padding:6px 10px;border:1px solid #ddd;font-size:10pt">' + escHtml(v.vet_name || '—') + '</td></tr>';
-          }).join('');
-          return { title: 'Vaccination Record', content: generateVaccinationRecord(pet, rows) };
-        },
-        health_certificate: function() {
-          return { title: 'Health Certificate', content: generateHealthCertificate(pet) };
-        },
-        airline_form: function() {
-          return { title: 'Airline Pet Travel Form', content: generateAirlineForm(pet) };
-        },
-        boarding_form: function() {
-          return { title: 'Boarding/Kennel Form', content: generateBoardingForm(pet) };
-        },
-        international: function() {
-          return { title: 'International Travel Documentation', content: generateInternationalDocs(pet) };
-        },
-        emergency_card: function() {
-          return { title: 'Emergency Travel Card', content: generateEmergencyCard(pet) };
-        },
-      };
-
-      var generator = docGenerators[type];
-      if (!generator) { showToast('Unknown document type.', 'error'); return; }
-
-      var doc = generator();
-      if (!doc) return;
-
-      downloadTravelDocPdf(doc.title, doc.content, type);
-    }
-
-    function generateVaccinationRecord(pet, rows) {
-      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      var petName = escHtml(pet.name || '—');
-      var breed = escHtml(pet.breed || '—');
-      var dob = pet.birth_date ? new Date(pet.birth_date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
-      var chip = pet.microchip || '—';
-      var weight = pet.weight_kg ? pet.weight_kg + ' kg' : '—';
-
-      return '<div style="padding:40px 48px;font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#1a1a1a;background:#fff">' +
-        '<div style="text-align:center;margin-bottom:28px;border-bottom:2px solid #ea580c;padding-bottom:14px">' +
-          '<h1 style="font-size:16pt;font-weight:700;color:#ea580c;margin:0">Vaccination Record</h1>' +
-          '<p style="font-size:9pt;color:#888;margin:4pt 0 0">Generated by PupFile — ' + today + '</p>' +
-        '</div>' +
-        '<table style="width:100%;margin-bottom:16px;border-collapse:collapse">' +
-          '<tr><td style="padding:2px 6px;font-size:10pt;width:120px;color:#666">Pet Name</td><td style="padding:2px 6px;font-size:10pt;font-weight:600">' + petName + '</td></tr>' +
-          '<tr><td style="padding:2px 6px;font-size:10pt;color:#666">Breed</td><td style="padding:2px 6px;font-size:10pt">' + breed + '</td></tr>' +
-          '<tr><td style="padding:2px 6px;font-size:10pt;color:#666">Date of Birth</td><td style="padding:2px 6px;font-size:10pt">' + dob + '</td></tr>' +
-          '<tr><td style="padding:2px 6px;font-size:10pt;color:#666">Weight</td><td style="padding:2px 6px;font-size:10pt">' + weight + '</td></tr>' +
-          '<tr><td style="padding:2px 6px;font-size:10pt;color:#666">Microchip</td><td style="padding:2px 6px;font-size:10pt">' + chip + '</td></tr>' +
-        '</table>' +
-        '<table style="width:100%;border-collapse:collapse">' +
-          '<thead><tr style="background:#f5f5f5">' +
-            '<th style="padding:8px 10px;border:1px solid #ddd;font-size:10pt;text-align:left;font-weight:600">Vaccine</th>' +
-            '<th style="padding:8px 10px;border:1px solid #ddd;font-size:10pt;text-align:left;font-weight:600">Date Given</th>' +
-            '<th style="padding:8px 10px;border:1px solid #ddd;font-size:10pt;text-align:left;font-weight:600">Next Due</th>' +
-            '<th style="padding:8px 10px;border:1px solid #ddd;font-size:10pt;text-align:left;font-weight:600">Vet</th>' +
-          '</tr></thead>' +
-          '<tbody>' + rows + '</tbody>' +
-        '</table>' +
-        '<div style="margin-top:24px;padding-top:12px;border-top:1px solid #ddd;font-size:8pt;color:#aaa;text-align:center">PupFile — pupfile.com</div>' +
-      '</div>';
-    }
-
-    function generateHealthCertificate(pet) {
-      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      var petName = escHtml(pet.name || '—');
-      var breed = escHtml(pet.breed || '—');
-      var dob = pet.birth_date ? new Date(pet.birth_date).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
-      var chip = pet.microchip || '—';
-      var weight = pet.weight_kg ? pet.weight_kg + ' kg' : '—';
-      var lastVaccine = travelVaccinations.length ? travelVaccinations[0].date_given : '—';
-
-      return '<div style="padding:40px 48px;font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#1a1a1a;background:#fff">' +
-        '<div style="text-align:center;margin-bottom:28px;border-bottom:2px solid #ea580c;padding-bottom:14px">' +
-          '<h1 style="font-size:16pt;font-weight:700;color:#ea580c;margin:0">Veterinary Health Certificate</h1>' +
-          '<p style="font-size:9pt;color:#888;margin:4pt 0 0">Generated ' + today + '</p>' +
-        '</div>' +
-        '<p style="font-size:10pt;margin-bottom:16px">This certifies that the following animal has been examined and appears to be in good health.</p>' +
-        '<table style="width:100%;margin-bottom:16px;border-collapse:collapse">' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;width:140px;color:#666;border-bottom:1px solid #eee">Name</td><td style="padding:4px 8px;font-size:10pt;font-weight:600;border-bottom:1px solid #eee">' + petName + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Species</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">Canine (Dog)</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Date of Birth</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + dob + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Microchip #</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Last Vaccination</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + lastVaccine + '</td></tr>' +
-        '</table>' +
-        '<div style="margin-top:24px;border-top:1px solid #ddd;padding-top:16px">' +
-          '<div style="display:flex;justify-content:space-between;margin-top:40px">' +
-            '<div style="text-align:center;width:200px"><div style="border-top:1px solid #333;padding-top:4px;font-size:9pt">Veterinarian Signature</div></div>' +
-            '<div style="text-align:center;width:200px"><div style="border-top:1px solid #333;padding-top:4px;font-size:9pt">Date</div></div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:8pt;color:#aaa;text-align:center">PupFile — pupfile.com</div>' +
-      '</div>';
-    }
-
-    function generateAirlineForm(pet) {
-      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      var petName = escHtml(pet.name || '—');
-      var breed = escHtml(pet.breed || '—');
-      var weight = pet.weight_kg ? pet.weight_kg + ' kg (' + (pet.weight_kg * 2.205).toFixed(1) + ' lbs)' : '—';
-      var chip = pet.microchip || '—';
-      var carrierLen = Math.max(48, Math.round((pet.weight_kg || 10) * 3 + 30));
-      var carrierWid = Math.max(32, Math.round((pet.weight_kg || 10) * 2 + 25));
-      var carrierHgt = Math.max(28, Math.round((pet.weight_kg || 10) * 1.5 + 20));
-
-      return '<div style="padding:40px 48px;font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#1a1a1a;background:#fff">' +
-        '<div style="text-align:center;margin-bottom:28px;border-bottom:2px solid #ea580c;padding-bottom:14px">' +
-          '<h1 style="font-size:16pt;font-weight:700;color:#ea580c;margin:0">Airline Pet Travel Form</h1>' +
-          '<p style="font-size:9pt;color:#888;margin:4pt 0 0">Generated ' + today + '</p>' +
-        '</div>' +
-        '<h3 style="font-size:11pt;font-weight:600;margin-bottom:8px">Pet Information</h3>' +
-        '<table style="width:100%;margin-bottom:16px;border-collapse:collapse">' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;width:140px;color:#666;border-bottom:1px solid #eee">Name</td><td style="padding:4px 8px;font-size:10pt;font-weight:600;border-bottom:1px solid #eee">' + petName + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Microchip</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
-        '</table>' +
-        '<h3 style="font-size:11pt;font-weight:600;margin-bottom:8px">Carrier Requirements</h3>' +
-        '<table style="width:100%;margin-bottom:16px;border-collapse:collapse">' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Recommended Carrier Size</td><td style="padding:4px 8px;font-size:10pt;font-weight:600;border-bottom:1px solid #eee">' + carrierLen + ' cm × ' + carrierWid + ' cm × ' + carrierHgt + ' cm</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Carrier Type</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">Hard-sided, ventilated on ≥2 sides</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Ventilation</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">Mesh windows on 3+ sides recommended</td></tr>' +
-        '</table>' +
-        '<div style="background:#f9f9f9;padding:12px;border-radius:6px;font-size:9pt;margin-bottom:16px">' +
-          '<p style="font-weight:600;margin:0 0 4px">✈️ Airline Travel Checklist</p>' +
-          '<ul style="margin:0;padding-left:16px">' +
-            '<li>Check airline pet policy — most require 48+ hour advance booking</li>' +
-            '<li>Ensure carrier fits under the seat (cabin) or meets cargo requirements</li>' +
-            '<li>Attach food/water bowls to carrier door</li>' +
-            '<li>Include a familiar blanket or toy in the carrier</li>' +
-            '<li>Health certificate issued within 10 days of travel</li>' +
-            '<li>Proof of Rabies vaccination (must be current)</li>' +
-          '</ul>' +
-        '</div>' +
-        '<div style="margin-top:24px;border-top:1px solid #ddd;padding-top:16px">' +
-          '<div style="display:flex;justify-content:space-between;margin-top:32px">' +
-            '<div style="text-align:center;width:200px"><div style="border-top:1px solid #333;padding-top:4px;font-size:9pt">Owner Signature</div></div>' +
-            '<div style="text-align:center;width:200px"><div style="border-top:1px solid #333;padding-top:4px;font-size:9pt">Date</div></div>' +
-          '</div>' +
-        '</div>' +
-        '<div style="margin-top:32px;padding-top:12px;border-top:1px solid #ddd;font-size:8pt;color:#aaa;text-align:center">PupFile — pupfile.com</div>' +
-      '</div>';
-    }
-
-    function generateBoardingForm(pet) {
-      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      var petName = escHtml(pet.name || '—');
-      var breed = escHtml(pet.breed || '—');
-      var flags = escHtml(pet.medical_flags || 'None');
-      var chip = pet.microchip || '—';
-      var lastVaccine = travelVaccinations.length ? travelVaccinations[0].vaccine_name + ' (' + travelVaccinations[0].date_given + ')' : '—';
-      var vaccineList = travelVaccinations.map(function(v) {
-        return escHtml(v.vaccine_name) + ' — given ' + new Date(v.date_given).toLocaleDateString();
-      }).join('<br>') || 'No vaccinations on record';
-
-      return '<div style="padding:40px 48px;font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#1a1a1a;background:#fff">' +
-        '<div style="text-align:center;margin-bottom:28px;border-bottom:2px solid #ea580c;padding-bottom:14px">' +
-          '<h1 style="font-size:16pt;font-weight:700;color:#ea580c;margin:0">Boarding / Kennel Form</h1>' +
-          '<p style="font-size:9pt;color:#888;margin:4pt 0 0">Generated ' + today + '</p>' +
-        '</div>' +
-        '<table style="width:100%;margin-bottom:16px;border-collapse:collapse">' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;width:140px;color:#666;border-bottom:1px solid #eee">Pet Name</td><td style="padding:4px 8px;font-size:10pt;font-weight:600;border-bottom:1px solid #eee">' + petName + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Microchip #</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Medical Flags</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + flags + '</td></tr>' +
-        '</table>' +
-        '<h3 style="font-size:11pt;font-weight:600;margin-bottom:8px">Vaccination Record</h3>' +
-        '<div style="font-size:9pt;margin-bottom:16px;padding:8px;background:#f9f9f9;border-radius:4px">' + vaccineList + '</div>' +
-        '<h3 style="font-size:11pt;font-weight:600;margin-bottom:8px">Care Instructions</h3>' +
-        '<div style="font-size:9pt;padding:8px;background:#f9f9f9;border-radius:4px;margin-bottom:16px">' +
-          '<p style="margin:0 0 4px"><strong>Feeding:</strong> ___________</p>' +
-          '<p style="margin:0 0 4px"><strong>Medications:</strong> ___________</p>' +
-          '<p style="margin:0 0 4px"><strong>Exercise:</strong> ___________</p>' +
-          '<p style="margin:0"><strong>Emergency Contact:</strong> ___________</p>' +
-        '</div>' +
-        '<div style="margin-top:24px;border-top:1px solid #ddd;padding-top:12px;font-size:8pt;color:#aaa;text-align:center">PupFile — pupfile.com</div>' +
-      '</div>';
-    }
-
-    function generateInternationalDocs(pet) {
-      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      var petName = escHtml(pet.name || '—');
-      var breed = escHtml(pet.breed || '—');
-      var dob = pet.birth_date ? new Date(pet.birth_date).toLocaleDateString() : '—';
-      var chip = pet.microchip || '—';
-      var titer = pet.rabies_titer_date ? new Date(pet.rabies_titer_date).toLocaleDateString() : '—';
-      var passport = pet.international_passport || '—';
-      var weight = pet.weight_kg ? pet.weight_kg + ' kg' : '—';
-
-      return '<div style="padding:40px 48px;font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#1a1a1a;background:#fff">' +
-        '<div style="text-align:center;margin-bottom:28px;border-bottom:2px solid #ea580c;padding-bottom:14px">' +
-          '<h1 style="font-size:16pt;font-weight:700;color:#ea580c;margin:0">International Travel Documentation</h1>' +
-          '<p style="font-size:9pt;color:#888;margin:4pt 0 0">Generated ' + today + '</p>' +
-        '</div>' +
-        '<table style="width:100%;margin-bottom:16px;border-collapse:collapse">' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;width:160px;color:#666;border-bottom:1px solid #eee">Pet Name</td><td style="padding:4px 8px;font-size:10pt;font-weight:600;border-bottom:1px solid #eee">' + petName + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Breed</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + breed + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Date of Birth</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + dob + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Weight</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + weight + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Microchip #</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + chip + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Rabies Titer Date</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + titer + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666;border-bottom:1px solid #eee">Passport #</td><td style="padding:4px 8px;font-size:10pt;border-bottom:1px solid #eee">' + passport + '</td></tr>' +
-        '</table>' +
-        '<div style="background:#f0fdf4;padding:12px;border-radius:6px;font-size:9pt;margin-bottom:16px;border:1px solid #bbf7d0">' +
-          '<p style="font-weight:600;margin:0 0 4px">✅ International Travel Checklist</p>' +
-          '<ol style="margin:0;padding-left:16px">' +
-            '<li>Microchip (ISO 11784/11785 compliant — 15 digits)</li>' +
-            '<li>Rabies vaccination (at least 21 days before travel, must be current)</li>' +
-            '<li>Rabies titer test (FAVN) — required by many countries (wait 30+ days after rabies vaccine)</li>' +
-            '<li>Health certificate issued within 10 days of travel</li>' +
-            '<li>APHA-endorsed health certificate (for UK/EU travel)</li>' +
-            '<li>USDA endorsement (for most international travel from the US)</li>' +
-            '<li>Import permit / notification for destination country</li>' +
-            '<li>Check tapeworm treatment requirement (EU: 1-5 days before entry)</li>' +
-          '</ol>' +
-        '</div>' +
-        '<p style="font-size:9pt;color:#888;margin-bottom:8px"><em>Requirements vary by destination country. Always check the official government website of your destination for current regulations.</em></p>' +
-        '<div style="margin-top:24px;padding-top:12px;border-top:1px solid #ddd;font-size:8pt;color:#aaa;text-align:center">PupFile — pupfile.com</div>' +
-      '</div>';
-    }
-
-    function generateEmergencyCard(pet) {
-      var today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-      var petName = escHtml(pet.name || '—');
-      var breed = escHtml(pet.breed || '—');
-      var flags = escHtml(pet.medical_flags || 'None');
-      var chip = pet.microchip || '—';
-      var ownerEmail = AppState.user?.email || '—';
-
-      return '<div style="padding:32px 36px;font-family:Arial,sans-serif;font-size:10pt;line-height:1.6;color:#1a1a1a;background:#fff">' +
-        '<div style="text-align:center;margin-bottom:20px;border:3px solid #dc2626;padding:12px;background:#fff5f5">' +
-          '<h1 style="font-size:20pt;font-weight:800;color:#dc2626;margin:0">🆘 EMERGENCY CARD</h1>' +
-          '<p style="font-size:8pt;color:#888;margin:4pt 0 0">If found, please contact immediately</p>' +
-        '</div>' +
-        '<div style="margin-bottom:12px;font-size:14pt;font-weight:700;text-align:center">' + petName + '</div>' +
-        '<table style="width:100%;border-collapse:collapse">' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;width:120px;color:#666">Breed</td><td style="padding:4px 8px;font-size:10pt;font-weight:600">' + breed + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666">Microchip</td><td style="padding:4px 8px;font-size:10pt;font-weight:600">' + chip + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666">Medical Flags</td><td style="padding:4px 8px;font-size:10pt;font-weight:600;color:#dc2626">' + flags + '</td></tr>' +
-          '<tr><td style="padding:4px 8px;font-size:10pt;color:#666">Owner Contact</td><td style="padding:4px 8px;font-size:10pt;font-weight:600">' + ownerEmail + '</td></tr>' +
-        '</table>' +
-        '<div style="margin-top:16px;padding:8px;background:#f9f9f9;border-radius:4px;font-size:9pt">' +
-          '<p style="margin:0"><strong>Allergies / Medications:</strong> ___________</p>' +
-          '<p style="margin:4px 0 0"><strong>Emergency Contact:</strong> ___________</p>' +
-          '<p style="margin:4px 0 0"><strong>Vet Contact:</strong> ___________</p>' +
-        '</div>' +
-        '<div style="margin-top:16px;padding-top:8px;border-top:1px solid #ddd;font-size:7pt;color:#aaa;text-align:center">PupFile — pupfile.com</div>' +
-      '</div>';
     }
 
     function downloadTravelDocPdf(title, html, docType) {
@@ -5038,7 +5536,6 @@ if (!hasPet) {
       html2pdf().set(opt).from(wrapper).save().then(function() {
         document.body.removeChild(wrapper);
         showToast('PDF downloaded!', 'success');
-        // Save to history
         if (AppState.activePet) {
           saveTravelDocument({
             pet_id: AppState.activePet.id,
@@ -5941,11 +6438,16 @@ if (!hasPet) {
       window.open(`${window.location.origin}/p/${AppState.activePet.id}`, '_blank');
     }
     function downloadQR() {
-      const canvas = document.querySelector('#qr-canvas canvas'); if (!canvas) return;
-      const link = document.createElement('a');
-      link.download = `pupfile-${AppState.activePet?.name || 'pet'}-qr.png`;
-      link.href = canvas.toDataURL();
-      link.click();
+      var canvasEl = document.querySelector('#qr-canvas canvas');
+      if (!canvasEl) { showToast('Generate the QR code first.', 'error'); return; }
+      canvasEl.toBlob(function(blob) {
+        var link = document.createElement('a');
+        link.download = 'pupfile-' + (AppState.activePet?.name || 'pet').replace(/\s+/g, '-').toLowerCase() + '-qr.png';
+        link.href = URL.createObjectURL(blob);
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(function() { document.body.removeChild(link); URL.revokeObjectURL(link.href); }, 100);
+      });
     }
 
     function saveEmergencyProfile() {
@@ -6408,8 +6910,8 @@ if (!hasPet) {
         vetWizardData.duration = parseInt(document.getElementById('vw-duration').value) || 7;
         vetWizardData.durationUnit = document.getElementById('vw-duration-unit').value;
       }
-      document.querySelectorAll('.sitter-wizard-step').forEach(s => s.style.display = 'none');
-      document.querySelector(`.sitter-wizard-step[data-step="${step}"]`).style.display = 'flex';
+      document.querySelectorAll('.vet-wizard-step').forEach(s => s.style.display = 'none');
+      document.querySelector(`.vet-wizard-step[data-step="${step}"]`).style.display = 'flex';
       document.querySelectorAll('#vet-wizard-steps .step-dot').forEach(d => {
         const s = parseInt(d.dataset.step);
         d.className = 'step-dot' + (s === step ? ' active' : s < step ? ' done' : '');
@@ -6419,8 +6921,8 @@ if (!hasPet) {
     }
 
     function vetWizardPrev(step) {
-      document.querySelectorAll('.sitter-wizard-step').forEach(s => s.style.display = 'none');
-      document.querySelector(`.sitter-wizard-step[data-step="${step}"]`).style.display = 'flex';
+      document.querySelectorAll('.vet-wizard-step').forEach(s => s.style.display = 'none');
+      document.querySelector(`.vet-wizard-step[data-step="${step}"]`).style.display = 'flex';
       document.querySelectorAll('#vet-wizard-steps .step-dot').forEach(d => {
         const s = parseInt(d.dataset.step);
         d.className = 'step-dot' + (s === step ? ' active' : s < step ? ' done' : '');
