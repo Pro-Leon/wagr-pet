@@ -114,7 +114,7 @@ export default async function handler(req, res) {
   setCors(res, req.headers.origin);
 
   const origin = req.headers.origin;
-  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:')) {
+  if (origin && origin !== 'https://pupfile.com' && !origin.startsWith('http://localhost:') && !origin.startsWith('http://127.0.0.1:') && !origin.endsWith('.vercel.app')) {
     return res.status(403).json({ error: 'Origin not allowed' });
   }
 

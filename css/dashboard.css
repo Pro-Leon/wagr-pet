@@ -651,6 +651,7 @@
 .sitter-wizard-step { display:flex; flex-direction:column; gap:14px; }
 .sitter-wizard-step[style*="display:none"] { display:none !important; }
 #sitter-wizard-steps { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
+.vet-wizard-step { display:flex; flex-direction:column; gap:12px; }
 #sitter-wizard-steps .step-dot { width:8px; height:8px; border-radius:50%; background:var(--border-color); transition:background 0.2s; flex:none; }
 #sitter-wizard-steps .step-dot.active { background:var(--orange-500); }
 #sitter-wizard-steps .step-dot.done { background:var(--orange-300); }
