@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PupFile — Your Dog's Complete Health Record</title>
-  <meta name="description" content="Track meals, medications, symptoms, grooming, and vet records. AI vet reports, QR emergency tags, co-parent sync, sitter magic links, and daily tasks — one dashboard for your dog's entire health history.">
+  <meta name="description" content="Track meals, medications, symptoms, grooming, and vet records. AI vet reports, QR emergency tags, vet share links, travel documents, co-parent sync, sitter magic links, and daily tasks — one dashboard for your dog's entire health history.">
   <meta name="keywords" content="dog care app, pet health tracker, dog medication reminder, pet care dashboard, dog food calculator, AI vet report, pet QR tag, dog symptom tracker, pet grooming log">
   <meta name="author" content="PupFile">
   <meta name="robots" content="index, follow">
@@ -19,7 +19,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="PupFile — Your Dog's Complete Health Record">
-  <meta property="og:description" content="Track meals, meds, symptoms, grooming, and tasks. AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, and more — one dashboard for everything your dog needs.">
+  <meta property="og:description" content="Track meals, meds, symptoms, grooming, and tasks. AI vet reports, GPS emergency alerts, vet share links, travel documents, sitter magic links, co-parent sync, and more — one dashboard for everything your dog needs.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://pupfile.com">
   <meta property="og:site_name" content="PupFile">
@@ -27,7 +27,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="PupFile — Your Dog's Complete Health Record">
-  <meta name="twitter:description" content="Track meals, meds, symptoms, grooming, and tasks. AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync — one dashboard for everything your dog needs.">
+  <meta name="twitter:description" content="Track meals, meds, symptoms, grooming, and tasks. AI vet reports, GPS emergency alerts, vet share links, travel documents, sitter magic links, co-parent sync — one dashboard for everything your dog needs.">
 
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -37,7 +37,7 @@
     "name": "PupFile",
     "applicationCategory": "Health",
     "operatingSystem": "Web",
-    "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, sitter magic links, co-parent sync, symptom tracking, grooming logging, daily tasks, pet notes, and care logging.",
+    "description": "Complete dog health record platform with AI vet reports, GPS emergency alerts, vet share links, travel documents, sitter magic links, co-parent sync, symptom tracking, grooming logging, daily tasks, pet notes, and care logging.",
     "offers": [
       { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free tier" },
       { "@type": "Offer", "price": "4.99", "priceCurrency": "USD", "description": "Starter monthly" },
@@ -57,7 +57,7 @@
         "name": "Is PupFile free?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, daily tasks, pet notes, AI Assistant (3 free queries), a passive QR collar tag, a public emergency profile, and free Toxicity Checker and Calorie Calculator — all without a credit card."
+          "text": "Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, daily tasks, pet notes, AI Assistant (3 free queries), a passive QR collar tag, an Emergency Passport with public profile, and free Toxicity Checker and Calorie Calculator — all without a credit card."
         }
       },
       {
@@ -98,6 +98,22 @@
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Absolutely. There are no contracts or lock-ins. If you're on a paid plan, you can cancel from your dashboard and it takes effect at the end of your billing cycle."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can my vet upload records without creating an account?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Generate a Vet Share Link from your dashboard and email or text it to your vet. They click the link, upload vaccines, lab results, or records — no account, no signup, no portal to learn. Everything lands in your pet's timeline. Links expire automatically after 7 days."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I generate travel documents for my dog?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Starter and Pro plans include a Travel Documents section that generates vaccination records, health certificates, airline cargo forms, boarding forms, and emergency cards as PDFs — pre-filled with your pet's data. Pro adds advanced forms for international travel and airline cabin requirements."
         }
       }
     ]
@@ -1150,6 +1166,21 @@
           <h3>Your data is private. Full stop.</h3>
           <p>This is your dog's health record — it belongs to you. All data is encrypted and never sold. Privacy isn't a feature, it's the foundation.</p>
         </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="share-2" style="width:24px;height:24px"></i></div>
+          <h3>Share records with your vet instantly</h3>
+          <p>Generate a secure link and send it to your vet. They upload vaccines, lab results, and records directly — no account, no signup, no portal to learn. Everything lands in your timeline.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="plane" style="width:24px;height:24px"></i></div>
+          <h3>Travel-ready paperwork in seconds</h3>
+          <p>Generate vaccination records, health certificates, airline forms, and boarding paperwork as PDFs — pre-filled with your pet's data. Ready for kennels, flights, and border crossings.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="bc-icon"><i data-lucide="shield" style="width:24px;height:24px"></i></div>
+          <h3>A public profile that saves lives</h3>
+          <p>The Emergency Passport turns your pet's QR tag into a structured medical profile: allergies, medications, emergency contacts, and vet info. Anyone who scans it sees what they need — instantly.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1243,6 +1274,10 @@
             <tr><td>Sitter Handover Email</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
             <tr><td>Priority Support</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
             <tr><td>Free Calculators</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Emergency Passport</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Vet Share Links</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Travel Documents (PDF)</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Airline &amp; International Docs</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
           </tbody>
         </table>
       </div>
@@ -1301,7 +1336,7 @@
             <span>Is PupFile free?</span>
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
-          <div class="faq-a">Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, daily tasks, pet notes, AI Assistant (3 free queries), a passive QR collar tag, a public emergency profile, and our free Toxicity Checker and Calorie Calculator — all without a credit card. Paid plans start at $4.99/mo when you need more pets or advanced features.</div>
+          <div class="faq-a">Yes. The Free plan covers one pet with 7-day timeline logging, meal/med/walk tracking, daily tasks, pet notes, AI Assistant (3 free queries), a passive QR collar tag, an Emergency Passport with public profile, and our free Toxicity Checker and Calorie Calculator — all without a credit card. Paid plans start at $4.99/mo when you need more pets or advanced features.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">
@@ -1344,6 +1379,20 @@
             <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <div class="faq-a">Yes. Co-parent sync lets you invite a partner, family member, or fellow owner to share care duties. Everything they log appears on your timeline in real time — no more "did you feed him?" messages. Starter includes up to 2 co-parents; Pro has unlimited.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can my vet upload records without creating an account?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Yes. Generate a Vet Share Link from your dashboard and email or text it to your vet. They click the link, upload vaccines, lab results, or records — no account, no signup, no portal to learn. Everything lands in your pet's timeline. Links expire automatically after 7 days.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            <span>Can I generate travel documents for my dog?</span>
+            <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="faq-a">Yes. Starter and Pro plans include a Travel Documents section that generates vaccination records, health certificates, airline cargo forms, boarding forms, and emergency cards as PDFs — pre-filled with your pet's data. Pro adds advanced forms for international travel and airline cabin requirements.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q" onclick="toggleFaq(this)">
@@ -1628,7 +1677,7 @@
             <li>${cg}<span>Meal, Meds &amp; Walk Logging</span></li>
             <li>${cg}<span>AI Assistant — 3 free queries</span></li>
             <li>${cg}<span>Passive QR Collar Tag</span></li>
-            <li>${cg}<span>Public Emergency Profile</span></li>
+            <li>${cg}<span>Emergency Passport</span></li>
             <li>${cg}<span>Free Toxicity &amp; Calorie Tools</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-secondary">Get Started</a>
@@ -1652,6 +1701,8 @@
             <li>${co}<span>Sitter Magic Links &amp; Care Plans</span></li>
             <li>${co}<span>Active QR + GPS Alerts</span></li>
             <li>${co}<span>AI Assistant — full logging</span></li>
+            <li>${co}<span>Vet Share Links</span></li>
+            <li>${co}<span>Travel Documents (PDF)</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Start Starter</a>
         </div>
@@ -1672,6 +1723,9 @@
             <li>${co}<span>Multi-Pet Household Overview</span></li>
             <li>${co}<span>Unlimited Co-parents &amp; Priority Support</span></li>
             <li>${co}<span>Sitter Handover Summary Email</span></li>
+            <li>${co}<span>Vet Share Links</span></li>
+            <li>${co}<span>Travel Documents &amp; Certificates</span></li>
+            <li>${co}<span>Airline &amp; International Docs</span></li>
           </ul>
           <a href="/auth?mode=signup" class="plan-cta plan-cta-primary">Go Pro</a>
         </div>

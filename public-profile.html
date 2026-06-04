@@ -3,81 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>I Found a Dog — PupFile</title>
-  <meta name="description" content="You found a dog with a PupFile QR tag. View their profile and notify the owner.">
+  <title>Emergency Passport — PupFile</title>
+  <meta name="description" content="Emergency medical passport for this pet. View allergies, medications, and emergency contacts.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="css/globals.css">
   <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#ea580c">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" string="true">default">
   <link rel="apple-touch-icon" href="/icons/icon-192.svg">
   <script src="https://cdn.jsdelivr.net/npm/lucide@1/dist/umd/lucide.min.js" defer></script>
   <style>
-    .public-page {
+    .passport-page {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 24px;
+      padding: 24px 16px;
       background: var(--bg-primary);
     }
-    .public-card {
+    .passport-card {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
       background: var(--bg-secondary);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-xl);
       overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
     }
-    .public-card-header {
-      padding: 32px 24px 20px;
+    [data-theme="dark"] .passport-card {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+
+    /* --- Emergency Header --- */
+    .emergency-header {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      padding: 24px;
       text-align: center;
-      border-bottom: 1px solid var(--border-color);
+      position: relative;
     }
-    .public-card-header .found-label {
-      font-size: 0.72rem;
-      font-weight: 600;
+    [data-theme="dark"] .emergency-header {
+      background: linear-gradient(135deg, #991b1b, #7f1d1d);
+    }
+    .emergency-header .emergency-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.7rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--orange-600);
-      margin-bottom: 8px;
+      color: #fff;
+      margin-bottom: 12px;
     }
-    [data-theme="dark"] .public-card-header .found-label {
-      color: var(--orange-400);
+    .emergency-header .emergency-badge svg { width: 14px; height: 14px; }
+    .emergency-header .pet-avatar {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 2rem;
     }
-    .public-card-header h1 {
+    .emergency-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
+      color: #fff;
+      margin: 0;
       letter-spacing: -0.02em;
     }
-    .public-card-header .breed {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
+    .emergency-header .breed {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.8);
       margin-top: 4px;
     }
-    .public-card-body {
-      padding: 20px 24px;
+    .emergency-header .microchip {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 6px;
+      font-family: monospace;
     }
-    .medical-section {
-      margin-bottom: 20px;
-    }
-    .medical-section .section-title {
-      font-size: 0.75rem;
-      font-weight: 600;
+
+    /* --- Passport Body --- */
+    .passport-body { padding: 20px 20px 0; }
+
+    .passport-section { margin-bottom: 18px; }
+    .passport-section .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--text-muted);
       margin-bottom: 8px;
     }
-    .medical-flags {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .medical-flag {
+    .passport-section .section-header svg { width: 16px; height: 16px; }
+
+    .allergy-item {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -88,20 +118,69 @@
       font-size: 0.82rem;
       color: #991b1b;
       font-weight: 500;
+      margin-bottom: 6px;
     }
-    [data-theme="dark"] .medical-flag {
+    [data-theme="dark"] .allergy-item {
       background: rgba(220,38,38,0.1);
       border-color: rgba(220,38,38,0.2);
       color: #fca5a5;
     }
-    .medical-flag .flag-dot {
-      width: 8px;
-      height: 8px;
-      background: #dc2626;
-      border-radius: 50%;
-      flex-shrink: 0;
+    .allergy-item .dot { width: 8px; height: 8px; background: #dc2626; border-radius: 50%; flex-shrink: 0; }
+
+    .medication-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      color: #1e40af;
+      font-weight: 500;
+      margin-bottom: 6px;
     }
-    .no-flags {
+    [data-theme="dark"] .medication-item {
+      background: rgba(59,130,246,0.1);
+      border-color: rgba(59,130,246,0.2);
+      color: #93c5fd;
+    }
+    .medication-item .dot { width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; flex-shrink: 0; }
+
+    .medical-flag-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      color: #9a3412;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    [data-theme="dark"] .medical-flag-item {
+      background: rgba(249,115,22,0.08);
+      border-color: rgba(249,115,22,0.2);
+      color: #fdba74;
+    }
+    .medical-flag-item .dot { width: 6px; height: 6px; background: #f97316; border-radius: 50%; flex-shrink: 0; }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-bottom: 6px;
+    }
+    .contact-row .contact-label { font-size: 0.75rem; color: var(--text-muted); }
+    .contact-row .contact-value { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+
+    .empty-state {
       font-size: 0.82rem;
       color: var(--text-muted);
       padding: 10px 14px;
@@ -109,18 +188,18 @@
       border-radius: var(--radius-md);
     }
 
-    /* --- CTA Button --- */
-    .cta-section {
-      padding: 0 24px 24px;
+    /* --- CTA --- */
+    .passport-cta {
+      padding: 16px 20px 20px;
     }
     .cta-button {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       background: var(--orange-600);
       color: #fff;
       border: none;
       border-radius: var(--radius-lg);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -128,96 +207,57 @@
       justify-content: center;
       gap: 10px;
       transition: all var(--transition-fast);
-      position: relative;
-      overflow: hidden;
     }
     .cta-button:hover { background: var(--orange-700); }
     .cta-button:active { transform: scale(0.98); }
-    .cta-button::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      animation: pulse-ring 2s ease-in-out infinite;
-      box-shadow: 0 0 0 0 rgba(234,88,12,0.4);
-    }
-    @keyframes pulse-ring {
-      0% { box-shadow: 0 0 0 0 rgba(234,88,12,0.4); }
-      70% { box-shadow: 0 0 0 12px rgba(234,88,12,0); }
-      100% { box-shadow: 0 0 0 0 rgba(234,88,12,0); }
-    }
-    .cta-button svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-    }
-    .cta-button.success {
-      background: #16a34a;
-      pointer-events: none;
-    }
+    .cta-button.success { background: #16a34a; pointer-events: none; }
 
-    .cta-hint {
-      font-size: 0.72rem;
-      color: var(--text-muted);
+    .passport-footer {
+      padding: 0 20px 20px;
       text-align: center;
-      margin-top: 10px;
-      line-height: 1.5;
+      font-size: 0.7rem;
+      color: var(--text-muted);
     }
+    .passport-footer a { color: var(--text-secondary); }
 
-    /* --- Error State --- */
-    .error-state {
+    /* --- Error / Loading --- */
+    .error-state, .loading-state {
       text-align: center;
       padding: 48px 24px;
     }
-    .error-state svg {
-      width: 40px;
-      height: 40px;
-      stroke: var(--text-muted);
-      fill: none;
-      stroke-width: 1.5;
+    .error-state svg, .loading-state svg {
+      width: 40px; height: 40px;
+      stroke: var(--text-muted); fill: none; stroke-width: 1.5;
       margin: 0 auto 16px;
     }
-    .error-state h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .error-state p {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-    }
+    .error-state h2, .loading-state h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .error-state p, .loading-state p { font-size: 0.85rem; color: var(--text-secondary); }
 
-    /* --- Footer --- */
-    .public-footer {
-      margin-top: 24px;
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--text-muted);
+    .theme-toggle-fixed {
+      position: fixed; top: 16px; right: 16px; z-index: 10;
+      background: var(--bg-secondary); border: 1px solid var(--border-color);
+      border-radius: var(--radius-md); padding: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
-    .public-footer a {
-      color: var(--text-secondary);
-    }
-    .public-footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div class="public-page">
-    <!-- Theme toggle -->
-    <button class="theme-toggle" onclick="ThemeManager.toggle()" style="position:fixed;top:16px;right:16px;z-index:10;background:var(--bg-secondary);border:1px solid var(--border-color)"></button>
+  <div class="passport-page">
+    <button class="theme-toggle-fixed theme-toggle" onclick="ThemeManager.toggle()" title="Toggle theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+    </button>
 
     <!-- Loading -->
-    <div id="loading-state" class="public-card">
-      <div class="public-card-header">
-        <div class="found-label">Loading...</div>
-        <div class="skeleton" style="height:28px;width:180px;margin:0 auto 8px;border-radius:6px"></div>
-        <div class="skeleton" style="height:16px;width:120px;margin:0 auto;border-radius:4px"></div>
+    <div id="loading-state" class="passport-card">
+      <div class="loading-state">
+        <svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <h2>Loading Passport...</h2>
+        <p>Fetching emergency information</p>
       </div>
     </div>
 
     <!-- Error -->
-    <div id="error-state" class="public-card" style="display:none">
+    <div id="error-state" class="passport-card" style="display:none">
       <div class="error-state">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <h2>Pet not found</h2>
@@ -225,30 +265,77 @@
       </div>
     </div>
 
-    <!-- Profile -->
-    <div id="profile-state" class="public-card" style="display:none">
-      <div class="public-card-header">
-        <div class="found-label">I found</div>
+    <!-- Passport -->
+    <div id="passport-state" class="passport-card" style="display:none">
+      <div class="emergency-header">
+        <div class="emergency-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          EMERGENCY PASSPORT
+        </div>
+        <div class="pet-avatar">🐾</div>
         <h1 id="pet-name">—</h1>
         <div class="breed" id="pet-breed"></div>
+        <div class="microchip" id="pet-microchip"></div>
       </div>
-      <div class="public-card-body">
-        <div class="medical-section" id="medical-section">
-          <div class="section-title">Medical Information</div>
-          <div class="medical-flags" id="medical-flags"></div>
+
+      <div class="passport-body">
+        <!-- Allergies -->
+        <div class="passport-section" id="allergies-section">
+          <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Allergies
+          </div>
+          <div id="allergies-list"></div>
+        </div>
+
+        <!-- Medications -->
+        <div class="passport-section" id="medications-section">
+          <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 4.5L3 12l5 5 7.5-7.5"/><path d="M10.5 4.5L16 10"/><path d="M18 6l-6 6"/><path d="M14.5 2.5L21 9"/></svg>
+            Medications
+          </div>
+          <div id="medications-list"></div>
+        </div>
+
+        <!-- Medical Flags -->
+        <div class="passport-section" id="flags-section">
+          <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            Medical Notes
+          </div>
+          <div id="flags-list"></div>
+        </div>
+
+        <!-- Emergency Contacts -->
+        <div class="passport-section" id="contacts-section">
+          <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Emergency Contacts
+          </div>
+          <div id="contacts-list"></div>
+        </div>
+
+        <!-- Vet Info -->
+        <div class="passport-section" id="vets-section">
+          <div class="section-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.5-2.5 2-5 2-5"/><path d="M5 14c-1.5-2.5-2-5-2-5"/><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+            Veterinary
+          </div>
+          <div id="vets-list"></div>
         </div>
       </div>
-      <div class="cta-section">
+
+      <div class="passport-cta">
         <button class="cta-button" id="location-btn" onclick="shareLocation()">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           Share Location with Owner
         </button>
-        <div class="cta-hint">This will send your current GPS coordinates to the pet's owner. Your location is only shared once.</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);text-align:center;margin-top:8px">Your GPS location is sent once to the pet owner</div>
       </div>
-    </div>
 
-    <div class="public-footer">
-      <a href="/">PupFile</a> — Smart Dog Care
+      <div class="passport-footer">
+        Powered by <a href="/">PupFile</a> — Smart Dog Care
+      </div>
     </div>
   </div>
 
@@ -270,32 +357,29 @@
   <script src="js/ui.js"></script>
   <script src="js/analytics.js"></script>
   <script>
-    let currentPetId = null;
-    let currentPetName = '';
-    let currentOwnerEmail = '';
+    var currentPetId = null;
+    var currentPetName = '';
+    var currentOwnerEmail = '';
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    function getUrlParam(name) {
+      var params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
       try { initSupabase(); typeof lucide !== 'undefined' && lucide.createIcons(); } catch(e) { console.error('Init failed:', e); }
 
-      // Extract pet ID from URL
-      const path = window.location.pathname;
-      const pathParts = path.split('/');
-      let petId = pathParts[pathParts.length - 1];
+      var path = window.location.pathname;
+      var pathParts = path.split('/');
+      var petId = pathParts[pathParts.length - 1];
 
-      // Also check query param (for Vercel rewrite)
       if (!petId || petId === 'public-profile.html') {
         petId = getUrlParam('petId') || getUrlParam('id');
       }
-
-      // Try hash-based ID
       if (!petId && window.location.hash) {
         petId = window.location.hash.substring(1);
       }
-
-      if (!petId) {
-        showError();
-        return;
-      }
+      if (!petId) { showError(); return; }
 
       currentPetId = petId;
       await loadPetProfile(petId);
@@ -303,42 +387,83 @@
 
     async function loadPetProfile(petId) {
       try {
-        const pet = await getPublicPetProfile(petId);
-        if (!pet) {
-          showError();
-          return;
-        }
+        var pet = await getPublicPetProfile(petId);
+        if (!pet) { showError(); return; }
         currentPetName = pet.name || 'Pet';
         currentOwnerEmail = pet.owner_contact || '';
-        renderProfile(pet);
+        renderPassport(pet);
       } catch (err) {
         console.error('Profile load error:', err);
         showError();
       }
     }
 
-    function renderProfile(pet) {
+    function renderPassport(pet) {
       document.getElementById('loading-state').style.display = 'none';
-      document.getElementById('profile-state').style.display = 'block';
+      document.getElementById('passport-state').style.display = 'block';
+
       document.getElementById('pet-name').textContent = pet.name;
       document.getElementById('pet-breed').textContent = pet.breed || '';
-      document.title = `I Found ${pet.name} — PupFile`;
+      document.getElementById('pet-microchip').textContent = pet.microchip ? 'Microchip: ' + pet.microchip : '';
 
-      // Medical flags
-      const flagsContainer = document.getElementById('medical-flags');
-      const flags = pet.medical_flags;
+      var title = 'Emergency Passport — ' + pet.name + ' — PupFile';
+      document.title = title;
 
+      renderList('allergies-list', pet.allergies, 'allergy-item', 'No allergies on file');
+      renderList('medications-list', pet.medications, 'medication-item', 'No medications on file');
+
+      // Medical flags (split by comma/semicolon like before)
+      var flagsContainer = document.getElementById('flags-list');
+      var flags = pet.medical_flags;
       if (flags && flags.trim()) {
-        // Split by comma or semicolon
-        const flagList = flags.split(/[,;]/).map(f => f.trim()).filter(Boolean);
-        flagsContainer.innerHTML = flagList.map(flag => `
-          <div class="medical-flag">
-            <div class="flag-dot"></div>
-            ${escapeHtml(flag)}
-          </div>
-        `).join('');
+        var flagList = flags.split(/[,;]/).map(function(f) { return f.trim(); }).filter(Boolean);
+        flagsContainer.innerHTML = flagList.map(function(flag) {
+          return '<div class="medical-flag-item"><span class="dot"></span>' + escHtml(flag) + '</div>';
+        }).join('');
       } else {
-        flagsContainer.innerHTML = `<div class="no-flags">No medical flags on file.</div>`;
+        flagsContainer.innerHTML = '<div class="empty-state">No medical flags on file.</div>';
+      }
+
+      // Emergency contacts
+      var contactsEl = document.getElementById('contacts-list');
+      var hasContact = pet.emergency_contact_name || pet.emergency_contact_phone;
+      if (hasContact) {
+        contactsEl.innerHTML = '';
+        if (pet.emergency_contact_name) {
+          contactsEl.innerHTML += '<div class="contact-row"><span class="contact-label">Contact Name</span><span class="contact-value">' + escHtml(pet.emergency_contact_name) + '</span></div>';
+        }
+        if (pet.emergency_contact_phone) {
+          contactsEl.innerHTML += '<div class="contact-row"><span class="contact-label">Emergency Phone</span><span class="contact-value"><a href="tel:' + escHtml(pet.emergency_contact_phone) + '" style="color:var(--text-primary);text-decoration:none">' + escHtml(pet.emergency_contact_phone) + '</a></span></div>';
+        }
+      } else {
+        contactsEl.innerHTML = '<div class="empty-state">No emergency contacts on file.</div>';
+      }
+
+      // Vet info
+      var vetsEl = document.getElementById('vets-list');
+      var hasVet = pet.primary_vet_name || pet.primary_vet_phone;
+      if (hasVet) {
+        vetsEl.innerHTML = '';
+        if (pet.primary_vet_name) {
+          vetsEl.innerHTML += '<div class="contact-row"><span class="contact-label">Veterinarian</span><span class="contact-value">' + escHtml(pet.primary_vet_name) + '</span></div>';
+        }
+        if (pet.primary_vet_phone) {
+          vetsEl.innerHTML += '<div class="contact-row"><span class="contact-label">Vet Phone</span><span class="contact-value"><a href="tel:' + escHtml(pet.primary_vet_phone) + '" style="color:var(--text-primary);text-decoration:none">' + escHtml(pet.primary_vet_phone) + '</a></span></div>';
+        }
+      } else {
+        vetsEl.innerHTML = '<div class="empty-state">No vet information on file.</div>';
+      }
+    }
+
+    function renderList(containerId, text, itemClass, emptyText) {
+      var container = document.getElementById(containerId);
+      if (text && text.trim()) {
+        var items = text.split(/[,;]/).map(function(f) { return f.trim(); }).filter(Boolean);
+        container.innerHTML = items.map(function(item) {
+          return '<div class="' + itemClass + '"><span class="dot"></span>' + escHtml(item) + '</div>';
+        }).join('');
+      } else {
+        container.innerHTML = '<div class="empty-state">' + emptyText + '</div>';
       }
     }
 
@@ -348,61 +473,36 @@
     }
 
     async function shareLocation() {
-      const btn = document.getElementById('location-btn');
+      var btn = document.getElementById('location-btn');
+      if (!navigator.geolocation) { showToast('Geolocation is not supported.', 'error'); return; }
 
-      if (!navigator.geolocation) {
-        showToast('Geolocation is not supported by your browser.', 'error');
-        return;
-      }
-
-      btn.innerHTML = `
-        <svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-        Getting location...
-      `;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Getting location...';
       btn.style.pointerEvents = 'none';
 
-      // Add spin animation
       if (!document.getElementById('spin-style')) {
-        const style = document.createElement('style');
+        var style = document.createElement('style');
         style.id = 'spin-style';
         style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
         document.head.appendChild(style);
       }
 
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          
+        async function(position) {
           try {
-            await sendLocationAlert(currentPetId, latitude, longitude, currentOwnerEmail, currentPetName);
-            btn.classList.add('success');
-            btn.innerHTML = `
-              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              Owner Notified!
-            `;
-            document.querySelector('.cta-hint').textContent = `The owner has been sent your location. Thank you for helping!`;
-          } catch (err) {
-            // Show success anyway for demo
-            btn.classList.add('success');
-            btn.innerHTML = `
-              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              Owner Notified!
-            `;
-            document.querySelector('.cta-hint').textContent = `The owner has been sent your location. Thank you for helping!`;
-          }
+            await sendLocationAlert(currentPetId, position.coords.latitude, position.coords.longitude, currentOwnerEmail, currentPetName);
+          } catch(e) {}
+          btn.classList.add('success');
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Owner Notified!';
+          document.querySelector('.passport-cta div').textContent = 'Thank you for helping! The owner has been notified.';
         },
-        (error) => {
-          let message = 'Could not get your location.';
-          if (error.code === 1) message = 'Location access was denied.';
-          if (error.code === 2) message = 'Location unavailable.';
-          if (error.code === 3) message = 'Location request timed out.';
-
-          btn.innerHTML = `
-            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            Share Location with Owner
-          `;
+        function(error) {
+          var msg = 'Could not get your location.';
+          if (error.code === 1) msg = 'Location access was denied.';
+          if (error.code === 2) msg = 'Location unavailable.';
+          if (error.code === 3) msg = 'Location request timed out.';
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Share Location with Owner';
           btn.style.pointerEvents = 'auto';
-          showToast(message, 'error');
+          showToast(msg, 'error');
         },
         { enableHighAccuracy: true, timeout: 15000 }
       );

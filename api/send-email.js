@@ -131,6 +131,32 @@ async function handleEmail({ type, to, toName, petName, link, message, ownerName
         </div>`;
       break;
 
+    case 'vet_invite':
+      subject = `${ownerName || 'Your client'} invites you to upload records for ${petName || 'their pet'} on PupFile`;
+      htmlContent = `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2 style="color:#ea580c">PupFile</h2>
+          <p>Hi ${toName || 'there'},</p>
+          <p><strong>${ownerName || 'A PupFile user'}</strong> has invited you to upload medical records for <strong>${petName || 'their pet'}</strong>.</p>
+          <p>Click the button below to view the pet's profile and upload vaccination records or medical documents — no account needed.</p>
+          <a href="${link}" style="display:inline-block;padding:12px 24px;background:#ea580c;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">Upload Records</a>
+          <p style="color:#666;font-size:0.85rem">This link is unique and expires on the date set by the owner.</p>
+        </div>`;
+      break;
+
+    case 'vet_upload':
+      subject = `Vet uploaded records for ${petName || 'your pet'}`;
+      htmlContent = `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2 style="color:#ea580c">PupFile</h2>
+          <p>Hi ${toName || 'there'},</p>
+          <p><strong>${ownerName || 'Your vet'}</strong> has uploaded new records for <strong>${petName || 'your pet'}</strong>.</p>
+          ${message ? `<div style="background:#f5f5f5;padding:16px;border-radius:8px;margin:12px 0;font-size:0.9rem">${escapeHtml(message).replace(/\n/g, '<br>')}</div>` : ''}
+          <a href="${link || 'https://pupfile.com/dashboard'}" style="display:inline-block;padding:12px 24px;background:#ea580c;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">View in Dashboard</a>
+          <p style="color:#666;font-size:0.85rem">You can manage notification preferences in your dashboard settings.</p>
+        </div>`;
+      break;
+
     case 'task_assignment':
       subject = `${ownerName || 'Someone'} assigned you a task — ${escapeHtml(message || 'Pet care task')}`;
       htmlContent = `
